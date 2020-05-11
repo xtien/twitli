@@ -8,7 +8,7 @@
 
     <fragment
             android:id="@+id/firstfragment"
-            android:name="nl.christine.twitfollowers.ui.MainFragment"
+            android:name="nl.christine.twitli.ui.MainFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 </LinearLayout>
