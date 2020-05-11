@@ -9,6 +9,8 @@ package com.twitli.android.twitter.data;
 
 import android.app.Application;
 
+import java.util.List;
+
 public class ContentRepository {
 
     private ContentDao contentDao;
@@ -19,11 +21,11 @@ public class ContentRepository {
     }
 
     public void addContent(String year, String datum, String text) {
-        contentDao.addContent(year,datum,text);
+        contentDao.addContent(year, datum, text);
     }
 
-    public void addContent(String year,  String text) {
-        contentDao.addContent(year,text);
+    public void addContent(String year, String text) {
+        contentDao.addContent(year, text);
     }
 
     public Content getFirst(Integer year) {
@@ -32,5 +34,23 @@ public class ContentRepository {
 
     public void setDone(int id) {
         contentDao.setDone(id);
+    }
+
+    public ContentStatus getStatus(int year) {
+        List<Content> available = contentDao.getAvailable(year);
+        List<Content> done = contentDao.getDone(year);
+        if (available.size() > 0) {
+            return ContentStatus.AVAILABLE;
+        } else {
+            if (done.size() > 0) {
+                return ContentStatus.DONE;
+            } else {
+                return ContentStatus.NONE;
+            }
+        }
+    }
+
+    public List<Content> getAvailable(int year) {
+        return contentDao.getAvailable(year);
     }
 }

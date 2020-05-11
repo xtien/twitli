@@ -10,32 +10,29 @@ package com.twitli.android.twitter.tweet;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.data.Content;
 import com.twitli.android.twitter.data.SettingsRepository;
 import com.twitli.android.twitter.data.UserRepository;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
+import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TwitManagerImpl implements TwitManager {
 
+    private static final String LOGTAG = TwitManagerImpl.class.getSimpleName();
     private final Twitter twitter;
     private final Application application;
     private SettingsRepository settingsRepository;
-    private long period = 900l;
+    private long tweetInterval = 3600l;
     private long init = 20l;
-    private int followers = 0;
 
     ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
     private boolean active;
@@ -47,22 +44,25 @@ public class TwitManagerImpl implements TwitManager {
         settingsRepository = new SettingsRepository(application);
         userRepository = new UserRepository(application);
 
+        tweetInterval = application.getSharedPreferences("prefs", Context.MODE_PRIVATE).getLong("tweet_interval", 3600l);
+
         settingsRepository.isActive().observeForever(active -> {
+            Log.d(LOGTAG, "active = " + this.active + " " + active);
             if (active != null) {
                 TwitManagerImpl.this.active = active;
             }
         });
 
+        SharedPreferences prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        int position = prefs.getInt("tweet_interval", 0);
+        tweetInterval = setTweetInterval(position);
+
         es.scheduleAtFixedRate(() -> {
             if (active) {
-                int newFollowers = getFollowers();
-                if (newFollowers != followers) {
-                    followers = newFollowers;
-                }
+                getUser();
             }
-        }, init, period, SECONDS);
+        }, init, tweetInterval, SECONDS);
 
-        SharedPreferences prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE);
         String accessTokenKey = prefs.getString("access_token", null);
         String accesTokenSecret = prefs.getString("access_token_secret", null);
         twitter = TwitterFactory.getSingleton();
@@ -73,10 +73,11 @@ public class TwitManagerImpl implements TwitManager {
         }
     }
 
-    private int getFollowers() {
+    private int getUser() {
         try {
             User user = twitter.verifyCredentials();
             userRepository.persist(user);
+            // userRepository.setFollowers(user.getFollowersCount());
             return user.getFollowersCount();
         } catch (TwitterException e) {
             e.printStackTrace();
@@ -86,16 +87,26 @@ public class TwitManagerImpl implements TwitManager {
 
     @Override
     public void tweet(Content content) {
-        tweet(content.getYear() + ", " + content.getDate() != null ? (content.getDate() + ". ") : "" + content.getText());
+        String string = content.getYear() + ", " + (content.getDate() != null ? (content.getDate() + ". ") : "") + content.getText();
+        tweet(string);
     }
 
     @Override
     public void tweet(String string) {
+
+        Log.d(LOGTAG, "status " + string);
+
         es.execute(() -> {
             try {
                 twitter.updateStatus(string.length() > 280 ? string.substring(0, 280) : string);
             } catch (TwitterException e) {
-                e.printStackTrace();
+                int statusCode = e.getStatusCode();
+                if (statusCode == 403) {
+                    String message = e.getErrorMessage();
+                    Log.e(LOGTAG, "statusCode " + statusCode + " " + message);
+                } else {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -131,5 +142,26 @@ public class TwitManagerImpl implements TwitManager {
         editor.putString("request_token_secret", requestToken.getTokenSecret());
         editor.commit();
         return requestToken;
+    }
+
+    @Override
+    public void setInterval(int position) {
+        tweetInterval = setTweetInterval(position);
+    }
+
+    private long setTweetInterval(int position) {
+        long tweetInterval = this.tweetInterval;
+        switch (position) {
+            case 0:
+                tweetInterval = 3600l;
+                break;
+            case 1:
+                tweetInterval = 21600l;
+                break;
+            case 2:
+                tweetInterval = 144000l;
+                break;
+        }
+        return tweetInterval;
     }
 }

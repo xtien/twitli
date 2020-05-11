@@ -11,6 +11,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface ContentDao {
 
@@ -23,8 +25,14 @@ public interface ContentDao {
     @Query("insert into content_table (year, text, used) values (:year,  :text, 0)")
     void addContent(String year, String text);
 
-    @Query("select * from content_table where year = :year and used = 0")
+    @Query("select * from content_table where year = :year & used = 0")
     Content getFirst(Integer year);
+
+    @Query("select * from content_table where year = :year & used = 0")
+    List<Content> getAvailable(int year);
+
+    @Query("select * from content_table where year = :year & used = 1")
+    List<Content> getDone(int year);
 
     @Query("update content_table set used = 1 where id = :id")
     void setDone(int id);

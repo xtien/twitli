@@ -13,5 +13,6 @@
     <string name="intro4">This is all of no use, I made it after a twitter friend told me he always looks up a year in wikipedia when his number of followers has changed. </string>
     <string name="intro5">In order to work, Twitli needs to login in your twitter app. It shows a login page and authorize button. After authorizing, please choose \"Twitli\" as the app to open the resulting url. </string>
     <string name="ok">OK</string>
+    <string name="tweet_interval">Tweet interval</string>
 
 </resources>

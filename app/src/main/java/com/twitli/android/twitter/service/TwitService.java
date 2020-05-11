@@ -18,10 +18,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleService;
 import com.twitli.android.twitter.MyApplication;
-import com.twitli.android.twitter.data.Content;
-import com.twitli.android.twitter.data.ContentRepository;
-import com.twitli.android.twitter.data.SettingsRepository;
-import com.twitli.android.twitter.data.UserRepository;
+import com.twitli.android.twitter.data.*;
 import com.twitli.android.twitter.tweet.TwitManager;
 import com.twitli.android.twitter.wiki.WikiPageManager;
 
@@ -91,7 +88,7 @@ public class TwitService extends LifecycleService {
         });
 
         userRepository.getFollowersCount().observeForever(followers -> {
-            if (followers != null) {
+            if (followers != null && followers != 0) {
                 year = (int) (followers % currentYear);
                 TwitService.this.doWiki(year);
             }
@@ -110,23 +107,45 @@ public class TwitService extends LifecycleService {
         registerReceiver(receiver, filter);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+
     private void tweet(Content content) {
         twitManager.tweet(content);
     }
 
     private void doWiki(int year) {
-
         es.execute(() -> {
-            try {
-                Content content = contentRepository.getFirst(year);
-                if (content == null) {
-                    wikiPageManager.getPage(Integer.toString(year));
-                } else {
-                    contentRepository.setDone(content.getId());
-                    tweet(content);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            ContentStatus contentStatus = contentRepository.getStatus(year);
+            switch (contentStatus) {
+
+                case AVAILABLE:
+                    Log.d(LOGTAG, "AVAILABLE");
+                    Content content = contentRepository.getFirst(year);
+                    if (content != null) {
+                        contentRepository.setDone(content.getId());
+                        tweet(content);
+                    } else {
+                        Log.e(LOGTAG, "no content found " + year);
+                    }
+                    break;
+
+                case NONE:
+                    Log.d(LOGTAG, "NONE");
+                    try {
+                        String text = wikiPageManager.getPage(Integer.toString(year));
+                     } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case DONE:
+                    Log.d(LOGTAG, "DONE");
+                    // All items already displayed, nothing to do here.
             }
         });
     }

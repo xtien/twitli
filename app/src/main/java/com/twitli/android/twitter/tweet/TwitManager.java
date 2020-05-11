@@ -20,4 +20,6 @@ public interface TwitManager {
     void createAccessToken(String verifier);
 
     RequestToken createRequestToken() throws TwitterException;
+
+    void setInterval(int position);
 }

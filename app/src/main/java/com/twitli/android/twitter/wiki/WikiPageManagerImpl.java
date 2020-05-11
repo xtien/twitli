@@ -11,6 +11,7 @@ import android.os.Build;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.util.Log;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.data.ContentRepository;
 import org.jsoup.Jsoup;
@@ -64,7 +65,7 @@ public class WikiPageManagerImpl implements WikiPageManager {
                     text = fromHtml(text.length() < 271 ? text : text.substring(0, 270));
                     repository.addContent(year, datum, text);
                     if (result == null) {
-                        result = year + ", " + datum + ": "+ text;
+                        result = year + ", " + datum + ": " + text;
                     }
                     numberOfItems++;
                 }
@@ -86,7 +87,7 @@ public class WikiPageManagerImpl implements WikiPageManager {
                     text = fromHtml(text.length() < 270 ? text : text.substring(0, 270));
                     repository.addContent(year, text);
                     if (result == null) {
-                        result = year + ": "+ text;
+                        result = year + ": " + text;
                     }
                 }
             }
