@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "nl.christine.twitfollowers"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+}
+
+dependencies {
+
+    def room_version = "2.2.5"
+    def commonslang_version = "3.10"
+    def jsoup_version = '1.13.1'
+    def dagger_version = '2.27'
+    def retrofit_version = '2.8.1'
+    def commonsvalidator_version = '1.6'
+    def twitter4j_version = '4.0.7'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.google.android.material:material:1.1.0'
+
+    implementation "org.apache.commons:commons-lang3:$commonslang_version"
+    implementation "commons-validator:commons-validator:$commonsvalidator_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "org.jsoup:jsoup:$jsoup_version"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:2.1.0"
+    implementation "org.twitter4j:twitter4j-core:$twitter4j_version"
+
+    androidTestImplementation 'org.mockito:mockito-android:2.7.22'
+    androidTestImplementation 'org.mockito:mockito-core:2.7.22'
+
+    testImplementation "androidx.room:room-testing:$room_version"
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'junit:junit:4.12'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+}

@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="fragment_padding">24dp</dimen>
+
+    <dimen name="text_size">18dp</dimen>
+    <dimen name="title_size">24dp</dimen>
+    <dimen name="subtitle_size">20dp</dimen>
+    <dimen name="version_size">12dp</dimen>
+</resources>
