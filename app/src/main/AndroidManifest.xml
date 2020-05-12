@@ -41,16 +41,14 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.twitli.android.twitter.service.TwitService"/>
+        <service android:name="com.twitli.android.twitter.service.TwitService"
+                 android:label="Twit service"/>
+        <service android:name="com.twitli.android.twitter.service.TwitJobService"
+                 android:label="Job service"
+                 android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name="com.twitli.android.twitter.receiver.StartupReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </receiver>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 </manifest>

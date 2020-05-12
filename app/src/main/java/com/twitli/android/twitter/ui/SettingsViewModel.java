@@ -29,4 +29,8 @@ public class SettingsViewModel extends AndroidViewModel {
     public void setActive(boolean isChecked) {
         repository.setActive(isChecked);
     }
+
+    public LiveData<Boolean> isActive() {
+     return repository.isActive();
+    }
 }

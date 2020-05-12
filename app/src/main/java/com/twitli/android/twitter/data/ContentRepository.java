@@ -28,8 +28,9 @@ public class ContentRepository {
         contentDao.addContent(year, text);
     }
 
-    public Content getFirst(Integer year) {
-        return contentDao.getFirst(year);
+    public Content getFirst(String year) {
+        List<Content> list =  contentDao.getFirst(year);
+        return list.isEmpty()?null:list.get(0);
     }
 
     public void setDone(int id) {

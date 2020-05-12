@@ -19,6 +19,7 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
@@ -39,11 +40,18 @@ public class MainFragment extends Fragment {
 
     @Inject
     public TwitManager twitManager;
+    private Switch activeSwitch;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+
+        settingsViewModel.isActive().observeForever(b -> {
+            if(activeSwitch.isChecked() != b){
+                activeSwitch.setChecked(b);
+            }
+        });
 
         ((MyApplication) getActivity().getApplicationContext()).appComponent.inject(this);
         Log.d(LOGTAG, "wikiPageManager " + wikiPageManager == null ? "null" : "not null");
@@ -57,7 +65,9 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((Switch) view.findViewById(R.id.active_switch)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        activeSwitch = view.findViewById(R.id.active_switch);
+        activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             settingsViewModel.setActive(isChecked);
         });
 
@@ -75,7 +85,6 @@ public class MainFragment extends Fragment {
             editText.setText("");
         });
 
-        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
         Spinner intervalSpinner = view.findViewById(R.id.interval_spinner);
         intervalSpinner.setAdapter((ArrayAdapter.createFromResource(getActivity(), R.array.tweet_interval, android.R.layout.simple_spinner_item)));
         intervalSpinner.setSelection(prefs.getInt("tweet_interval", 0));

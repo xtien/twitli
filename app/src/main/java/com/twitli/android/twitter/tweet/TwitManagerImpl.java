@@ -16,13 +16,17 @@ import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.data.Content;
 import com.twitli.android.twitter.data.SettingsRepository;
 import com.twitli.android.twitter.data.UserRepository;
+import org.apache.commons.lang3.math.NumberUtils;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TwitManagerImpl implements TwitManager {
@@ -30,13 +34,15 @@ public class TwitManagerImpl implements TwitManager {
     private static final String LOGTAG = TwitManagerImpl.class.getSimpleName();
     private final Twitter twitter;
     private final Application application;
+    private final List<String> intervals;
     private SettingsRepository settingsRepository;
-    private long tweetInterval = 3600l;
+    private long tweetIntervalHours = 1;
     private long init = 20l;
 
     ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
     private boolean active;
     private UserRepository userRepository;
+    long count = 9999l;
 
     public TwitManagerImpl() {
 
@@ -44,24 +50,31 @@ public class TwitManagerImpl implements TwitManager {
         settingsRepository = new SettingsRepository(application);
         userRepository = new UserRepository(application);
 
-        tweetInterval = application.getSharedPreferences("prefs", Context.MODE_PRIVATE).getLong("tweet_interval", 3600l);
-
+        SharedPreferences prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        int position = prefs.getInt("tweet_interval", 0);
+        intervals = Arrays.asList(application.getApplicationContext().getResources().getStringArray(R.array.tweet_interval));
+        tweetIntervalHours = getLongInterval(position);
         settingsRepository.isActive().observeForever(active -> {
             Log.d(LOGTAG, "active = " + this.active + " " + active);
             if (active != null) {
                 TwitManagerImpl.this.active = active;
+                if(active){
+                    tweetIntervalHours = 999l;
+                }
             }
         });
 
-        SharedPreferences prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        int position = prefs.getInt("tweet_interval", 0);
-        tweetInterval = setTweetInterval(position);
-
         es.scheduleAtFixedRate(() -> {
-            if (active) {
-                getUser();
+
+            if (count >= tweetIntervalHours) {
+                count = 0l;
+                if (active) {
+                    getUser();
+                }
+            } else {
+                count = count + 1l;
             }
-        }, init, tweetInterval, SECONDS);
+        }, init, 3600l, SECONDS);
 
         String accessTokenKey = prefs.getString("access_token", null);
         String accesTokenSecret = prefs.getString("access_token_secret", null);
@@ -146,22 +159,16 @@ public class TwitManagerImpl implements TwitManager {
 
     @Override
     public void setInterval(int position) {
-        tweetInterval = setTweetInterval(position);
+        tweetIntervalHours = getLongInterval(position);
     }
 
-    private long setTweetInterval(int position) {
-        long tweetInterval = this.tweetInterval;
-        switch (position) {
-            case 0:
-                tweetInterval = 3600l;
-                break;
-            case 1:
-                tweetInterval = 21600l;
-                break;
-            case 2:
-                tweetInterval = 144000l;
-                break;
+    private long getLongInterval(int position) {
+        String interval = intervals.get(position);
+        interval = interval.substring(0, interval.indexOf(" "));
+        if (NumberUtils.isCreatable(interval)) {
+            return Integer.parseInt(interval);
         }
-        return tweetInterval;
+        return 1l;
     }
+
 }

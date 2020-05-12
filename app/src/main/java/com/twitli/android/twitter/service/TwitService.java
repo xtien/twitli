@@ -72,6 +72,8 @@ public class TwitService extends LifecycleService {
     public void onCreate() {
         super.onCreate();
 
+        Log.d(LOGTAG, "TwitService started");
+
         ((MyApplication) getApplicationContext()).appComponent.inject(this);
 
         Calendar calendar = Calendar.getInstance();
@@ -111,6 +113,7 @@ public class TwitService extends LifecycleService {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        Log.d(LOGTAG, "TwitService stopped");
     }
 
     private void tweet(Content content) {
@@ -125,7 +128,7 @@ public class TwitService extends LifecycleService {
 
                 case AVAILABLE:
                     Log.d(LOGTAG, "AVAILABLE");
-                    Content content = contentRepository.getFirst(year);
+                    Content content = contentRepository.getFirst(Integer.toString(year));
                     if (content != null) {
                         contentRepository.setDone(content.getId());
                         tweet(content);
@@ -137,7 +140,7 @@ public class TwitService extends LifecycleService {
                 case NONE:
                     Log.d(LOGTAG, "NONE");
                     try {
-                        String text = wikiPageManager.getPage(Integer.toString(year));
+                        wikiPageManager.getPage(Integer.toString(year));
                      } catch (IOException e) {
                         e.printStackTrace();
                     }

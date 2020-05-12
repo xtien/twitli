@@ -25,13 +25,13 @@ public interface ContentDao {
     @Query("insert into content_table (year, text, used) values (:year,  :text, 0)")
     void addContent(String year, String text);
 
-    @Query("select * from content_table where year = :year & used = 0")
-    Content getFirst(Integer year);
+    @Query("select * from content_table where NOT used and year = :year")
+    List<Content> getFirst(String year);
 
-    @Query("select * from content_table where year = :year & used = 0")
+    @Query("select * from content_table where NOT used and year = :year")
     List<Content> getAvailable(int year);
 
-    @Query("select * from content_table where year = :year & used = 1")
+    @Query("select * from content_table where used AND year = :year")
     List<Content> getDone(int year);
 
     @Query("update content_table set used = 1 where id = :id")
