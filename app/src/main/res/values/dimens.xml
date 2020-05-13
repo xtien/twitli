@@ -5,4 +5,18 @@
     <dimen name="title_size">24dp</dimen>
     <dimen name="subtitle_size">20dp</dimen>
     <dimen name="version_size">12dp</dimen>
+
+    <dimen name="status_text_size">16dp</dimen>
+    <dimen name="status_text_size_small">12dp</dimen>
+
+    <dimen name="page_padding">10dp</dimen>
+    <dimen name="text_padding">0dp</dimen>
+
+    <dimen name="tweet_padding_bottom">10dp</dimen>
+    <dimen name="tweet_padding_top">0dp</dimen>
+    <dimen name="padding_left">10dp</dimen>
+
+    <dimen name="tweetwindow_side">100dp</dimen>
+    <dimen name="tweetwindow_top">20dp</dimen>
+
 </resources>

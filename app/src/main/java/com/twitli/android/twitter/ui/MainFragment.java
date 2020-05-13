@@ -8,27 +8,26 @@
 package com.twitli.android.twitter.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.tweet.TwitManager;
 import com.twitli.android.twitter.wiki.WikiPageManager;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
 public class MainFragment extends Fragment {
 
@@ -42,13 +41,17 @@ public class MainFragment extends Fragment {
     public TwitManager twitManager;
     private Switch activeSwitch;
 
+    public static Fragment newInstance() {
+        return new MainFragment();
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
 
         settingsViewModel.isActive().observeForever(b -> {
-            if(activeSwitch.isChecked() != b){
+            if(b !=null && activeSwitch.isChecked() != b){
                 activeSwitch.setChecked(b);
             }
         });
@@ -69,20 +72,6 @@ public class MainFragment extends Fragment {
         activeSwitch = view.findViewById(R.id.active_switch);
         activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             settingsViewModel.setActive(isChecked);
-        });
-
-        EditText editText = view.findViewById(R.id.tweet_text);
-        Button button = view.findViewById(R.id.submit);
-        button.setOnClickListener(v -> {
-            String message = editText.getText().toString();
-            if (NumberUtils.isCreatable(message)) {
-                Intent icycle = new Intent();
-                icycle.setAction("nl.christine.app.message");
-                icycle.putExtra("message", message);
-                getActivity().sendBroadcast(icycle);
-            }
-            twitManager.tweet(message);
-            editText.setText("");
         });
 
         Spinner intervalSpinner = view.findViewById(R.id.interval_spinner);

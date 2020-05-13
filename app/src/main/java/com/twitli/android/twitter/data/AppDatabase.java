@@ -14,11 +14,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import com.twitli.android.twitter.tweet.Tweet;
+import com.twitli.android.twitter.tweet.TwitDao;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {MySettings.class, Content.class, User.class},  version = 1, exportSchema = false)
+@Database(entities = {MySettings.class, Content.class, User.class, Tweet.class},  version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -32,12 +34,13 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
-    static final ExecutorService databaseWriteExecutor =
+    public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public abstract SettingsDao settingsDao();
     public abstract ContentDao contentDao();
     public abstract UserDao userDao();
+    public abstract TwitDao twitDao();
 
     private static Callback databaseCallback = new RoomDatabase.Callback() {
 
@@ -73,5 +76,4 @@ public abstract class AppDatabase extends RoomDatabase {
 
         return INSTANCE;
     }
-
 }

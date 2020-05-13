@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020, Zaphod Consulting BV, Christine Karman
+  ~ This project is free software: you can redistribute it and/or modify it under the terms of
+  ~ the Apache License, Version 2.0. You can find a copy of the license at
+  ~ http://www.apache.org/licenses/LICENSE-2.0.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/tweet_name"
+                android:id="@+id/twitter_name"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/status_id"
+                android:paddingLeft="@dimen/padding_left"
+                android:id="@+id/twitter_id"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_left"
+                style="@style/status_id"
+                android:id="@+id/time"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/tweet_text"
+            android:id="@+id/tweet_text"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="reply"
+                style="@style/status_id"
+                android:id="@+id/icon_reply"/>
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/status_id"
+                android:text="like"
+                android:id="@+id/icon_like"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/status_id"
+                 android:id="@+id/icon_none"/>
+
+    </LinearLayout>
+
+    <View style="@style/Divider.Horizontal"/>
+</LinearLayout>

@@ -59,27 +59,4 @@
                     android:id="@+id/interval_spinner"/>
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:orientation="vertical">
-
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tweet_text"
-                style="@style/text"
-                />
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_gravity="right"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:id="@+id/submit"
-                style="@style/text"
-                android:text="@string/submit"/>
-    </LinearLayout>
 </LinearLayout>

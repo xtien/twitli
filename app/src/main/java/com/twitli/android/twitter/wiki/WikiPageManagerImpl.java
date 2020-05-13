@@ -9,9 +9,6 @@ package com.twitli.android.twitter.wiki;
 
 import android.os.Build;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.util.Log;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.data.ContentRepository;
 import org.jsoup.Jsoup;

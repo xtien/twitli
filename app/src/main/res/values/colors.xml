@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000000</color>
+
+
+    <color name="tweet_id">#404040</color>
+    <color name="tweet_text">#202020</color>
+    <color name="tweet_highlight">#40FF40</color>
+    <color name="tweet_background">#FFFFFF</color>
 </resources>

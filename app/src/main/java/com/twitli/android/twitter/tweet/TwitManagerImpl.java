@@ -17,7 +17,10 @@ import com.twitli.android.twitter.data.Content;
 import com.twitli.android.twitter.data.SettingsRepository;
 import com.twitli.android.twitter.data.UserRepository;
 import org.apache.commons.lang3.math.NumberUtils;
-import twitter4j.*;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -26,7 +29,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TwitManagerImpl implements TwitManager {

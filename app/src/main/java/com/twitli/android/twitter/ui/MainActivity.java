@@ -12,9 +12,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.service.TwitService;
+import com.twitli.android.twitter.tweet.TwitFragment;
 import com.twitli.android.twitter.tweet.TwitManager;
 import twitter4j.TwitterException;
 import twitter4j.auth.RequestToken;
@@ -31,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Inject
     public TwitManager twitManager;
+
+    private ViewPager viewPager;
+    private ScreenSlidePagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(browserIntent);
             });
         }
+
+        viewPager = findViewById(R.id.viewpager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragment(MainFragment.newInstance());
+        pagerAdapter.addFragment(TwitFragment.newInstance());
+        viewPager.setAdapter(pagerAdapter);
     }
 
 
