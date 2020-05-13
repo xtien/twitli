@@ -9,6 +9,7 @@ package com.twitli.android.twitter.tweet;
 
 import com.twitli.android.twitter.data.Content;
 import twitter4j.TwitterException;
+import twitter4j.User;
 import twitter4j.auth.RequestToken;
 
 public interface TwitManager {
@@ -21,5 +22,5 @@ public interface TwitManager {
 
     RequestToken createRequestToken() throws TwitterException;
 
-    void setInterval(int position);
+    User verifyCredentials() throws TwitterException;
 }

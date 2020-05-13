@@ -8,11 +8,13 @@
 package com.twitli.android.twitter.tweet;
 
 import android.app.Application;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import com.twitli.android.twitter.data.AppDatabase;
 import twitter4j.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,12 +35,8 @@ public class TwitRepository {
         tweets = twitDao.getTweets();
 
         es.scheduleAtFixedRate(() -> {
-            try {
                 loadTweets();
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-        }, 20, 120, SECONDS);
+         }, 20, 120, SECONDS);
     }
 
     public void create(final Tweet tweet) {
@@ -47,11 +45,16 @@ public class TwitRepository {
         });
     }
 
-    public void loadTweets() throws TwitterException {
+    public void loadTweets()  {
         Twitter twitter = TwitterFactory.getSingleton();
         Paging paging = new Paging();
         paging.setCount(20);
-        List<Status> tweets = twitter.getHomeTimeline(paging);
+        List<Status> tweets = new ArrayList<>();
+        try{
+            tweets = twitter.getHomeTimeline(paging);
+        } catch (TwitterException e){
+            Log.e(LOGTAG, "Twitter error " +e.getExceptionCode() + " " +  e.getMessage());
+        }
         for (Status status : tweets) {
             twitDao.store(status.getId(), status.getUser().getName(), status.getUser().getScreenName(), status.getCreatedAt().getTime(), status.getText());
         }

@@ -16,7 +16,7 @@
     <dimen name="tweet_padding_top">0dp</dimen>
     <dimen name="padding_left">10dp</dimen>
 
-    <dimen name="tweetwindow_side">100dp</dimen>
-    <dimen name="tweetwindow_top">20dp</dimen>
+    <dimen name="tweetwindow_side">20dp</dimen>
+    <dimen name="tweetwindow_top">60dp</dimen>
 
 </resources>

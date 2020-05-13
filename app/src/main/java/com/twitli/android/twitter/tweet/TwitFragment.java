@@ -3,6 +3,9 @@ package com.twitli.android.twitter.tweet;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +13,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +43,8 @@ public class TwitFragment extends Fragment {
 
     private EditText editText;
     private boolean isTweeting = false;
+    private TextView textLengthView;
+    private int maxTweetLength = 280;
 
     public static Fragment newInstance() {
         return new TwitFragment();
@@ -57,6 +64,7 @@ public class TwitFragment extends Fragment {
         submitButton = view.findViewById(R.id.submit_tweet);
         tweetView = view.findViewById(R.id.tweet);
         editText = view.findViewById(R.id.tweet_text);
+        textLengthView = view.findViewById(R.id.text_length);
     }
 
     @Override
@@ -78,6 +86,39 @@ public class TwitFragment extends Fragment {
         listView.setLayoutManager(layoutManager);
         listView.setAdapter(adapter);
 
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                textLengthView.setText(Integer.toString(s.length()));
+                if (s.length() >= maxTweetLength) {
+                    textLengthView.setTextColor(ContextCompat.getColor(getContext(), R.color.text_count_full));
+                    editText.setTextColor(ContextCompat.getColor(getContext(), R.color.tweet_highlight));
+                } else {
+                    textLengthView.setTextColor(ContextCompat.getColor(getContext(), R.color.text_count));
+                    editText.setTextColor(ContextCompat.getColor(getContext(), R.color.tweet_text));
+                }
+                int textColor = editText.getCurrentTextColor();
+                if (s.length() > maxTweetLength) {
+                    submitButton.setVisibility(View.INVISIBLE);
+                    editText.setTextColor(ContextCompat.getColor(getContext(), R.color.tweet_text_away));
+                } else {
+                    submitButton.setVisibility(View.VISIBLE);
+                    editText.setTextColor(textColor);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+        });
+
         button.setOnClickListener(v -> {
             if (!isTweeting) {
                 listView.setAlpha(0.5f);
@@ -96,15 +137,19 @@ public class TwitFragment extends Fragment {
             hideKeyboard(getActivity());
             if (editText.getText() != null && editText.getText().toString() != null) {
                 String message = editText.getText().toString();
-                if (NumberUtils.isCreatable(message)) {
-                    Intent icycle = new Intent();
-                    icycle.setAction("nl.christine.app.message");
-                    icycle.putExtra("message", message);
-                    getActivity().sendBroadcast(icycle);
 
-                    twitManager.tweet(editText.getText().toString());
-                    editText.setText("");
+                String[] words = message.split(" ");
+                for (String word : words) {
+                    word = word.trim();
+                    if (word != null && word.length() > 2 && NumberUtils.isCreatable(word)) {
+                        Intent icycle = new Intent();
+                        icycle.setAction("nl.christine.app.message");
+                        icycle.putExtra("message", word);
+                        getActivity().sendBroadcast(icycle);
+                    }
                 }
+                twitManager.tweet(editText.getText().toString());
+                editText.setText("");
             }
         });
     }

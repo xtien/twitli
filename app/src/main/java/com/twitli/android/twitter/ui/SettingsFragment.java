@@ -29,9 +29,9 @@ import com.twitli.android.twitter.wiki.WikiPageManager;
 
 import javax.inject.Inject;
 
-public class MainFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
-    private static final String LOGTAG = MainFragment.class.getSimpleName();
+    private static final String LOGTAG = SettingsFragment.class.getSimpleName();
     SettingsViewModel settingsViewModel;
 
     @Inject
@@ -42,7 +42,7 @@ public class MainFragment extends Fragment {
     private Switch activeSwitch;
 
     public static Fragment newInstance() {
-        return new MainFragment();
+        return new SettingsFragment();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -84,7 +84,6 @@ public class MainFragment extends Fragment {
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
                 editor.putInt("tweet_interval", position);
                 editor.commit();
-                twitManager.setInterval(position);
             }
 
             @Override

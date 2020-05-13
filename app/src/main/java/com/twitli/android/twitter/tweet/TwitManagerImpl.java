@@ -26,6 +26,7 @@ import twitter4j.auth.RequestToken;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -36,48 +37,13 @@ public class TwitManagerImpl implements TwitManager {
     private static final String LOGTAG = TwitManagerImpl.class.getSimpleName();
     private final Twitter twitter;
     private final Application application;
-    private final List<String> intervals;
-    private SettingsRepository settingsRepository;
-    private long tweetIntervalHours = 1;
-    private long init = 20l;
-
-    ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
-    private boolean active;
-    private UserRepository userRepository;
-    long count = 9999l;
+    ExecutorService es = Executors.newCachedThreadPool();
 
     public TwitManagerImpl() {
 
         application = MyApplication.getApplication();
-        settingsRepository = new SettingsRepository(application);
-        userRepository = new UserRepository(application);
 
         SharedPreferences prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        int position = prefs.getInt("tweet_interval", 0);
-        intervals = Arrays.asList(application.getApplicationContext().getResources().getStringArray(R.array.tweet_interval));
-        tweetIntervalHours = getLongInterval(position);
-        settingsRepository.isActive().observeForever(active -> {
-            Log.d(LOGTAG, "active = " + this.active + " " + active);
-            if (active != null) {
-                TwitManagerImpl.this.active = active;
-                if(active){
-                    tweetIntervalHours = 999l;
-                }
-            }
-        });
-
-        es.scheduleAtFixedRate(() -> {
-
-            if (count >= tweetIntervalHours) {
-                count = 0l;
-                if (active) {
-                    getUser();
-                }
-            } else {
-                count = count + 1l;
-            }
-        }, init, 3600l, SECONDS);
-
         String accessTokenKey = prefs.getString("access_token", null);
         String accesTokenSecret = prefs.getString("access_token_secret", null);
         twitter = TwitterFactory.getSingleton();
@@ -85,18 +51,6 @@ public class TwitManagerImpl implements TwitManager {
         if (accessTokenKey != null) {
             AccessToken accessToken = new AccessToken(accessTokenKey, accesTokenSecret);
             twitter.setOAuthAccessToken(accessToken);
-        }
-    }
-
-    private int getUser() {
-        try {
-            User user = twitter.verifyCredentials();
-            userRepository.persist(user);
-            // userRepository.setFollowers(user.getFollowersCount());
-            return user.getFollowersCount();
-        } catch (TwitterException e) {
-            e.printStackTrace();
-            return 1600;
         }
     }
 
@@ -160,17 +114,7 @@ public class TwitManagerImpl implements TwitManager {
     }
 
     @Override
-    public void setInterval(int position) {
-        tweetIntervalHours = getLongInterval(position);
+    public User verifyCredentials() throws TwitterException {
+        return twitter.verifyCredentials();
     }
-
-    private long getLongInterval(int position) {
-        String interval = intervals.get(position);
-        interval = interval.substring(0, interval.indexOf(" "));
-        if (NumberUtils.isCreatable(interval)) {
-            return Integer.parseInt(interval);
-        }
-        return 1l;
-    }
-
 }

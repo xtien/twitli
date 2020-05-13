@@ -7,10 +7,7 @@
 
 package com.twitli.android.twitter.service;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -18,15 +15,25 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleService;
 import com.twitli.android.twitter.MyApplication;
+import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.data.*;
 import com.twitli.android.twitter.tweet.TwitManager;
+import com.twitli.android.twitter.tweet.TwitManagerImpl;
 import com.twitli.android.twitter.wiki.WikiPageManager;
+import org.apache.commons.lang3.math.NumberUtils;
+import twitter4j.TwitterException;
+import twitter4j.User;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TwitService extends LifecycleService {
 
@@ -35,13 +42,18 @@ public class TwitService extends LifecycleService {
     private ContentRepository contentRepository;
     private UserRepository userRepository;
 
+    private long init = 20l;
+    long count = 999l;
+    private List<String> intervals;
+    private boolean active = false;
+
     @Inject
     WikiPageManager wikiPageManager;
 
     @Inject
     TwitManager twitManager;
 
-    private ExecutorService es = Executors.newCachedThreadPool();
+    private ScheduledExecutorService es = Executors.newScheduledThreadPool(2);
     private int year = 1821;
     private int currentYear;
 
@@ -104,6 +116,29 @@ public class TwitService extends LifecycleService {
             }
         });
 
+        SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        intervals = Arrays.asList(getApplicationContext().getResources().getStringArray(R.array.tweet_interval));
+
+        settingsRepository.isActive().observeForever(active -> {
+            Log.d(LOGTAG, "active = " + this.active + " " + active);
+            if (active != null) {
+                TwitService.this.active = active;
+            }
+        });
+
+        es.scheduleAtFixedRate(() -> {
+            Log.d(LOGTAG, "long interval = " + getLongInterval(prefs.getInt("tweet_interval", 2)));
+            if (count > getLongInterval(prefs.getInt("tweet_interval", 2)) - 0.1) {
+                count = 0l;
+                if (active) {
+                    Log.d(LOGTAG, "getUser() called");
+                    getUser();
+                }
+            } else {
+                count = count + 1l;
+            }
+        }, init, 3600l, SECONDS);
+
         IntentFilter filter = new IntentFilter("nl.christine.app.message");
         filter.addAction("com.twitli.app.message");
         registerReceiver(receiver, filter);
@@ -117,8 +152,22 @@ public class TwitService extends LifecycleService {
     }
 
     private void tweet(Content content) {
+        Log.d(LOGTAG, "tweet " + content.getYear() + " " + content.getText());
         twitManager.tweet(content);
     }
+
+    private int getUser() {
+        try {
+            User user = twitManager.verifyCredentials();
+            userRepository.persist(user);
+            // userRepository.setFollowers(user.getFollowersCount());
+            return user.getFollowersCount();
+        } catch (TwitterException e) {
+            e.printStackTrace();
+            return 1600;
+        }
+    }
+
 
     private void doWiki(int year) {
         es.execute(() -> {
@@ -141,7 +190,7 @@ public class TwitService extends LifecycleService {
                     Log.d(LOGTAG, "NONE");
                     try {
                         wikiPageManager.getPage(Integer.toString(year));
-                     } catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     break;
@@ -159,4 +208,14 @@ public class TwitService extends LifecycleService {
         super.onBind(intent);
         return null;
     }
+
+    private long getLongInterval(int position) {
+        String interval = intervals.get(position);
+        interval = interval.substring(0, interval.indexOf(" "));
+        if (NumberUtils.isCreatable(interval)) {
+            return Integer.parseInt(interval);
+        }
+        return 1l;
+    }
+
 }

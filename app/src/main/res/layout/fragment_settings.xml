@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/fragment_padding"
-        tools:context=".ui.MainFragment">
+        tools:context=".ui.SettingsFragment">
 
     <TextView
             android:id="@+id/textview_first"
@@ -21,6 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:orientation="vertical">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text"
+                android:layout_weight="0"
+                android:text="@string/year_text"
+                />
 
         <Switch
                 android:text="@string/active"

@@ -58,14 +58,17 @@
     <style name="Divider.Horizontal" parent="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
+    </style>
 
+    <style name="text_length" parent="text">
+        <item name="android:textColor">@color/text_count</item>
     </style>
 
     <style name="tweet_edit">
-        <item name="android:layout_marginTop">@dimen/tweetwindow_side</item>
-        <item name="android:layout_marginBottom">@dimen/tweetwindow_side</item>
-        <item name="android:layout_marginStart">@dimen/tweetwindow_top</item>
-        <item name="android:layout_marginEnd">@dimen/tweetwindow_top</item>
+        <item name="android:layout_marginTop">@dimen/tweetwindow_top</item>
+        <item name="android:layout_marginBottom">@dimen/tweetwindow_top</item>
+        <item name="android:layout_marginStart">@dimen/tweetwindow_side</item>
+        <item name="android:layout_marginEnd">@dimen/tweetwindow_side</item>
         <item name="android:padding">20dp</item>
         <item name="android:background">@color/tweet_background</item>
     </style>

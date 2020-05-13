@@ -11,14 +11,14 @@ import android.app.Application;
 import com.twitli.android.twitter.service.TwitService;
 import com.twitli.android.twitter.tweet.TwitFragment;
 import com.twitli.android.twitter.ui.MainActivity;
-import com.twitli.android.twitter.ui.MainFragment;
+import com.twitli.android.twitter.ui.SettingsFragment;
 import dagger.BindsInstance;
 import dagger.Component;
 
 @Component(modules = {AppModule.class})
 public interface AppComponent {
 
-    void inject(MainFragment mainFragment);
+    void inject(SettingsFragment settingsFragment);
     void inject(TwitFragment twitFragment);
     void inject(TwitService twitService);
     void inject(MainActivity mainActivity);

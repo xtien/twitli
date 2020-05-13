@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewpager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragment(MainFragment.newInstance());
         pagerAdapter.addFragment(TwitFragment.newInstance());
+        pagerAdapter.addFragment(SettingsFragment.newInstance());
         viewPager.setAdapter(pagerAdapter);
     }
 
