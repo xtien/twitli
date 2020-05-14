@@ -19,6 +19,7 @@ import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.data.*;
 import com.twitli.android.twitter.tweet.TwitManager;
 import com.twitli.android.twitter.tweet.TwitManagerImpl;
+import com.twitli.android.twitter.tweet.TwitRepository;
 import com.twitli.android.twitter.wiki.WikiPageManager;
 import org.apache.commons.lang3.math.NumberUtils;
 import twitter4j.TwitterException;
@@ -41,8 +42,9 @@ public class TwitService extends LifecycleService {
     private SettingsRepository settingsRepository;
     private ContentRepository contentRepository;
     private UserRepository userRepository;
+    private TwitRepository twitRepository;
 
-    private long init = 20l;
+    private long init = 10l;
     long count = 999l;
     private List<String> intervals;
     private boolean active = false;
@@ -54,8 +56,9 @@ public class TwitService extends LifecycleService {
     TwitManager twitManager;
 
     private ScheduledExecutorService es = Executors.newScheduledThreadPool(2);
-    private int year = 1821;
+    private int year = 42;
     private int currentYear;
+    private long tweetedHistory = System.currentTimeMillis();
 
     public class LocalBinder extends Binder {
         public TwitService getService() {
@@ -95,6 +98,7 @@ public class TwitService extends LifecycleService {
         contentRepository = new ContentRepository((getApplication()));
         settingsRepository = new SettingsRepository(getApplication());
         userRepository = new UserRepository(getApplication());
+        twitRepository = new TwitRepository(getApplication());
 
         es.execute(() -> {
             year = userRepository.getYear();
@@ -102,8 +106,11 @@ public class TwitService extends LifecycleService {
         });
 
         userRepository.getFollowersCount().observeForever(followers -> {
+
+            Log.d(LOGTAG, "followers count is " + followers != null ? Long.toString(followers) : "null");
             if (followers != null && followers != 0) {
                 year = (int) (followers % currentYear);
+                Log.d(LOGTAG, "doWiki 111 " + year);
                 TwitService.this.doWiki(year);
             }
         });
@@ -111,7 +118,10 @@ public class TwitService extends LifecycleService {
         settingsRepository.isActive().observeForever(active -> {
             if (active != null) {
                 if (active) {
-                    TwitService.this.doWiki(year);
+                    if (System.currentTimeMillis() - tweetedHistory > 900000l) {
+                        Log.d(LOGTAG, "doWiki 121 " + year);
+                        TwitService.this.doWiki(year);
+                    }
                 }
             }
         });
@@ -142,6 +152,14 @@ public class TwitService extends LifecycleService {
         IntentFilter filter = new IntentFilter("nl.christine.app.message");
         filter.addAction("com.twitli.app.message");
         registerReceiver(receiver, filter);
+
+        es.schedule(() -> {
+            cleanupTwitRepository();
+        }, 60, SECONDS);
+    }
+
+    private void cleanupTwitRepository() {
+        twitRepository.cleanUp();
     }
 
     @Override
@@ -170,8 +188,10 @@ public class TwitService extends LifecycleService {
 
 
     private void doWiki(int year) {
+        Log.d(LOGTAG, "doWiki 179 " + year);
         es.execute(() -> {
 
+            tweetedHistory = System.currentTimeMillis();
             ContentStatus contentStatus = contentRepository.getStatus(year);
             switch (contentStatus) {
 
@@ -180,6 +200,7 @@ public class TwitService extends LifecycleService {
                     Content content = contentRepository.getFirst(Integer.toString(year));
                     if (content != null) {
                         contentRepository.setDone(content.getId());
+                        Log.d(LOGTAG, "setDone " + content.getText());
                         tweet(content);
                     } else {
                         Log.e(LOGTAG, "no content found " + year);

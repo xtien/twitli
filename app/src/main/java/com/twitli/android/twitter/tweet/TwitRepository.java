@@ -24,6 +24,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class TwitRepository {
 
     private static final String LOGTAG = TwitRepository.class.getSimpleName();
+    private static final long ONEHOUR = 3600000l;
     private TwitDao twitDao;
     private LiveData<List<Tweet>> tweets;
     ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
@@ -70,5 +71,9 @@ public class TwitRepository {
 
     public LiveData<Tweet> getTweet(int id) {
         return twitDao.getTweet(id);
+    }
+
+    public void cleanUp() {
+        twitDao.cleanUp(System.currentTimeMillis() - ONEHOUR);
     }
 }

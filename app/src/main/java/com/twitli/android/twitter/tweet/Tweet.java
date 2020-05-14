@@ -11,7 +11,7 @@ public class Tweet {
     @ColumnInfo(name = "tweet_id")
     @PrimaryKey
     @NonNull
-    private String tweetId;
+    private Long tweetId;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -24,14 +24,6 @@ public class Tweet {
 
     @ColumnInfo(name = "text")
     private String text;
-
-    public String getTweetId() {
-        return tweetId;
-    }
-
-    public void setTweetId(String tweetId) {
-        this.tweetId = tweetId;
-    }
 
     public String getName() {
         return name;
@@ -63,5 +55,14 @@ public class Tweet {
 
     public void setScreenName(String screenName) {
         this.screenName = screenName;
+    }
+
+    @NonNull
+    public Long getTweetId() {
+        return tweetId;
+    }
+
+    public void setTweetId(@NonNull Long tweetId) {
+        this.tweetId = tweetId;
     }
 }

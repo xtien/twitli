@@ -45,11 +45,12 @@ public class WikiPageManagerImpl implements WikiPageManager {
         for (Element e : elements) {
             String string = e.toString();
 
-            if (scan && string.contains("<h2>")) {
-                break;
-            }
-            if (string.contains("<h2>") && string.contains("Gebeurtenissen")) {
-                scan = true;
+            if (string.contains("<h2>")) {
+                if (string.contains("Gebeurtenissen")) {
+                    scan = true;
+                } else {
+                    break;
+                }
             }
 
             if (scan && string.startsWith("<li><a href=") && string.contains("title=")) {
@@ -59,7 +60,7 @@ public class WikiPageManagerImpl implements WikiPageManager {
                     if (text.contains(" - ")) {
                         text = text.substring(text.indexOf(" - ") + 3);
                     }
-                    text = fromHtml(text.length() < 271 ? text : text.substring(0, 270));
+                    text = fromHtml(text.length() < 280 ? text : text.substring(0, 280));
                     repository.addContent(year, datum, text);
                     if (result == null) {
                         result = year + ", " + datum + ": " + text;
@@ -81,7 +82,7 @@ public class WikiPageManagerImpl implements WikiPageManager {
                 }
                 if (scan && string.startsWith("<li><a href=") && string.contains("title=")) {
                     String text = e.text();
-                    text = fromHtml(text.length() < 270 ? text : text.substring(0, 270));
+                    text = fromHtml(text.length() < 280 ? text : text.substring(0, 280));
                     repository.addContent(year, text);
                     if (result == null) {
                         result = year + ": " + text;

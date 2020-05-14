@@ -8,8 +8,22 @@
         android:padding="@dimen/fragment_padding"
         tools:context=".ui.SettingsFragment">
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/version"
+                />
+    </LinearLayout>
+
     <TextView
-            android:id="@+id/textview_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/title"

@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
     }
 
-
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override

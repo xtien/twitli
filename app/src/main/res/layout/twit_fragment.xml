@@ -39,6 +39,13 @@
                 android:background="@color/tweet_background"
                 android:layout_height="match_parent">
 
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="@string/tweet"
+                    style="@style/text_length"/>
+
             <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,6 +68,56 @@
                     android:layout_weight="0"
                     android:textAllCaps="false"
                     android:id="@+id/submit_tweet"
+                    style="@style/text"
+                    android:text="@string/submit"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:alpha="1.0"
+            android:visibility="invisible"
+            android:id="@+id/reply">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp"
+                style="@style/tweet_edit"
+                android:background="@color/tweet_background"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="@string/reply"
+                    style="@style/text_length"/>
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="top"
+                    android:id="@+id/reply_text"
+                    style="@style/text"
+                    />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/reply_text_length"
+                    style="@style/text_length"/>
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:textAllCaps="false"
+                    android:id="@+id/submit_reply"
                     style="@style/text"
                     android:text="@string/submit"/>
         </LinearLayout>

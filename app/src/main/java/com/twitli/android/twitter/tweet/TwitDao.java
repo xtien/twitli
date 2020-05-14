@@ -24,4 +24,7 @@ public interface TwitDao {
 
     @Query("replace into twit_table ('tweet_id','name', 'screen_name', 'time', 'text') values (:id, :name, :screenName, :time, :text)")
     void store(long id, String name, String screenName, long time, String text);
+
+    @Query("delete from twit_table where time < :timestamp")
+    void cleanUp(long timestamp);
 }

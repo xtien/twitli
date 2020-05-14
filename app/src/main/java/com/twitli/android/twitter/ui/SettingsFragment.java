@@ -14,14 +14,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Switch;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import com.twitli.android.twitter.BuildConfig;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.tweet.TwitManager;
@@ -33,6 +31,7 @@ public class SettingsFragment extends Fragment {
 
     private static final String LOGTAG = SettingsFragment.class.getSimpleName();
     SettingsViewModel settingsViewModel;
+    private TextView versionView;
 
     @Inject
     public WikiPageManager wikiPageManager;
@@ -43,21 +42,6 @@ public class SettingsFragment extends Fragment {
 
     public static Fragment newInstance() {
         return new SettingsFragment();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
-
-        settingsViewModel.isActive().observeForever(b -> {
-            if(b !=null && activeSwitch.isChecked() != b){
-                activeSwitch.setChecked(b);
-            }
-        });
-
-        ((MyApplication) getActivity().getApplicationContext()).appComponent.inject(this);
-        Log.d(LOGTAG, "wikiPageManager " + wikiPageManager == null ? "null" : "not null");
     }
 
     @Override
@@ -73,6 +57,7 @@ public class SettingsFragment extends Fragment {
         activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             settingsViewModel.setActive(isChecked);
         });
+        versionView = view.findViewById(R.id.version);
 
         Spinner intervalSpinner = view.findViewById(R.id.interval_spinner);
         intervalSpinner.setAdapter((ArrayAdapter.createFromResource(getActivity(), R.array.tweet_interval, android.R.layout.simple_spinner_item)));
@@ -91,5 +76,21 @@ public class SettingsFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+
+        settingsViewModel.isActive().observeForever(b -> {
+            if(b !=null && activeSwitch.isChecked() != b){
+                activeSwitch.setChecked(b);
+            }
+        });
+
+        versionView.setText(BuildConfig.VERSION_NAME);
+        ((MyApplication) getActivity().getApplicationContext()).appComponent.inject(this);
+        Log.d(LOGTAG, "wikiPageManager " + wikiPageManager == null ? "null" : "not null");
     }
 }

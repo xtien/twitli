@@ -8,11 +8,13 @@
 package com.twitli.android.twitter.data;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.util.List;
 
 public class ContentRepository {
 
+    private static final String LOGTAG = ContentRepository.class.getSimpleName();
     private ContentDao contentDao;
 
     public ContentRepository(Application application) {
@@ -39,6 +41,10 @@ public class ContentRepository {
 
     public ContentStatus getStatus(int year) {
         List<Content> available = contentDao.getAvailable(year);
+        for(Content content : available){
+            Log.d(LOGTAG, content.getYear() + " " + content.getDate() + " " + content.getText());
+        }
+
         List<Content> done = contentDao.getDone(year);
         if (available.size() > 0) {
             return ContentStatus.AVAILABLE;

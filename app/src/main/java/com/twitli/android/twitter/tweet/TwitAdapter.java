@@ -30,6 +30,22 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     List<Tweet> tweets = new ArrayList<>();
     FastDateFormat format;
     private Context context;
+    private OnLikeClickListener onLikeClickListener;
+    private OnReplyClickListener onReplyClickListener;
+
+    public interface OnLikeClickListener {
+        void onLikeClicked(Long tweetId);
+    }
+    public interface OnReplyClickListener {
+        void onReplyClicked(Long tweetId);
+    }
+
+    public void setOnLikeClickListener(OnLikeClickListener listener) {
+        this.onLikeClickListener = listener;
+    }
+    public void setOnReplyClickListener(OnReplyClickListener listener) {
+        this.onReplyClickListener = listener;
+    }
 
     public TwitAdapter() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -43,7 +59,7 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(context == null){
+        if (context == null) {
             context = parent.getContext();
         }
 
@@ -62,7 +78,7 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     public void setTweets(List<Tweet> tweets) {
-        this.tweets = tweets;
+        this.tweets.addAll(tweets);
     }
 
     private class ViewHolder extends BaseViewHolder {
@@ -71,6 +87,8 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         TextView timeView;
         TextView nameView;
         TextView tweetTextView;
+        TextView like;
+        TextView reply;
 
         public ViewHolder(View view) {
             super(view);
@@ -78,6 +96,8 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             timeView = view.findViewById(R.id.time);
             nameView = view.findViewById(R.id.twitter_name);
             tweetTextView = view.findViewById(R.id.tweet_text);
+            like = view.findViewById(R.id.icon_like);
+            reply = view.findViewById(R.id.icon_reply);
         }
 
         @Override
@@ -100,6 +120,13 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             } else {
                 tweetTextView.setTextColor(ContextCompat.getColor(context, R.color.tweet_text));
             }
+
+            like.setOnClickListener(v -> {
+                onLikeClickListener.onLikeClicked(tweet.getTweetId());
+            });
+            reply.setOnClickListener(v -> {
+                onReplyClickListener.onReplyClicked(tweet.getTweetId());
+            });
         }
 
         @Override

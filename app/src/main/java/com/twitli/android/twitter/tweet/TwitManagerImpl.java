@@ -17,10 +17,7 @@ import com.twitli.android.twitter.data.Content;
 import com.twitli.android.twitter.data.SettingsRepository;
 import com.twitli.android.twitter.data.UserRepository;
 import org.apache.commons.lang3.math.NumberUtils;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
+import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -61,13 +58,32 @@ public class TwitManagerImpl implements TwitManager {
     }
 
     @Override
+    public void reply(String string, Long replyToId){
+        tweetIt(string,replyToId);
+    }
+
+    @Override
     public void tweet(String string) {
+        tweetIt(string, null);
+     }
 
-        Log.d(LOGTAG, "status " + string);
-
+    private void tweetIt(String string, Long replyToId) {
         es.execute(() -> {
             try {
-                twitter.updateStatus(string.length() > 280 ? string.substring(0, 280) : string);
+                String twitString = string.length() > 280 ? string.substring(0, 280) : string;
+                if (twitString.length() > 270) {
+                    twitString = twitString.substring(0, twitString.lastIndexOf(" "));
+                    if (twitString.length() < 275) {
+                        twitString += " ...";
+                    }
+                }
+                StatusUpdate statusUpdate = new StatusUpdate(twitString);
+                if(replyToId !=null){
+                    statusUpdate.setInReplyToStatusId(replyToId);
+                }
+
+                twitter.updateStatus(statusUpdate);
+                Log.d(LOGTAG, "status " + twitString);
             } catch (TwitterException e) {
                 int statusCode = e.getStatusCode();
                 if (statusCode == 403) {
@@ -79,6 +95,7 @@ public class TwitManagerImpl implements TwitManager {
             }
         });
     }
+
 
     @Override
     public void createAccessToken(String accessTokenVerifier) {
@@ -100,7 +117,6 @@ public class TwitManagerImpl implements TwitManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -116,5 +132,10 @@ public class TwitManagerImpl implements TwitManager {
     @Override
     public User verifyCredentials() throws TwitterException {
         return twitter.verifyCredentials();
+    }
+
+    @Override
+    public void like(Long tweetId) {
+
     }
 }

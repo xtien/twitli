@@ -16,6 +16,8 @@ public interface TwitManager {
 
     void tweet(Content content);
 
+    void reply(String string, Long replyToId);
+
     void tweet(String toString);
 
     void createAccessToken(String verifier);
@@ -23,4 +25,6 @@ public interface TwitManager {
     RequestToken createRequestToken() throws TwitterException;
 
     User verifyCredentials() throws TwitterException;
+
+    void like(Long tweetId);
 }
