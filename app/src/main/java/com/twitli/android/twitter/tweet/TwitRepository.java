@@ -57,7 +57,7 @@ public class TwitRepository {
             Log.e(LOGTAG, "Twitter error " +e.getExceptionCode() + " " +  e.getMessage());
         }
         for (Status status : tweets) {
-            twitDao.store(status.getId(), status.getUser().getName(), status.getUser().getScreenName(), status.getCreatedAt().getTime(), status.getText());
+            twitDao.store(status.getId(), status.getUser().getName(), status.getUser().getScreenName(), status.getCreatedAt().getTime(), status.getText(), status.isFavorited(), status.getFavoriteCount());
         }
     }
     public LiveData<List<Tweet>> getTweets() {

@@ -22,8 +22,8 @@ public interface TwitDao {
     @Query("select * from twit_table where tweet_id = :id")
     LiveData<Tweet> getTweet(int id);
 
-    @Query("replace into twit_table ('tweet_id','name', 'screen_name', 'time', 'text') values (:id, :name, :screenName, :time, :text)")
-    void store(long id, String name, String screenName, long time, String text);
+    @Query("replace into twit_table ('tweet_id','name', 'screen_name', 'time', 'text', 'liked', 'number_of_likes') values (:id, :name, :screenName, :time, :text, :liked, :numberOfLikes)")
+    void store(long id, String name, String screenName, long time, String text, boolean liked, int numberOfLikes);
 
     @Query("delete from twit_table where time < :timestamp")
     void cleanUp(long timestamp);

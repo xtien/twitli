@@ -57,22 +57,36 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="reply"
-                style="@style/status_id"
+                style="@style/status_icon"
                 android:id="@+id/icon_reply"/>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/status_icon"
+                    android:text="like"
+                    android:id="@+id/icon_like"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    style="@style/status_icon"
+                    android:id="@+id/number_of_likes"/>
+        </LinearLayout>
 
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="@style/status_id"
-                android:text="like"
-                android:id="@+id/icon_like"/>
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/status_id"
-                 android:id="@+id/icon_none"/>
+                android:id="@+id/icon_none"/>
 
     </LinearLayout>
 

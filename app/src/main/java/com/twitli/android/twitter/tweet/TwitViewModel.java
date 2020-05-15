@@ -25,4 +25,7 @@ public class TwitViewModel extends AndroidViewModel {
         repository.clear();
     }
 
+    public void loadTweets() {
+        repository.loadTweets();
+    }
 }

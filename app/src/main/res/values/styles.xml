@@ -33,6 +33,10 @@
         <item name="android:textColor">@color/tweet_id</item>
     </style>
 
+    <style name="status_icon" parent="status_id">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
     <style name="version" parent="text">
         <item name="android:textSize">@dimen/version_size</item>
     </style>

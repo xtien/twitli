@@ -71,7 +71,7 @@ public class TwitManagerImpl implements TwitManager {
         es.execute(() -> {
             try {
                 String twitString = string.length() > 280 ? string.substring(0, 280) : string;
-                if (twitString.length() > 270) {
+                if (twitString.length() > 280) {
                     twitString = twitString.substring(0, twitString.lastIndexOf(" "));
                     if (twitString.length() < 275) {
                         twitString += " ...";
@@ -136,6 +136,10 @@ public class TwitManagerImpl implements TwitManager {
 
     @Override
     public void like(Long tweetId) {
-
+        try {
+            twitter.createFavorite(tweetId);
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -18,7 +18,11 @@ import com.twitli.android.twitter.R;
 import com.twitli.android.twitter.service.TwitService;
 import com.twitli.android.twitter.tweet.TwitFragment;
 import com.twitli.android.twitter.tweet.TwitManager;
+import com.twitli.android.twitter.tweet.TwitRepository;
 import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.User;
+import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 import javax.inject.Inject;
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOGTAG = MainActivity.class.getSimpleName();
     private TwitService twitService;
     private ExecutorService es = Executors.newCachedThreadPool();
+    private long tweetLoadTime = 120000l;
+    RequestToken requestToken = null;
 
     @Inject
     public TwitManager twitManager;
@@ -43,42 +49,66 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
+        viewPager = findViewById(R.id.viewpager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragment(TwitFragment.newInstance());
+        pagerAdapter.addFragment(SettingsFragment.newInstance());
+        viewPager.setAdapter(pagerAdapter);
+
         ((MyApplication) getApplicationContext()).appComponent.inject(this);
 
         Intent icycle = new Intent(this, TwitService.class);
         bindService(icycle, connection, Context.BIND_AUTO_CREATE);
 
-        String accessToken = prefs.getString("access_token", null);
-        String accessTokenVerifier = prefs.getString("access_token_verifier", null);
-        String accesTokenSecret = prefs.getString("access_token_secret", null);
+        es.execute(() -> {
 
-        if (accessTokenVerifier != null && accesTokenSecret == null) {
+            String accessToken = prefs.getString("access_token", null);
+            String accessTokenVerifier = prefs.getString("access_token_verifier", null);
+            String accesTokenSecret = prefs.getString("access_token_secret", null);
 
-            es.execute(() -> {
+            if (accessToken != null && accesTokenSecret !=null) {
+                try {
+                    TwitterFactory.getSingleton().verifyCredentials();
+
+                    if (prefs.getLong("last_tweets_loaded", 0l) < System.currentTimeMillis() - tweetLoadTime) {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putLong("last_tweet_load", System.currentTimeMillis());
+                        editor.commit();
+                        new TwitRepository(getApplication()).loadTweets();
+                    }
+
+                } catch (TwitterException e) {
+                    if (e.getStatusCode() == TwitterException.UNAUTHORIZED) {
+                        accessToken = null;
+                        accesTokenSecret = null;
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("access_token", null);
+                        editor.putString("access_token_verifier", null);
+                        editor.putString("access_token_secret", null);
+                        editor.commit();
+                    }
+                }
+            }
+
+            if (accessTokenVerifier != null && accesTokenSecret == null) {
+
                 twitManager.createAccessToken(accessTokenVerifier);
-            });
 
-        } else if (accessToken == null) {
+            } else if (accessToken == null) {
 
-            es.execute(() -> {
-
-                RequestToken requestToken = null;
                 try {
                     requestToken = twitManager.createRequestToken();
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
 
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.getAuthorizationURL()));
-                startActivity(browserIntent);
-            });
-        }
-
-        viewPager = findViewById(R.id.viewpager);
-        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragment(TwitFragment.newInstance());
-        pagerAdapter.addFragment(SettingsFragment.newInstance());
-        viewPager.setAdapter(pagerAdapter);
+                runOnUiThread(() -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.getAuthorizationURL()));
+                    startActivity(browserIntent);
+                    finish();
+                });
+            }
+        });
     }
 
     private ServiceConnection connection = new ServiceConnection() {

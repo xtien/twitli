@@ -12,4 +12,5 @@
     <color name="tweet_background">#FFFFFF</color>
     <color name="text_count">#A0A0A0</color>
     <color name="text_count_full">#FF0000</color>
+    <color name="gray">#606060</color>
 </resources>

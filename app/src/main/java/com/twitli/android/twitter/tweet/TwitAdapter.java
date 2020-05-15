@@ -36,6 +36,7 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public interface OnLikeClickListener {
         void onLikeClicked(Long tweetId);
     }
+
     public interface OnReplyClickListener {
         void onReplyClicked(Long tweetId);
     }
@@ -43,6 +44,7 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     public void setOnLikeClickListener(OnLikeClickListener listener) {
         this.onLikeClickListener = listener;
     }
+
     public void setOnReplyClickListener(OnReplyClickListener listener) {
         this.onReplyClickListener = listener;
     }
@@ -78,11 +80,21 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     public void setTweets(List<Tweet> tweets) {
-        this.tweets.addAll(tweets);
+        this.tweets = tweets;
+
+        Collections.sort(tweets, new Comparator<Tweet>() {
+
+            @Override
+            public int compare(Tweet o1, Tweet o2) {
+                return (int) (Long.parseLong(o2.getTime()) - Long.parseLong(o1.getTime()));
+            }
+        });
+
     }
 
     private class ViewHolder extends BaseViewHolder {
 
+        TextView numberOfLikes;
         TextView twitterIdView;
         TextView timeView;
         TextView nameView;
@@ -98,12 +110,20 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             tweetTextView = view.findViewById(R.id.tweet_text);
             like = view.findViewById(R.id.icon_like);
             reply = view.findViewById(R.id.icon_reply);
+            numberOfLikes = view.findViewById(R.id.number_of_likes);
         }
 
         @Override
         public void onBind(int position) {
             super.onBind(position);
             Tweet tweet = tweets.get(position);
+            if (tweet.isLiked()) {
+                like.setTextColor(ContextCompat.getColor(context, R.color.tweet_highlight));
+            } else {
+                like.setTextColor(ContextCompat.getColor(context, R.color.tweet_text));
+            }
+            numberOfLikes.setText(tweet.getLikes() > 0 ? Integer.toString(tweet.getLikes()) : "");
+
             twitterIdView.setText(tweet.getScreenName());
             if (NumberUtils.isCreatable(tweet.getTime())) {
                 Date date = new Date(Long.parseLong(tweet.getTime()));
@@ -115,6 +135,8 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             }
             nameView.setText(String.valueOf(tweet.getName()));
             tweetTextView.setText(String.valueOf(tweet.getText()));
+            String text = tweet.getText().toString();
+            int len = text.length();
             if (tweet.getText().length() == 280) {
                 tweetTextView.setTextColor(ContextCompat.getColor(context, R.color.tweet_highlight));
             } else {

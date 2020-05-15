@@ -25,6 +25,15 @@ public class Tweet {
     @ColumnInfo(name = "text")
     private String text;
 
+    @ColumnInfo(name = "liked")
+    private boolean liked;
+
+    @ColumnInfo(name = "number_of_likes")
+    private int likes;
+
+    public Tweet() {
+    }
+
     public String getName() {
         return name;
     }
@@ -64,5 +73,21 @@ public class Tweet {
 
     public void setTweetId(@NonNull Long tweetId) {
         this.tweetId = tweetId;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 }

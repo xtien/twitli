@@ -1,7 +1,10 @@
 package com.twitli.android.twitter.tweet;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,14 +21,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickListener, TwitAdapter.OnReplyClickListener {
 
@@ -38,6 +43,7 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
     private Button submitButton;
     private LinearLayout replyView;
     private Button replyButton;
+    ExecutorService es = Executors.newCachedThreadPool();
 
     @Inject
     public TwitManager twitManager;
@@ -45,10 +51,11 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
     private EditText tweetText;
     private boolean isTweeting = false;
     private TextView textLengthView;
-    private int maxTweetLength = 280;
-    private List tweets = new ArrayList();
+    private Map<Long, Tweet> tweets = new HashMap<>();
     private EditText replyText;
     private TextView replyLengthView;
+    private long tweetLoadTime = 0l;
+    private SwipeRefreshLayout swipeContainer;
 
     public static Fragment newInstance() {
         return new TwitFragment();
@@ -73,6 +80,7 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
         replyText = view.findViewById(R.id.reply_text);
         textLengthView = view.findViewById(R.id.text_length);
         replyLengthView = view.findViewById(R.id.reply_text_length);
+        swipeContainer = view.findViewById(R.id.swiperefresh);
     }
 
     @Override
@@ -84,11 +92,14 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
         isTweeting = false;
 
         twitViewModel = new ViewModelProvider(this).get(TwitViewModel.class);
-        twitViewModel.getTweets().observe(getActivity(), contacts -> {
-            adapter.setTweets(contacts);
+        twitViewModel.getTweets().observe(getActivity(), tweets -> {
+            for(Tweet tweet : tweets){
+                this.tweets.put(tweet.getTweetId(), tweet);
+            }
+
+            adapter.setTweets(new ArrayList<>(this.tweets.values()));
             adapter.notifyDataSetChanged();
-            this.tweets.addAll(contacts);
-        });
+         });
 
         adapter = new TwitAdapter();
         adapter.setOnLikeClickListener(this);
@@ -116,7 +127,22 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
             }
         });
 
+        swipeContainer.setOnRefreshListener(() -> es.execute(() -> {
+            twitViewModel.loadTweets();
+            swipeContainer.setRefreshing(false);
+        }));
+
         submitButton.setOnClickListener(v -> doEdit(tweetView, tweetText));
+
+//        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+//        if(prefs.getLong("last_tweets_loaded", 0l) < System.currentTimeMillis() - tweetLoadTime){
+//            es.execute(() -> {
+//                twitViewModel.loadTweets();
+//            });
+//            Editor editor = prefs.edit();
+//            editor.putLong("last_tweet_load", System.currentTimeMillis());
+//            editor.commit();
+//        }
     }
 
     private void doEdit(LinearLayout view, TextView textview){
@@ -163,7 +189,7 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
 
     @Override
     public void onLikeClicked(Long tweetId) {
-        twitManager.like(tweetId);
+        es.execute(() -> twitManager.like(tweetId));
     }
 
     @Override
