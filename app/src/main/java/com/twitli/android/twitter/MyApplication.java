@@ -32,5 +32,4 @@ public class MyApplication extends Application {
     public void setComponent(AppComponent component) {
         this.appComponent = component;
     }
-
 }

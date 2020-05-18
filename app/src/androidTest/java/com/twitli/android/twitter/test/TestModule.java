@@ -8,8 +8,12 @@ import dagger.Module;
 import dagger.Provides;
 import org.mockito.Mockito;
 
+import javax.inject.Singleton;
+
 @Module
 public class TestModule {
+
+    private TwitManager twitManager;
 
     @Provides
     public WikiPageManager provideWikiPageManager() {
@@ -18,7 +22,10 @@ public class TestModule {
 
     @Provides
     public TwitManager provideTwitManager() {
-        return Mockito.mock(TwitManager.class);
+        if(twitManager == null){
+            twitManager = Mockito.mock(TwitManager.class);
+        }
+        return twitManager;
     }
 
 }
