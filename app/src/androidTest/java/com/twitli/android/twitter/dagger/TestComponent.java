@@ -1,7 +1,7 @@
-package com.twitli.android.twitter.test;
+package com.twitli.android.twitter.dagger;
 
+import com.twitli.android.twitter.TestSwipe;
 import com.twitli.android.twitter.TestTweet;
-import com.twitli.android.twitter.dagger.AppComponent;
 import com.twitli.android.twitter.ui.MainActivity;
 import dagger.Component;
 
@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 public interface TestComponent extends AppComponent{
 
     void inject(TestTweet testTweet);
+    void inject(TestSwipe testSwipe);
     void inject(MainActivity mainActivity);
 
 }

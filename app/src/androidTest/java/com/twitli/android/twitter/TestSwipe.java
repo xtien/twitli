@@ -18,15 +18,13 @@ import twitter4j.User;
 import javax.inject.Inject;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static org.hamcrest.core.IsNot.not;
 import static org.mockito.Mockito.*;
 
-public class TestTweet {
+public class TestSwipe {
 
     @Inject
     TwitManager twitManager;
@@ -54,30 +52,10 @@ public class TestTweet {
     }
 
     @Test
-    public void tweetButton() throws TwitterException {
-        onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
+    public void swipe() throws TwitterException {
+        onView(withId(R.id.main)).perform(swipeLeft());
 
-        verify(twitManager, times(1)).verifyCredentials();
+        onView(withId(R.id.version)).check(matches(withText("2.0")));
     }
 
-    @Test
-    public void showWindow()  {
-        onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.tweet_button)).perform(click());
-        onView(withId(R.id.tweet)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.tweet_button)).perform(click());
-        onView(withId(R.id.tweet)).check(matches(not(isDisplayed())));
-    }
-
-    @Test
-    public void typeText()  {
-        onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.tweet_button)).perform(click());
-        onView(withId(R.id.tweet)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.tweet_text)).perform(replaceText("test text"));
-        onView(withId(R.id.tweet_text)).check(matches(withText("test text")));
-    }
 }

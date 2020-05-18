@@ -1,14 +1,10 @@
-package com.twitli.android.twitter.test;
+package com.twitli.android.twitter.dagger;
 
-import com.twitli.android.twitter.dagger.AppModule;
 import com.twitli.android.twitter.tweet.TwitManager;
 import com.twitli.android.twitter.wiki.WikiPageManager;
-import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
 import org.mockito.Mockito;
-
-import javax.inject.Singleton;
 
 @Module
 public class TestModule {

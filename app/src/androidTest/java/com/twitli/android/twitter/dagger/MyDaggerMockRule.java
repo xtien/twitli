@@ -1,4 +1,4 @@
-package com.twitli.android.twitter.test;
+package com.twitli.android.twitter.dagger;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.twitli.android.twitter.MyApplication;
