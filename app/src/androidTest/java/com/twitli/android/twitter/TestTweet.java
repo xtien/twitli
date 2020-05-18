@@ -3,11 +3,8 @@ package com.twitli.android.twitter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import com.twitli.android.twitter.dagger.AppComponent;
-import com.twitli.android.twitter.dagger.AppModule;
+import com.twitli.android.twitter.test.DaggerTestComponent;
 import com.twitli.android.twitter.test.MyDaggerMockRule;
 import com.twitli.android.twitter.test.TestComponent;
 import com.twitli.android.twitter.test.TestModule;
@@ -17,9 +14,10 @@ import it.cosenonjaviste.daggermock.DaggerMockRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import twitter4j.TwitterException;
 import twitter4j.User;
+
+import javax.inject.Inject;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -30,7 +28,9 @@ import static org.mockito.Mockito.when;
 
 public class TestTweet {
 
-    TwitManager twitter;
+    @Inject
+    TwitManager twitManager;
+
     User user;
 
     @Rule
@@ -40,22 +40,16 @@ public class TestTweet {
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class, false, false);
 
     @Before
-    public void setup() {
-        SharedPreferences prefs = getInstrumentation().getTargetContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = prefs.edit();
-        edit.putString("access_token", "123");
-        edit.putString("access_token_secret", "123");
-        edit.commit();
+    public void setup() throws TwitterException {
+        DaggerTestComponent.builder().testModule(new TestModule()).build().inject(this);
+        when(twitManager.verifyCredentials()).thenReturn(user);
 
+        activityRule.launchActivity(new Intent());
     }
 
     @Test
     public void tweetbutton() throws TwitterException {
 
-        when(twitter.verifyCredentials()).thenReturn(user);
-
-        activityRule.launchActivity(new Intent());
-
-        onView(withId(R.id.tweet)).check(matches(isDisplayed()));
+        onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
     }
 }

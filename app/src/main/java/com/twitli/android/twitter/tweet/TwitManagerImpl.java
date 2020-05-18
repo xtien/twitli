@@ -142,4 +142,9 @@ public class TwitManagerImpl implements TwitManager {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public List<Status> getHomeTimeline(Paging paging) throws TwitterException {
+            return twitter.getHomeTimeline(paging);
+    }
 }

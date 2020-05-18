@@ -25,15 +25,17 @@ public class TwitRepository {
 
     private static final String LOGTAG = TwitRepository.class.getSimpleName();
     private static final long ONEHOUR = 3600000l;
+    private final TwitManager twitManager;
     private TwitDao twitDao;
     private LiveData<List<Tweet>> tweets;
     ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
 
     @Inject
-    public TwitRepository(Application application) {
+    public TwitRepository(Application application, TwitManager twitManager) {
         AppDatabase db = AppDatabase.getDatabase(application);
         twitDao = db.twitDao();
         tweets = twitDao.getTweets();
+        this.twitManager = twitManager;
 
         es.scheduleAtFixedRate(() -> {
                 loadTweets();
@@ -47,12 +49,11 @@ public class TwitRepository {
     }
 
     public void loadTweets()  {
-        Twitter twitter = TwitterFactory.getSingleton();
         Paging paging = new Paging();
         paging.setCount(20);
         List<Status> tweets = new ArrayList<>();
         try{
-            tweets = twitter.getHomeTimeline(paging);
+            tweets = twitManager.getHomeTimeline(paging);
         } catch (TwitterException e){
             Log.e(LOGTAG, "Twitter error " +e.getExceptionCode() + " " +  e.getMessage());
         }

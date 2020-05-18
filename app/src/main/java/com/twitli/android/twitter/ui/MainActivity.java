@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putLong("last_tweet_load", System.currentTimeMillis());
                         editor.commit();
-                        new TwitRepository(getApplication()).loadTweets();
+                        new TwitRepository(getApplication(), twitManager).loadTweets();
                     }
 
                 } catch (TwitterException e) {

@@ -11,9 +11,9 @@ public class TwitViewModel extends AndroidViewModel {
     private final TwitRepository repository;
     private final LiveData<List<Tweet>> tweets;
 
-    public TwitViewModel(Application application) {
+    public TwitViewModel(Application application, TwitManager twitManager) {
         super(application);
-        repository = new TwitRepository(application);
+        repository = new TwitRepository(application, twitManager);
         tweets = repository.getTweets();
     }
 

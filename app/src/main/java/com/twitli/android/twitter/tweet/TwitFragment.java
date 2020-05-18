@@ -25,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.twitli.android.twitter.MyApplication;
 import com.twitli.android.twitter.R;
+import com.twitli.android.twitter.dagger.TwitViewModelFactory;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.inject.Inject;
@@ -91,7 +92,9 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
 
         isTweeting = false;
 
-        twitViewModel = new ViewModelProvider(this).get(TwitViewModel.class);
+        TwitViewModelFactory factory = new TwitViewModelFactory(getActivity().getApplication(), twitManager);
+
+        twitViewModel = new ViewModelProvider(this, factory).get(TwitViewModel.class);
         twitViewModel.getTweets().observe(getActivity(), tweets -> {
             for(Tweet tweet : tweets){
                 this.tweets.put(tweet.getTweetId(), tweet);

@@ -98,7 +98,7 @@ public class TwitService extends LifecycleService {
         contentRepository = new ContentRepository((getApplication()));
         settingsRepository = new SettingsRepository(getApplication());
         userRepository = new UserRepository(getApplication());
-        twitRepository = new TwitRepository(getApplication());
+        twitRepository = new TwitRepository(getApplication(), twitManager);
 
         es.execute(() -> {
             year = userRepository.getYear();

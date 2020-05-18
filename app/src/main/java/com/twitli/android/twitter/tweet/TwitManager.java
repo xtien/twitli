@@ -8,9 +8,13 @@
 package com.twitli.android.twitter.tweet;
 
 import com.twitli.android.twitter.data.Content;
+import twitter4j.Paging;
+import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.auth.RequestToken;
+
+import java.util.List;
 
 public interface TwitManager {
 
@@ -27,4 +31,6 @@ public interface TwitManager {
     User verifyCredentials() throws TwitterException;
 
     void like(Long tweetId);
+
+    List<Status> getHomeTimeline(Paging paging) throws TwitterException;
 }
