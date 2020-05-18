@@ -13,10 +13,10 @@
     <string name="intro1">Twitli is a simple app that looks at your number of followers and tweets a line from wikipedia using the number of followers as a year.</string>
     <string name="intro2">For example, if your number of followers goes from 1599 to 1600, it posts a line on an event that happened in 1600. If you have more followers than 2020, it takes the number modulo 2020.</string>
     <string name="intro3">In the app, you can type a year, then Twitli posts to Twitter using that year.</string>
-    <string name="intro4">This is all of no use, I made it after a twitter friend told me he always looks up a year in wikipedia when his number of followers has changed. </string>
     <string name="intro5">In order to work, Twitli needs to login in your twitter app. It shows a login page and authorize button. After authorizing, please choose \"Twitli\" as the app to open the resulting url. </string>
     <string name="intro6">In twitter view, swipe left for settings.</string>
     <string name="reply">Reply</string>
     <string name="tweet">Tweet</string>
+    <string name="like">like</string>
 
 </resources>

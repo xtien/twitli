@@ -3,8 +3,7 @@
 
     <dimen name="text_size">18dp</dimen>
     <dimen name="title_size">24dp</dimen>
-    <dimen name="subtitle_size">20dp</dimen>
-    <dimen name="version_size">12dp</dimen>
+     <dimen name="version_size">12dp</dimen>
 
     <dimen name="status_text_size">16dp</dimen>
     <dimen name="status_text_size_small">12dp</dimen>

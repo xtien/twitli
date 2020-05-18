@@ -32,7 +32,7 @@ public class AuthCallbackActivity extends AppCompatActivity {
         SharedPreferences.Editor edit = getSharedPreferences("prefs", MODE_PRIVATE).edit();
         edit.putString("access_token", token);
         edit.putString("access_token_verifier", verifier);
-        edit.commit();
+        edit.apply();
 
         startActivity(new Intent(this, MainActivity.class));
     }

@@ -141,7 +141,7 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
 //            });
 //            Editor editor = prefs.edit();
 //            editor.putLong("last_tweet_load", System.currentTimeMillis());
-//            editor.commit();
+//            editor.apply();
 //        }
     }
 

@@ -53,7 +53,7 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             format = FastDateFormat.getInstance("MM-dd kk:mm", TimeZone.getDefault(), Locale.getDefault());
         } else {
-            sFormat = new SimpleDateFormat("MM-dd kk:mm");
+            sFormat = new SimpleDateFormat("MM-dd kk:mm", Locale.getDefault());
         }
     }
 

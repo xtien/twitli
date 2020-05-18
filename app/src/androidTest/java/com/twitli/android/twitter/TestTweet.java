@@ -45,7 +45,7 @@ public class TestTweet {
         SharedPreferences.Editor edit = prefs.edit();
         edit.putString("access_token", "123");
         edit.putString("access_token_secret", "123");
-        edit.commit();
+        edit.apply();
 
         activityRule.launchActivity(new Intent());
         TestComponent appComponent = (TestComponent)((MyApplication) activityRule.getActivity().getApplication()).appComponent;

@@ -68,7 +68,7 @@ public class SettingsFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
                 editor.putInt("tweet_interval", position);
-                editor.commit();
+                editor.apply();
             }
 
             @Override

@@ -30,7 +30,7 @@ public class IntroActivity extends AppCompatActivity {
             (findViewById(R.id.submit)).setOnClickListener(v -> {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("inits", prefs.getInt("inits", 0) + 1);
-                editor.commit();
+                editor.apply();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             });

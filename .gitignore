@@ -87,6 +87,5 @@ lint/tmp/
 
 gradle/
 gradlew
-gradlew.bat
 
 app/src/main/res/values/apistrings.xml

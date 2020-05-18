@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     if (prefs.getLong("last_tweets_loaded", 0l) < System.currentTimeMillis() - tweetLoadTime) {
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putLong("last_tweet_load", System.currentTimeMillis());
-                        editor.commit();
+                        editor.apply();
                         new TwitRepository(getApplication(), twitManager).loadTweets();
                     }
 
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("access_token", null);
                         editor.putString("access_token_verifier", null);
                         editor.putString("access_token_secret", null);
-                        editor.commit();
+                        editor.apply();
                     }
                 }
             }

@@ -111,7 +111,7 @@ public class TwitManagerImpl implements TwitManager {
                 editor.putString("access_token_secret", accessToken.getTokenSecret());
                 editor.putString("access_token", accessToken.getToken());
                 editor.putLong("user_id", accessToken.getUserId());
-                editor.commit();
+                editor.apply();
             }
 
         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class TwitManagerImpl implements TwitManager {
         SharedPreferences.Editor editor = application.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
         editor.putString("request_token", requestToken.getToken());
         editor.putString("request_token_secret", requestToken.getTokenSecret());
-        editor.commit();
+        editor.apply();
         return requestToken;
     }
 
