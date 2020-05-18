@@ -107,7 +107,7 @@ public class TwitAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             twitterIdView = view.findViewById(R.id.twitter_id);
             timeView = view.findViewById(R.id.time);
             nameView = view.findViewById(R.id.twitter_name);
-            tweetTextView = view.findViewById(R.id.tweet_text);
+            tweetTextView = view.findViewById(R.id.status_text);
             like = view.findViewById(R.id.icon_like);
             reply = view.findViewById(R.id.icon_reply);
             numberOfLikes = view.findViewById(R.id.number_of_likes);

@@ -3,6 +3,12 @@ package com.twitli.android.twitter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import com.twitli.android.twitter.dagger.MyDaggerMockRule;
 import com.twitli.android.twitter.dagger.TestComponent;
@@ -19,14 +25,13 @@ import javax.inject.Inject;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static org.hamcrest.core.IsNot.not;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-public class TestTweet {
+public class ScenarioTest {
 
     @Inject
     TwitManager twitManager;
@@ -54,30 +59,16 @@ public class TestTweet {
     }
 
     @Test
-    public void tweetButton() throws TwitterException {
-        onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
+    public void clickingButton_shouldChangeMessage() {
 
-        verify(twitManager, times(1)).verifyCredentials();
-    }
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-    @Test
-    public void showWindow()  {
-        onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.tweet_button)).perform(click());
-        onView(withId(R.id.tweet)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.tweet_button)).perform(click());
-        onView(withId(R.id.tweet)).check(matches(not(isDisplayed())));
-    }
-
-    @Test
-    public void typeText()  {
         onView(withId(R.id.tweet_button)).check(matches(isDisplayed()));
         onView(withId(R.id.tweet_button)).perform(click());
         onView(withId(R.id.tweet)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.status_text)).perform(replaceText("test text"));
-        onView(withId(R.id.status_text)).check(matches(withText("test text")));
+        onView(ViewMatchers.withId(R.id.status_text)).perform(new ViewAction[]{ViewActions.typeText("name")});
+        scenario.recreate();
+        onView(ViewMatchers.withId(R.id.status_text)).check(ViewAssertions.matches(ViewMatchers.withText("name")));
     }
 }

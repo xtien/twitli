@@ -1,10 +1,7 @@
 package com.twitli.android.twitter.tweet;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -77,7 +74,7 @@ public class TwitFragment extends Fragment implements TwitAdapter.OnLikeClickLis
         replyButton = view.findViewById(R.id.submit_reply);
         tweetView = view.findViewById(R.id.tweet);
         replyView = view.findViewById(R.id.reply);
-        tweetText = view.findViewById(R.id.tweet_text);
+        tweetText = view.findViewById(R.id.status_text);
         replyText = view.findViewById(R.id.reply_text);
         textLengthView = view.findViewById(R.id.text_length);
         replyLengthView = view.findViewById(R.id.reply_text_length);

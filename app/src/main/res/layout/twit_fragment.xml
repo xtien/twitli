@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="top"
-                    android:id="@+id/tweet_text"
+                    android:id="@+id/status_text"
                     style="@style/text"
                     />
 
