@@ -66,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
             String accessTokenVerifier = prefs.getString("access_token_verifier", null);
             String accesTokenSecret = prefs.getString("access_token_secret", null);
 
-            if (accessToken != null && accesTokenSecret !=null) {
+            if (accessToken != null && accesTokenSecret != null) {
                 try {
-                    TwitterFactory.getSingleton().verifyCredentials();
+                    twitManager.verifyCredentials();
 
                     if (prefs.getLong("last_tweets_loaded", 0l) < System.currentTimeMillis() - tweetLoadTime) {
                         SharedPreferences.Editor editor = prefs.edit();

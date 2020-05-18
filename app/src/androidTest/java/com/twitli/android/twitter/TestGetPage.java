@@ -33,12 +33,12 @@ public class TestGetPage {
         WikiPageManager wikiPageManager = new WikiPageManagerImpl();
         wikiPageManager.getPage("1");
 
-        Content content = contentRepository.getFirst(1);
+        Content content = contentRepository.getFirst("1");
         Assert.assertNotNull(content);
         Assert.assertTrue(content.getText().contains("Aarde"));
         contentRepository.setDone(content.getId());
 
-        content = contentRepository.getFirst(1);
+        content = contentRepository.getFirst("1");
         Assert.assertNotNull(content);
         Assert.assertTrue(content.getText().contains("China"));
     }

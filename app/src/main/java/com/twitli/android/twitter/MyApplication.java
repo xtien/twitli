@@ -8,6 +8,7 @@
 package com.twitli.android.twitter;
 
 import android.app.Application;
+import androidx.annotation.VisibleForTesting;
 import com.twitli.android.twitter.dagger.AppComponent;
 import com.twitli.android.twitter.dagger.DaggerAppComponent;
 
@@ -26,4 +27,10 @@ public class MyApplication extends Application {
     public static Application getApplication() {
         return instance;
     }
+
+    @VisibleForTesting
+    public void setComponent(AppComponent component) {
+        this.appComponent = component;
+    }
+
 }
