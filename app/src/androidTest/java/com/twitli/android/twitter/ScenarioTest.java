@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
@@ -12,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import com.twitli.android.twitter.dagger.MyDaggerMockRule;
 import com.twitli.android.twitter.dagger.TestComponent;
-import com.twitli.android.twitter.tweet.TwitManager;
 import com.twitli.android.twitter.ui.MainActivity;
 import it.cosenonjaviste.daggermock.DaggerMockRule;
 import org.junit.Before;
@@ -53,7 +51,7 @@ public class ScenarioTest {
         edit.apply();
 
         activityRule.launchActivity(new Intent());
-        TestComponent appComponent = (TestComponent)((MyApplication) activityRule.getActivity().getApplication()).appComponent;
+        TestComponent appComponent = (TestComponent)((MyApplication) activityRule.getActivity().getApplication()).getAppComponent();
         appComponent.inject(this);
         when(twitManager.verifyCredentials()).thenReturn(user);
     }

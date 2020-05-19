@@ -14,7 +14,7 @@ public class TwitJobService extends JobService {
         Log.d(LOGTAG, "JobService started");
         Intent service = new Intent(getApplicationContext(), TwitService.class);
         getApplicationContext().startService(service);
-        Util.scheduleJob(getApplicationContext());
+        Util.Companion.scheduleJob(getApplicationContext());
         return true;
     }
 

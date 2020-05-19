@@ -8,10 +8,6 @@
 package com.twitli.android.twitter;
 
 import androidx.test.core.app.ApplicationProvider;
-import com.twitli.android.twitter.data.Content;
-import com.twitli.android.twitter.data.ContentRepository;
-import com.twitli.android.twitter.wiki.WikiPageManager;
-import com.twitli.android.twitter.wiki.WikiPageManagerImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

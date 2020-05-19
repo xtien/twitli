@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import androidx.test.rule.ActivityTestRule;
 import com.twitli.android.twitter.dagger.MyDaggerMockRule;
 import com.twitli.android.twitter.dagger.TestComponent;
-import com.twitli.android.twitter.tweet.TwitManager;
 import com.twitli.android.twitter.ui.MainActivity;
 import it.cosenonjaviste.daggermock.DaggerMockRule;
 import org.junit.Before;
@@ -48,7 +47,7 @@ public class TestTweet {
         edit.apply();
 
         activityRule.launchActivity(new Intent());
-        TestComponent appComponent = (TestComponent)((MyApplication) activityRule.getActivity().getApplication()).appComponent;
+        TestComponent appComponent = (TestComponent)((MyApplication) activityRule.getActivity().getApplication()).getAppComponent();
         appComponent.inject(this);
         when(twitManager.verifyCredentials()).thenReturn(user);
     }

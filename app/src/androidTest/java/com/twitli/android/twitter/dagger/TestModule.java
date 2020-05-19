@@ -1,7 +1,5 @@
 package com.twitli.android.twitter.dagger;
 
-import com.twitli.android.twitter.tweet.TwitManager;
-import com.twitli.android.twitter.wiki.WikiPageManager;
 import dagger.Module;
 import dagger.Provides;
 import org.mockito.Mockito;

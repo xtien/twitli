@@ -1,7 +1,6 @@
 package com.twitli.android.twitter.dagger;
 
 import androidx.test.platform.app.InstrumentationRegistry;
-import com.twitli.android.twitter.MyApplication;
 import it.cosenonjaviste.daggermock.DaggerMockRule;
 
 public class MyDaggerMockRule extends DaggerMockRule<TestComponent> {
