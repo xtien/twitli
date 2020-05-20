@@ -19,12 +19,14 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TwitRepository @Inject constructor(application: Application?, twitManager: TwitManager) {
+
     private val twitManager: TwitManager
     private val twitDao: TwitDao
     val tweets: LiveData<List<Tweet?>?>?
-    var es = Executors.newScheduledThreadPool(1)
+    var es = Executors.newScheduledThreadPool(1)!!
+
     fun create(tweet: Tweet?) {
-        AppDatabase.databaseWriteExecutor.execute({ twitDao.create(tweet) })
+        AppDatabase.databaseWriteExecutor.execute { twitDao.create(tweet) }
     }
 
     fun loadTweets() {
@@ -59,8 +61,8 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
     }
 
     init {
-        val db: AppDatabase = AppDatabase.getDatabase(application)
-        twitDao = db.twitDao()
+        val db: AppDatabase? = application?.let { AppDatabase.getDatabase(it) }
+        twitDao = db?.twitDao()!!
         tweets = twitDao.tweets
         this.twitManager = twitManager
         es.scheduleAtFixedRate({ loadTweets() }, 20, 120, TimeUnit.SECONDS)

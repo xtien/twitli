@@ -17,7 +17,7 @@ interface SettingsDao {
     fun insert(settings: MySettings?)
 
     @Query("select active from settings_table where settingsid = 0")
-    fun isActive(): LiveData<Boolean?>?
+    fun isActive(): LiveData<Boolean>
 
     @Query("update settings_table set active = :active where settingsid =0")
     fun setActive(active: Boolean)

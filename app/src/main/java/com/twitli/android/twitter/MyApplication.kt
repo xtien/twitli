@@ -9,6 +9,7 @@ package com.twitli.android.twitter
 import android.app.Application
 import androidx.annotation.VisibleForTesting
 import com.twitli.android.twitter.dagger.AppComponent
+import com.twitli.android.twitter.dagger.AppModule
 import com.twitli.android.twitter.dagger.DaggerAppComponent
 
 class MyApplication : Application() {
@@ -20,13 +21,5 @@ class MyApplication : Application() {
     @VisibleForTesting
     fun setComponent(component: AppComponent) {
         appComponent = component
-    }
-
-    companion object {
-        lateinit var application: Application
-    }
-
-    init {
-        application = this
     }
 }

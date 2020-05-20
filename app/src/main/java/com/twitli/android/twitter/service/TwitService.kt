@@ -73,7 +73,9 @@ class TwitService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         Log.d(LOGTAG, "TwitService started")
+
         (applicationContext as MyApplication).appComponent.inject(this)
+
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         currentYear = calendar[Calendar.YEAR]
@@ -85,7 +87,7 @@ class TwitService : LifecycleService() {
             year = userRepository!!.year
             Log.d(LOGTAG, "year = $year")
         }
-        userRepository!!.followersCount.observeForever { followers: Long? ->
+        userRepository!!.followersCount?.observeForever { followers: Long? ->
             Log.d(LOGTAG, if ("followers count is $followers" != null) java.lang.Long.toString(followers!!) else "null")
             if (followers != null && followers != 0L) {
                 year = (followers % currentYear).toInt()
@@ -93,7 +95,7 @@ class TwitService : LifecycleService() {
                 doWiki(year)
             }
         }
-        settingsRepository!!.isActive.observeForever { active: Boolean? ->
+        settingsRepository!!.isActive?.observeForever { active: Boolean? ->
             if (active != null) {
                 if (active) {
                     if (System.currentTimeMillis() - tweetedHistory > 900000L) {
@@ -105,12 +107,13 @@ class TwitService : LifecycleService() {
         }
         val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         intervals = Arrays.asList(*applicationContext.resources.getStringArray(R.array.tweet_interval))
-        settingsRepository!!.isActive.observeForever { active: Boolean ->
+        settingsRepository!!.isActive?.observeForever { active: Boolean? ->
             Log.d(LOGTAG, "active = " + this.active + " " + active)
             if (active != null) {
                 this@TwitService.active = active
             }
         }
+
         es.scheduleAtFixedRate({
             Log.d(LOGTAG, "long interval = " + getLongInterval(prefs.getInt("tweet_interval", 2)))
             if (count > getLongInterval(prefs.getInt("tweet_interval", 2)) - 0.1) {
@@ -144,13 +147,15 @@ class TwitService : LifecycleService() {
         twitManager!!.tweet(content)
     }
 
-    // userRepository.setFollowers(user.getFollowersCount());
     private val user: Int
         private get() = try {
             val user = twitManager!!.verifyCredentials()
-            userRepository!!.persist(user)
-            // userRepository.setFollowers(user.getFollowersCount());
-            user.followersCount
+            if (user != null) {
+                userRepository!!.persist(user)
+                user.followersCount
+            } else {
+                0
+            }
         } catch (e: TwitterException) {
             e.printStackTrace()
             1600

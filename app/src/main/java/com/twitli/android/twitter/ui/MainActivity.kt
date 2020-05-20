@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         pagerAdapter!!.addFragment(SettingsFragment.newInstance())
         val viewPager = findViewById(R.id.viewpager) as ViewPager
         viewPager.setAdapter(pagerAdapter)
-        (applicationContext as MyApplication).appComponent.inject(this)
+        (applicationContext as MyApplication).appComponent?.inject(this)
         val icycle = Intent(this, TwitService::class.java)
         bindService(icycle, connection, Context.BIND_AUTO_CREATE)
 

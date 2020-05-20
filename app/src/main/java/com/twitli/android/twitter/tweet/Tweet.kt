@@ -6,9 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "twit_table")
 class Tweet {
+
     @ColumnInfo(name = "tweet_id")
     @PrimaryKey
-    var tweetId: Long = null
+    var tweetId: Long? = null
 
     @ColumnInfo(name = "name")
     var name: String? = null

@@ -10,7 +10,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 
 class SettingsRepository(application: Application?) {
-    val isActive: LiveData<Boolean?>?
+
+    val isActive: LiveData<Boolean>
     private val settingsDao: SettingsDao
 
     fun setActive(isChecked: Boolean) {

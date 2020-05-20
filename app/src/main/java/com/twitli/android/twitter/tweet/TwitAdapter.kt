@@ -15,14 +15,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.data.BaseViewHolder
 import org.apache.commons.lang3.math.NumberUtils
 import org.apache.commons.lang3.time.FastDateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
+
     private var sFormat: SimpleDateFormat? = null
-    var tweets: List<Tweet> = ArrayList()
+    var list: List<Tweet> = ArrayList()
     var format: FastDateFormat? = null
     private var context: Context? = null
     private var onLikeClickListener: OnLikeClickListener? = null
@@ -57,13 +60,19 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return tweets.size
+        return list.size
     }
 
     fun setTweets(tweets: List<Tweet>) {
-        this.tweets = tweets
+        this.list = tweets
+
         Collections.sort(tweets, object : Comparator<Tweet?> {
-            override fun compare(o1: Tweet, o2: Tweet): Int {
+            override fun compare(o1: Tweet?, o2: Tweet?): Int {
+                if(o2 == null){
+                    return -1;
+                } else if (o1 == null){
+                    return 1;
+                }
                 return (o2.time!!.toLong() - o1.time!!.toLong()).toInt()
             }
         })
@@ -77,9 +86,11 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
         var tweetTextView: TextView
         var like: TextView
         var reply: TextView
-        fun onBind(position: Int) {
+
+        override fun onBind(position: Int) {
             super.onBind(position)
-            val tweet = tweets[position]
+
+            val tweet = list[position]
             if (tweet.isLiked) {
                 like.setTextColor(ContextCompat.getColor(context!!, R.color.tweet_highlight))
             } else {
@@ -108,7 +119,7 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
             reply.setOnClickListener { v: View? -> onReplyClickListener!!.onReplyClicked(tweet.tweetId) }
         }
 
-        protected fun clear() {
+        protected override fun clear() {
             twitterIdView.text = ""
             timeView.text = ""
             nameView.text = ""

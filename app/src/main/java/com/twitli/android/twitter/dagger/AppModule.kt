@@ -6,14 +6,21 @@
  */
 package com.twitli.android.twitter.dagger
 
+import android.app.Application
+import android.content.Context
 import com.twitli.android.twitter.tweet.TwitManager
+import com.twitli.android.twitter.tweet.TwitManagerImpl
 import com.twitli.android.twitter.wiki.WikiPageManager
 import com.twitli.android.twitter.wiki.WikiPageManagerImpl
 import dagger.Module
 import dagger.Provides
+import org.jetbrains.annotations.NotNull
+import javax.inject.Singleton
 
 @Module
 class AppModule {
+
+    val twitManager: TwitManager = TwitManagerImpl()
 
     @Provides
     fun provideWikiPageManager(): WikiPageManager {
@@ -21,7 +28,7 @@ class AppModule {
     }
 
     @Provides
-    fun provideTwitManager(): TwitManager? {
-        return TwitManagerFactory.instance
+    fun provideTwitManager(): TwitManager {
+        return twitManager
     }
 }

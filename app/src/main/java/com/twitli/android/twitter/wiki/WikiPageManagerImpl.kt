@@ -8,14 +8,20 @@ package com.twitli.android.twitter.wiki
 
 import android.os.Build
 import android.text.Html
-import com.twitli.android.twitter.MyApplication.Companion.application
+import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.data.ContentRepository
 import org.jsoup.Jsoup
 import java.io.IOException
+import javax.inject.Inject
+import kotlin.random.Random.Default.Companion
 
 class WikiPageManagerImpl : WikiPageManager {
     private val baseUrl = "https://nl.wikipedia.org/wiki/"
     private val repository: ContentRepository
+
+    @Inject
+    lateinit var application : MyApplication
+
     override fun analyzePage(string: String?) {}
 
     @Throws(IOException::class)
@@ -37,7 +43,7 @@ class WikiPageManagerImpl : WikiPageManager {
             if (scan && string.startsWith("<li><a href=") && string.contains("title=")) {
                 var text = e.text()
                 val datum = string.substring(string.indexOf("title=") + 7, string.indexOf("\">"))
-                if (datum.matches("[0-9]{1,2} [a-zA-Z]{3,12}")) {
+                if (datum.matches(Regex("[0-9]{1,2} [a-zA-Z]{3,12}"))) {
                     if (text.contains(" - ")) {
                         text = text.substring(text.indexOf(" - ") + 3)
                     }

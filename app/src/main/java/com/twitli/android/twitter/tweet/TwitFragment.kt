@@ -28,6 +28,7 @@ import org.apache.commons.lang3.math.NumberUtils
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     private var twitViewModel: TwitViewModel? = null
@@ -42,14 +43,14 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     var es = Executors.newCachedThreadPool()
 
     @Inject
-    var twitManager: TwitManager? = null
+    lateinit var twitManager: TwitManager
+
     private var tweetText: EditText? = null
     private var isTweeting = false
     private var textLengthView: TextView? = null
     private val tweets: MutableMap<Long, Tweet> = HashMap()
     private var replyText: EditText? = null
     private var replyLengthView: TextView? = null
-    private val tweetLoadTime = 0L
     private var swipeContainer: SwipeRefreshLayout? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -74,15 +75,24 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         super.onActivityCreated(savedInstanceState)
         (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
         isTweeting = false
+
         val factory = TwitViewModelFactory(activity!!.application, twitManager)
         twitViewModel = ViewModelProvider(this, factory).get(TwitViewModel::class.java)
-        twitViewModel!!.tweets.observe(activity!!, Observer { tweets: List<Tweet> ->
-            for (tweet in tweets) {
-                this.tweets[tweet.tweetId] = tweet
+        twitViewModel!!.tweets?.observe(activity!!, Observer { tweets: List<Tweet?>? ->
+            if (tweets != null) {
+                for (tweet in tweets) {
+                    if (tweet != null && tweet.tweetId !=null) {
+                        this.tweets.put(tweet.tweetId!!, tweet)
+                    }
+                }
             }
-            adapter!!.setTweets(ArrayList<E>(this.tweets.values))
+
+            val list = ArrayList<Tweet>()
+            list.addAll(this.tweets.values)
+            adapter!!.setTweets(list)
             adapter!!.notifyDataSetChanged()
         })
+
         adapter = TwitAdapter()
         adapter!!.setOnLikeClickListener(this)
         adapter!!.setOnReplyClickListener(this)
@@ -125,8 +135,8 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         if (replyText!!.text != null && replyText.text.toString() != null) {
             val message = replyText.text.toString()
             val words = message.split(" ".toRegex()).toTypedArray()
-            for (word in words) {
-                word = word.trim { it <= ' ' }
+            for (w in words) {
+                var word = w.trim { it <= ' ' }
                 if (word != null && word.length > 2 && NumberUtils.isCreatable(word)) {
                     val icycle = Intent()
                     icycle.action = "nl.christine.app.message"

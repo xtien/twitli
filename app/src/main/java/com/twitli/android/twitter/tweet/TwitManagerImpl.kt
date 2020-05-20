@@ -6,23 +6,27 @@
  */
 package com.twitli.android.twitter.tweet
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.data.Content
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
 class TwitManagerImpl : TwitManager {
+
     private val twitter: Twitter
-    private val application: Application
-    var es = Executors.newCachedThreadPool()
-    override fun tweet(content: Content) {
-        val string: String = content.getYear().toString() + ", " + (if (content.getDate() != null) content.getDate().toString() + ". " else "") + content.getText()
+
+    @Inject
+    lateinit var application: Context
+
+    var es = Executors.newCachedThreadPool()!!
+
+    override fun tweet(content: Content?) {
+        val string: String = content?.year.toString() + ", " + (if (content?.date != null) content.date.toString() + ". " else "") + content?.text
         tweet(string)
     }
 
@@ -112,7 +116,6 @@ class TwitManagerImpl : TwitManager {
     }
 
     init {
-        application = MyApplication.application
         val prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val accessTokenKey = prefs.getString("access_token", null)
         val accesTokenSecret = prefs.getString("access_token_secret", null)

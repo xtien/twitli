@@ -12,6 +12,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "content_table")
 class Content {
+
     @PrimaryKey
     var id = 0
 

@@ -14,6 +14,7 @@ import twitter4j.User
 import twitter4j.auth.RequestToken
 
 interface TwitManager {
+
     fun tweet(content: Content?)
     fun reply(string: String?, replyToId: Long?)
     fun tweet(toString: String?)

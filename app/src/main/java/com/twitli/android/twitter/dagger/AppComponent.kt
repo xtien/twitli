@@ -7,6 +7,7 @@
 package com.twitli.android.twitter.dagger
 
 import android.app.Application
+import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.tweet.TwitFragment
 import com.twitli.android.twitter.ui.MainActivity
@@ -16,15 +17,19 @@ import dagger.Component
 
 @Component(modules = [AppModule::class])
 interface AppComponent {
-    fun inject(settingsFragment: SettingsFragment?)
-    fun inject(twitFragment: TwitFragment?)
-    fun inject(twitService: TwitService?)
-    fun inject(mainActivity: MainActivity?)
+
+    fun inject(settingsFragment: SettingsFragment)
+    fun inject(twitFragment: TwitFragment)
+    fun inject(twitService: TwitService)
+    fun inject(mainActivity: MainActivity)
 
     @Component.Builder
     interface Builder {
+
         @BindsInstance
-        fun application(application: Application?): Builder?
-        fun build(): AppComponent?
+        fun application(application: MyApplication): Builder
+        fun build(): AppComponent
     }
+
+ //   fun inject(app: MyApplication)
 }
