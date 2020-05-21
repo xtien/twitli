@@ -6,21 +6,24 @@
  */
 package com.twitli.android.twitter.wiki
 
+import android.content.Context
 import android.os.Build
 import android.text.Html
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.data.ContentRepository
+import com.twitli.android.twitter.data.MySettings
 import org.jsoup.Jsoup
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.random.Random.Default.Companion
 
 class WikiPageManagerImpl : WikiPageManager {
     private val baseUrl = "https://nl.wikipedia.org/wiki/"
     private val repository: ContentRepository
 
-    @Inject
-    lateinit var application : MyApplication
+    var application: Context = MyApplication.instance
+
+    constructor() {
+    }
 
     override fun analyzePage(string: String?) {}
 

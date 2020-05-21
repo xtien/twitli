@@ -44,13 +44,14 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "org.jsoup:jsoup:$jsoup_version"
-    implementation "com.google.dagger:dagger:$dagger_version"
     implementation "org.twitter4j:twitter4j-core:$twitter4j_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipelayout_version"
-    implementation 'com.github.fabioCollini.daggermock:daggermock:0.8.5'
+    implementation "com.github.fabioCollini.daggermock:daggermock:$dagger_mock_version"
 
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$kapt_dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$kapt_dagger_version"
 

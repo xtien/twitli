@@ -6,10 +6,10 @@
  */
 package com.twitli.android.twitter.data
 
-import android.app.Application
+import android.content.Context
 import android.util.Log
 
-class ContentRepository(application: Application?) {
+class ContentRepository(context: Context) {
     private val contentDao: ContentDao?
     fun addContent(year: String?, datum: String?, text: String?) {
         contentDao!!.addContent(year, datum, text)
@@ -54,7 +54,7 @@ class ContentRepository(application: Application?) {
     }
 
     init {
-        val db = AppDatabase.getDatabase(application!!)
+        val db = AppDatabase.getDatabase(context!!)
         contentDao = db!!.contentDao()
     }
 }

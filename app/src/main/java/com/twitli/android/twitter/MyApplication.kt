@@ -9,17 +9,39 @@ package com.twitli.android.twitter
 import android.app.Application
 import androidx.annotation.VisibleForTesting
 import com.twitli.android.twitter.dagger.AppComponent
-import com.twitli.android.twitter.dagger.AppModule
 import com.twitli.android.twitter.dagger.DaggerAppComponent
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
+import javax.inject.Inject
 
-class MyApplication : Application() {
+class MyApplication : Application(), HasAndroidInjector {
 
-    var appComponent = DaggerAppComponent.builder()
-            .application(this)
-            ?.build()
+    companion object{
+        lateinit var instance: MyApplication
+    }
+
+     lateinit var appComponent: AppComponent
+
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector(): AndroidInjector<Any> {
+        return dispatchingAndroidInjector
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        instance = this;
+
+        appComponent = DaggerAppComponent.builder()
+                .application(this)
+                .build()
+    }
 
     @VisibleForTesting
     fun setComponent(component: AppComponent) {
-        appComponent = component
+        //  appComponent = component
     }
 }

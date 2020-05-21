@@ -27,7 +27,9 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class TwitService : LifecycleService() {
 
     private var settingsRepository: SettingsRepository? = null

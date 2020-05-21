@@ -73,7 +73,9 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
+
+       (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
+
         isTweeting = false
 
         val factory = TwitViewModelFactory(activity!!.application, twitManager)

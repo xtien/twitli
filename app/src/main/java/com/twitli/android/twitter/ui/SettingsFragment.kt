@@ -69,7 +69,9 @@ class SettingsFragment : Fragment() {
             }
         }
         versionView!!.text = BuildConfig.VERSION_NAME
+
         (activity!!.applicationContext as MyApplication).appComponent?.inject(this)
+
         Log.d(LOGTAG, if ("wikiPageManager $wikiPageManager" == null) "null" else "not null")
     }
 

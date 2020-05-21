@@ -16,7 +16,8 @@
                 android:name="com.twitli.android.twitter.ui.MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme">
-         </activity>
+        </activity>
+
         <activity
                 android:name="com.twitli.android.twitter.ui.IntroActivity"
                 android:label="@string/app_name"
@@ -28,11 +29,29 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.twitli.android.twitter.service.TwitService"
-                 android:label="Twit service"/>
-        <service android:name="com.twitli.android.twitter.service.TwitJobService"
-                 android:label="Job service"
-                 android:permission="android.permission.BIND_JOB_SERVICE" />
+        <activity
+                android:name=".tweet.AuthCallbackActivity"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                        android:scheme="http"
+                        android:host="www.twitli.com"/>
+            </intent-filter>
+        </activity>
+
+        <service
+                android:name="com.twitli.android.twitter.service.TwitService"
+                android:label="Twit service"/>
+        <service
+                android:name="com.twitli.android.twitter.service.TwitJobService"
+                android:label="Job service"
+                android:permission="android.permission.BIND_JOB_SERVICE"/>
 
     </application>
 

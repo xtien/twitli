@@ -8,6 +8,7 @@ package com.twitli.android.twitter.tweet
 
 import android.content.Context
 import android.util.Log
+import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.data.Content
 import twitter4j.*
@@ -20,10 +21,21 @@ class TwitManagerImpl : TwitManager {
 
     private val twitter: Twitter
 
-    @Inject
-    lateinit var application: Context
+    var context: Context = MyApplication.instance
 
     var es = Executors.newCachedThreadPool()!!
+
+    constructor() {
+        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val accessTokenKey = prefs.getString("access_token", null)
+        val accesTokenSecret = prefs.getString("access_token_secret", null)
+        twitter = TwitterFactory.getSingleton()
+        twitter.setOAuthConsumer(context.getString(R.string.api_key), context.getString(R.string.api_secret))
+        if (accessTokenKey != null && accesTokenSecret != null) {
+            val accessToken = AccessToken(accessTokenKey, accesTokenSecret)
+            twitter.oAuthAccessToken = accessToken
+        }
+    }
 
     override fun tweet(content: Content?) {
         val string: String = content?.year.toString() + ", " + (if (content?.date != null) content.date.toString() + ". " else "") + content?.text
@@ -67,7 +79,7 @@ class TwitManagerImpl : TwitManager {
     }
 
     override fun createAccessToken(accessTokenVerifier: String?) {
-        val prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         try {
             val requestToken = RequestToken(prefs.getString("request_token", null), prefs.getString("request_token_secret", null))
             if (requestToken != null) {
@@ -86,7 +98,7 @@ class TwitManagerImpl : TwitManager {
     @Throws(TwitterException::class)
     override fun createRequestToken(): RequestToken? {
         val requestToken = twitter.oAuthRequestToken
-        val editor = application.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
+        val editor = context.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
         editor.putString("request_token", requestToken.token)
         editor.putString("request_token_secret", requestToken.tokenSecret)
         editor.apply()
@@ -113,17 +125,5 @@ class TwitManagerImpl : TwitManager {
 
     companion object {
         private val LOGTAG = TwitManagerImpl::class.java.simpleName
-    }
-
-    init {
-        val prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val accessTokenKey = prefs.getString("access_token", null)
-        val accesTokenSecret = prefs.getString("access_token_secret", null)
-        twitter = TwitterFactory.getSingleton()
-        twitter.setOAuthConsumer(application.getString(R.string.api_key), application.getString(R.string.api_secret))
-        if (accessTokenKey != null) {
-            val accessToken = AccessToken(accessTokenKey, accesTokenSecret)
-            twitter.oAuthAccessToken = accessToken
-        }
     }
 }

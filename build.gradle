@@ -16,6 +16,7 @@ buildscript {
     ext.espresso_version = '3.2.0'
     ext.androidxtest_version = '1.1.1'
     ext.kapt_dagger_version = '2.27'
+    ext.dagger_mock_version = '0.8.5'
 
     repositories {
         google()
