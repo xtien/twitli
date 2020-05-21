@@ -123,6 +123,13 @@ class TwitManagerImpl : TwitManager {
         return twitter.getHomeTimeline(paging)
     }
 
+    override fun logout() {
+        val editor = context.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
+        editor.remove("request_token")
+        editor.remove("request_token_secret")
+        editor.apply()
+    }
+
     companion object {
         private val LOGTAG = TwitManagerImpl::class.java.simpleName
     }

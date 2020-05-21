@@ -20,7 +20,7 @@
                 style="@style/title"
                 android:text="@string/settings"
                 />
-        
+
         <TextView
                 android:id="@+id/version"
                 android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
                 style="@style/version"
                 />
 
-     </LinearLayout>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -81,6 +81,19 @@
                     android:layout_height="wrap_content"
                     style="@style/switchstyle"
                     android:id="@+id/interval_spinner"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/logout"
+                    android:id="@+id/logout"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

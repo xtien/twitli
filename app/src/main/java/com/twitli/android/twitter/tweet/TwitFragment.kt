@@ -40,11 +40,7 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     private var submitButton: Button? = null
     private var replyView: LinearLayout? = null
     private var replyButton: Button? = null
-    var es = Executors.newCachedThreadPool()
-
-    @Inject
-    lateinit var twitManager: TwitManager
-
+    private var logoutButton: Button? = null
     private var tweetText: EditText? = null
     private var isTweeting = false
     private var textLengthView: TextView? = null
@@ -52,6 +48,12 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     private var replyText: EditText? = null
     private var replyLengthView: TextView? = null
     private var swipeContainer: SwipeRefreshLayout? = null
+
+    var es = Executors.newCachedThreadPool()
+
+    @Inject
+    lateinit var twitManager: TwitManager
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.twit_fragment, container, false)
@@ -69,12 +71,13 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         textLengthView = view.findViewById(R.id.text_length)
         replyLengthView = view.findViewById(R.id.reply_text_length)
         swipeContainer = view.findViewById(R.id.swiperefresh)
+        logoutButton = view.findViewById (R.id.logout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-       (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
+        (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
 
         isTweeting = false
 
@@ -83,7 +86,7 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         twitViewModel!!.tweets?.observe(activity!!, Observer { tweets: List<Tweet?>? ->
             if (tweets != null) {
                 for (tweet in tweets) {
-                    if (tweet != null && tweet.tweetId !=null) {
+                    if (tweet != null && tweet.tweetId != null) {
                         this.tweets.put(tweet.tweetId!!, tweet)
                     }
                 }
@@ -124,6 +127,12 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
             }
         }
         submitButton!!.setOnClickListener { v: View? -> doEdit(tweetView, tweetText) }
+        logoutButton!!.setOnClickListener { v:View? -> logout() }
+    }
+
+    private fun logout() {
+        twitManager.logout()
+        activity?.finish()
     }
 
     private fun doEdit(view: LinearLayout?, textview: TextView?) {

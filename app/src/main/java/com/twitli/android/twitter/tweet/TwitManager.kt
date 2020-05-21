@@ -29,4 +29,5 @@ interface TwitManager {
 
     @Throws(TwitterException::class)
     fun getHomeTimeline(paging: Paging?): List<Status?>?
+    fun logout()
 }

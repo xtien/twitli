@@ -18,5 +18,6 @@
     <string name="reply">Reply</string>
     <string name="tweet">Tweet</string>
     <string name="like">like</string>
+    <string name="logout">Logout</string>
 
 </resources>
