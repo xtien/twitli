@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.dagger.TwitViewModelFactory
 import com.twitli.android.twitter.tweet.listener.OnLikeClickListener
 import com.twitli.android.twitter.tweet.listener.OnReplyClickListener
@@ -54,6 +55,9 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     @Inject
     lateinit var twitManager: TwitManager
 
+    @Inject
+    lateinit var chatbot: ChatBot
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.twit_fragment, container, false)
@@ -80,7 +84,7 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
 
         isTweeting = false
 
-        val factory = TwitViewModelFactory(activity!!.application, twitManager)
+        val factory = TwitViewModelFactory(activity!!.application, twitManager, chatbot)
         twitViewModel = ViewModelProvider(this, factory).get(TwitViewModel::class.java)
         twitViewModel!!.tweets?.observe(activity!!, Observer { tweets: List<Tweet?>? ->
             if (tweets != null) {

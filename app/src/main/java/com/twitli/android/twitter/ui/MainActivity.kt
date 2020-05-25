@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.service.TwitService.LocalBinder
 import com.twitli.android.twitter.tweet.TwitFragment
@@ -36,6 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var twitManager: TwitManager
+
+    @Inject
+    lateinit var chatbot: ChatBot
 
     private var pagerAdapter: ScreenSlidePagerAdapter? = null
 
@@ -63,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                         val editor = prefs.edit()
                         editor.putLong("last_tweet_load", System.currentTimeMillis())
                         editor.apply()
-                        TwitRepository(application, twitManager).loadTweets()
+                        TwitRepository(application, twitManager, chatbot).loadTweets()
                     }
                 } catch (e: TwitterException) {
                     if (e.statusCode == TwitterException.UNAUTHORIZED) {

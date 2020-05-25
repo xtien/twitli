@@ -10,6 +10,7 @@ package com.twitli.android.twitter.dagger
 import com.twitli.android.twitter.ScenarioTest
 import com.twitli.android.twitter.TestSwipe
 import com.twitli.android.twitter.TestTweet
+import com.twitli.android.twitter.WiktionaryNounTest
 import com.twitli.android.twitter.ui.MainActivity
 import dagger.Component
 
@@ -19,5 +20,6 @@ interface TestComponent : AppComponent {
     fun inject(testTweet: TestTweet?)
     fun inject(testSwipe: TestSwipe?)
     fun inject(scenarioTest: ScenarioTest?)
+    fun inject(nounTest: WiktionaryNounTest?)
     override fun inject(mainActivity: MainActivity)
 }

@@ -10,18 +10,23 @@ import android.content.Context
 import android.util.Log
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.data.Content
 import com.twitli.android.twitter.tweet.TwitManager
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
 class TwitManagerImpl : TwitManager {
 
     private val twitter: Twitter
 
     var context: Context = MyApplication.instance
+
+    @Inject
+    lateinit var chatbot : ChatBot
 
     var es = Executors.newCachedThreadPool()!!
 
@@ -128,7 +133,9 @@ class TwitManagerImpl : TwitManager {
 
     @Throws(TwitterException::class)
     override fun getHomeTimeline(paging: Paging?): List<Status?>? {
-        return twitter.getHomeTimeline(paging)
+        var tweets = twitter.getHomeTimeline(paging)
+        chatbot.read(tweets)
+        return tweets
     }
 
     override fun logout() {

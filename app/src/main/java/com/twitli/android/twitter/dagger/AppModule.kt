@@ -6,6 +6,9 @@
  */
 package com.twitli.android.twitter.dagger
 
+import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.bot.wiki.WiktionaryBot
+import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.wiki.WikiPageManager
 import dagger.Module
@@ -22,5 +25,20 @@ class AppModule() {
     @Provides
     fun twitManager(): TwitManager {
         return TwitManagerFactory.get()
+    }
+
+    @Provides
+    fun chatbot(): ChatBot {
+        return ChatBotFactory.get();
+    }
+
+    @Provides
+    fun wiktionaryApi(): WiktionaryApi{
+        return WiktionaryApiFactory.get()
+    }
+
+    @Provides
+    fun wiktionaryBot() : WiktionaryBot {
+        return WiktionaryBotFactory.get()
     }
 }

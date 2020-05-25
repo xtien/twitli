@@ -16,6 +16,7 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.data.*
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
@@ -46,6 +47,9 @@ class TwitService : LifecycleService() {
 
     @Inject
     lateinit var twitManager: TwitManager
+
+    @Inject
+    lateinit var chatbot: ChatBot
 
     private val es = Executors.newScheduledThreadPool(2)
     private var year = 42
@@ -84,7 +88,7 @@ class TwitService : LifecycleService() {
         contentRepository = ContentRepository(application)
         settingsRepository = SettingsRepository(application)
         userRepository = UserRepository(application)
-        twitRepository = TwitRepository(application, twitManager)
+        twitRepository = TwitRepository(application, twitManager ,chatbot)
         es.execute {
             year = userRepository!!.year
             Log.d(LOGTAG, "year = $year")
