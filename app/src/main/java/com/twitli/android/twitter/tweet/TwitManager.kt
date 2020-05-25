@@ -16,8 +16,11 @@ import twitter4j.auth.RequestToken
 interface TwitManager {
 
     fun tweet(content: Content?)
+
     fun reply(string: String?, replyToId: Long?)
+
     fun tweet(toString: String?)
+
     fun createAccessToken(verifier: String?)
 
     @Throws(TwitterException::class)
@@ -29,5 +32,8 @@ interface TwitManager {
 
     @Throws(TwitterException::class)
     fun getHomeTimeline(paging: Paging?): List<Status?>?
+
     fun logout()
+
+    fun unlike(tweetId: Long?)
 }

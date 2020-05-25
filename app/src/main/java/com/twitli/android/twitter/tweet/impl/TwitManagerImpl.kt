@@ -4,18 +4,18 @@
  * the Apache License, Version 2.0. You can find a copy of the license at
  * http://www.apache.org/licenses/LICENSE-2.0.
  */
-package com.twitli.android.twitter.tweet
+package com.twitli.android.twitter.tweet.impl
 
 import android.content.Context
 import android.util.Log
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.data.Content
+import com.twitli.android.twitter.tweet.TwitManager
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
 import java.util.concurrent.Executors
-import javax.inject.Inject
 
 class TwitManagerImpl : TwitManager {
 
@@ -113,6 +113,14 @@ class TwitManagerImpl : TwitManager {
     override fun like(tweetId: Long?) {
         try {
             twitter.createFavorite(tweetId!!)
+        } catch (e: TwitterException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun unlike(tweetId: Long?) {
+        try {
+            twitter.destroyFavorite(tweetId!!)
         } catch (e: TwitterException) {
             e.printStackTrace()
         }

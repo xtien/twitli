@@ -22,8 +22,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.dagger.TwitViewModelFactory
-import com.twitli.android.twitter.tweet.TwitAdapter.OnLikeClickListener
-import com.twitli.android.twitter.tweet.TwitAdapter.OnReplyClickListener
+import com.twitli.android.twitter.tweet.listener.OnLikeClickListener
+import com.twitli.android.twitter.tweet.listener.OnReplyClickListener
 import org.apache.commons.lang3.math.NumberUtils
 import java.util.*
 import java.util.concurrent.Executors
@@ -31,6 +31,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
+
     private var twitViewModel: TwitViewModel? = null
     private var listView: RecyclerView? = null
     private var adapter: TwitAdapter? = null
@@ -71,7 +72,7 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         textLengthView = view.findViewById(R.id.text_length)
         replyLengthView = view.findViewById(R.id.reply_text_length)
         swipeContainer = view.findViewById(R.id.swiperefresh)
-        logoutButton = view.findViewById (R.id.logout)
+        logoutButton = view.findViewById(R.id.logout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -127,7 +128,7 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
             }
         }
         submitButton!!.setOnClickListener { v: View? -> doEdit(tweetView, tweetText) }
-        logoutButton!!.setOnClickListener { v:View? -> logout() }
+        logoutButton!!.setOnClickListener { v: View? -> logout() }
     }
 
     private fun logout() {
@@ -164,8 +165,8 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         }
     }
 
-    override fun onLikeClicked(tweetId: Long?) {
-        es.execute { twitManager!!.like(tweetId) }
+    override fun onLikeClicked(tweetId: Long?, liked: Boolean) {
+        es.execute { if(liked)  twitManager!!.like(tweetId) else twitManager.unlike(tweetId) }
     }
 
     override fun onReplyClicked(tweetId: Long?) {

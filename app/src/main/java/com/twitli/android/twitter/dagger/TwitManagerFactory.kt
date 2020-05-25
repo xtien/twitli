@@ -1,7 +1,7 @@
 package com.twitli.android.twitter.dagger
 
 import com.twitli.android.twitter.tweet.TwitManager
-import com.twitli.android.twitter.tweet.TwitManagerImpl
+import com.twitli.android.twitter.tweet.impl.TwitManagerImpl
 
 class TwitManagerFactory {
 

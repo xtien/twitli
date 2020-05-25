@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.data.BaseViewHolder
+import com.twitli.android.twitter.tweet.listener.OnLikeClickListener
+import com.twitli.android.twitter.tweet.listener.OnReplyClickListener
 import org.apache.commons.lang3.math.NumberUtils
 import org.apache.commons.lang3.time.FastDateFormat
 import java.text.SimpleDateFormat
@@ -30,14 +32,6 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
     private var context: Context? = null
     private var onLikeClickListener: OnLikeClickListener? = null
     private var onReplyClickListener: OnReplyClickListener? = null
-
-    interface OnLikeClickListener {
-        fun onLikeClicked(tweetId: Long?)
-    }
-
-    interface OnReplyClickListener {
-        fun onReplyClicked(tweetId: Long?)
-    }
 
     fun setOnLikeClickListener(listener: OnLikeClickListener?) {
         onLikeClickListener = listener
@@ -115,7 +109,7 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
             } else {
                 tweetTextView.setTextColor(ContextCompat.getColor(context!!, R.color.tweet_text))
             }
-            like.setOnClickListener { v: View? -> onLikeClickListener!!.onLikeClicked(tweet.tweetId) }
+            like.setOnClickListener { v: View? -> onLikeClickListener!!.onLikeClicked(tweet.tweetId, tweet.isLiked) }
             reply.setOnClickListener { v: View? -> onReplyClickListener!!.onReplyClicked(tweet.tweetId) }
         }
 

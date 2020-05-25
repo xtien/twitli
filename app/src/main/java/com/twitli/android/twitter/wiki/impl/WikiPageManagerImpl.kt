@@ -4,17 +4,16 @@
  * the Apache License, Version 2.0. You can find a copy of the license at
  * http://www.apache.org/licenses/LICENSE-2.0.
  */
-package com.twitli.android.twitter.wiki
+package com.twitli.android.twitter.wiki.impl
 
 import android.content.Context
 import android.os.Build
 import android.text.Html
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.data.ContentRepository
-import com.twitli.android.twitter.data.MySettings
+import com.twitli.android.twitter.wiki.WikiPageManager
 import org.jsoup.Jsoup
 import java.io.IOException
-import javax.inject.Inject
 
 class WikiPageManagerImpl : WikiPageManager {
     private val baseUrl = "https://nl.wikipedia.org/wiki/"

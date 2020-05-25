@@ -1,7 +1,7 @@
 package com.twitli.android.twitter.dagger
 
 import com.twitli.android.twitter.wiki.WikiPageManager
-import com.twitli.android.twitter.wiki.WikiPageManagerImpl
+import com.twitli.android.twitter.wiki.impl.WikiPageManagerImpl
 
 class WikiPageManagerFactory {
 
