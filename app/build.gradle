@@ -55,7 +55,8 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$kapt_dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$kapt_dagger_version"
 
-    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.5'
+    androidTestImplementation "com.github.fabioCollini.daggermock:daggermock:$dagger_mock_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
 
     testImplementation "androidx.room:room-testing:$room_version"

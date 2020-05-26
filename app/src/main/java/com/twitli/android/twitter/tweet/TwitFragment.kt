@@ -41,7 +41,6 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     private var submitButton: Button? = null
     private var replyView: LinearLayout? = null
     private var replyButton: Button? = null
-    private var logoutButton: Button? = null
     private var tweetText: EditText? = null
     private var isTweeting = false
     private var textLengthView: TextView? = null
@@ -67,12 +66,11 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
         replyButton = view.findViewById(R.id.submit_reply)
         tweetView = view.findViewById(R.id.tweet)
         replyView = view.findViewById(R.id.reply)
-        tweetText = view.findViewById(R.id.status_text)
+        tweetText = view.findViewById(R.id.status_tweet_text)
         replyText = view.findViewById(R.id.reply_text)
         textLengthView = view.findViewById(R.id.text_length)
         replyLengthView = view.findViewById(R.id.reply_text_length)
         swipeContainer = view.findViewById(R.id.swiperefresh)
-        logoutButton = view.findViewById(R.id.logout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -128,7 +126,6 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
             }
         }
         submitButton!!.setOnClickListener { v: View? -> doEdit(tweetView, tweetText) }
-        logoutButton!!.setOnClickListener { v: View? -> logout() }
     }
 
     private fun logout() {

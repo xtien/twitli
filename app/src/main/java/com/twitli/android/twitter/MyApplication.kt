@@ -42,6 +42,6 @@ class MyApplication : Application(), HasAndroidInjector {
 
     @VisibleForTesting
     fun setComponent(component: AppComponent) {
-        //  appComponent = component
+        appComponent = component
     }
 }

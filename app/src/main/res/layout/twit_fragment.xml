@@ -59,7 +59,7 @@
                     android:layout_weight="1"
                     android:gravity="top"
                     android:importantForAutofill="no"
-                    android:id="@+id/status_text"
+                    android:id="@+id/status_tweet_text"
                     style="@style/text"
                     />
 
@@ -108,7 +108,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:importantForAutofill="no"                   android:gravity="top"
+                    android:importantForAutofill="no"
+                    android:gravity="top"
                     android:id="@+id/reply_text"
                     style="@style/text"
                     />
