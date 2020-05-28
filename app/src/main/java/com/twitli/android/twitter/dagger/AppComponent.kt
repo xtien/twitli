@@ -9,6 +9,7 @@ package com.twitli.android.twitter.dagger
 import android.app.Application
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.tweet.TwitFragment
+import com.twitli.android.twitter.tweet.impl.TwitManagerImpl
 import com.twitli.android.twitter.ui.MainActivity
 import com.twitli.android.twitter.ui.SettingsFragment
 import dagger.BindsInstance
@@ -21,6 +22,7 @@ interface AppComponent {
     fun inject(twitFragment: TwitFragment)
     fun inject(twitService: TwitService)
     fun inject(mainActivity: MainActivity)
+    fun inject(twitManager: TwitManagerImpl)
 
     @Component.Builder
     interface Builder {

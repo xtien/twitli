@@ -18,7 +18,7 @@ class ChatBotImpl : ChatBot {
     init {
 
         var prefs = context.getSharedPreferences("prefs", MODE_PRIVATE)
-        myName = prefs.getString("my_user_name", null)!!;
+        myName = prefs.getString("my_user_name", "")!!;
 
         es.scheduleAtFixedRate({
             var status = queue.take()

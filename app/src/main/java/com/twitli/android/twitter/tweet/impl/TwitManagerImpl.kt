@@ -30,6 +30,10 @@ class TwitManagerImpl : TwitManager {
 
     var es = Executors.newCachedThreadPool()!!
 
+    init {
+        (context!!.applicationContext as MyApplication).appComponent!!.inject(this)
+    }
+
     constructor() {
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val accessTokenKey = prefs.getString("access_token", null)
