@@ -1,5 +1,11 @@
 package com.twitli.android.twitter.dagger
 
+import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.bot.wiki.WiktionaryBot
+import com.twitli.android.twitter.bot.wiki.api.MyHttp
+import com.twitli.android.twitter.bot.wiki.api.MyHttpImpl
+import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
+import com.twitli.android.twitter.bot.wiki.api.WiktionaryApiImpl
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.wiki.WikiPageManager
 import dagger.Module
@@ -26,5 +32,15 @@ open class TestModule {
             twitManager = Mockito.mock(TwitManager::class.java)
         }
         return twitManager
+    }
+
+    @Provides
+    fun provideChatBot(): ChatBot {
+        return Mockito.mock(ChatBot::class.java)
+    }
+
+    @Provides
+    fun wiktionaryBot() : WiktionaryBot {
+        return Mockito.mock(WiktionaryBot::class.java)
     }
 }

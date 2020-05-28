@@ -14,7 +14,7 @@ import it.cosenonjaviste.daggermock.DaggerMockRule;
 public class MyDaggerMockRule extends DaggerMockRule<TestComponent> {
 
     public MyDaggerMockRule() {
-        super(TestComponent.class, new TestModule());
+        super(TestComponent.class);
         set(component -> MyDaggerMockRule.this.getApp().setComponent(component));
     }
 

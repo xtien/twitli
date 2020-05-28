@@ -7,14 +7,11 @@
 
 package com.twitli.android.twitter.dagger
 
-import com.twitli.android.twitter.ScenarioTest
-import com.twitli.android.twitter.TestSwipe
-import com.twitli.android.twitter.TestTweet
-import com.twitli.android.twitter.WiktionaryNounTest
+import com.twitli.android.twitter.*
 import com.twitli.android.twitter.ui.MainActivity
 import dagger.Component
 
-@Component(modules = [TestModule::class])
+@Component(modules = [TestModule::class, ApiTestModule::class])
 interface TestComponent : AppComponent {
 
     fun inject(testTweet: TestTweet?)

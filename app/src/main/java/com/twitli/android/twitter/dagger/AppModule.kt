@@ -8,6 +8,8 @@ package com.twitli.android.twitter.dagger
 
 import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
+import com.twitli.android.twitter.bot.wiki.api.MyHttp
+import com.twitli.android.twitter.bot.wiki.api.MyHttpImpl
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.wiki.WikiPageManager
@@ -40,5 +42,10 @@ class AppModule() {
     @Provides
     fun wiktionaryBot() : WiktionaryBot {
         return WiktionaryBotFactory.get()
+    }
+
+    @Provides
+    fun myHttp(): MyHttp{
+        return MyHttpImpl()
     }
 }

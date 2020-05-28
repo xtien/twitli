@@ -21,16 +21,11 @@ class MyHttpImpl : MyHttp {
         try {
             urlConnection!!.connectTimeout = 5000
             urlConnection.instanceFollowRedirects = true
-            val `is` = urlConnection.inputStream
-            val `in` = InputStreamReader(`is`)
-            val br = BufferedReader(`in`, 512)
-            var line: String
-            while (br.readLine().also { line = it } != null) {
-                string = string + line
+            val br = BufferedReader(InputStreamReader(urlConnection.inputStream), 512)
+            br.use { br ->
+                string = br.readText()
             }
-            br.close()
-            `in`.close()
-            `is`.close()
+
             val msg = urlConnection.responseMessage
             val httpResult = urlConnection.responseCode
             if (httpResult != HttpURLConnection.HTTP_OK) {
@@ -39,7 +34,6 @@ class MyHttpImpl : MyHttp {
             result = HttpResultWrapper(httpResult, msg, string)
         } finally {
             urlConnection!!.disconnect()
-            urlConnection = null
         }
         return result
     }

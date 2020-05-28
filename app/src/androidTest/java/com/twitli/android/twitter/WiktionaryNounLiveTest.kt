@@ -61,12 +61,12 @@ class WiktionaryNounLiveTest {
         appComponent.inject(this)
         Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
         Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
-        Mockito.`when`(api.getWikiWord(nounString)).thenReturn(nounString)
     }
 
     @Test
-    fun testGetNoun() {
+    fun testLiveGetNoun() {
         val string = api!!.getWikiWord(nounString)
         Assert.assertNotNull(string)
+        Assert.assertTrue(string!!.startsWith("<!DOCTYPE html"))
     }
 }
