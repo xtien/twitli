@@ -12,29 +12,32 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.twitli.android.twitter.bot.wiki.DictionaryDao
+import com.twitli.android.twitter.bot.wiki.type.Noun
 import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitDao
 import java.util.concurrent.Executors
 
-@Database(entities = [MySettings::class, Content::class, User::class, Tweet::class], version = 1, exportSchema = false)
+@Database(entities = [MySettings::class, Content::class, User::class, Tweet::class, Noun::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun settingsDao(): SettingsDao
     abstract fun contentDao(): ContentDao?
     abstract fun userDao(): UserDao
     abstract fun twitDao(): TwitDao?
+    abstract fun dictionaryDao(): DictionaryDao
 
     companion object {
         private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE settings_table "
-                        + " ADD COLUMN settingsid INTEGER DEFAULT 0 NOT NULL")
+                database.execSQL("CREATE TABLE noun (id INTEGER, singular TEXT, plural TEXT, wordString TEXT, PRIMARY KEY(id))")
+                database.execSQL("CREATE UNIQUE INDEX index_noun_singular_plural ON Noun(singular, plural)")
             }
         }
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
         private const val NUMBER_OF_THREADS = 4
-        val databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS)
+        val databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS)!!
         private val databaseCallback: Callback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)

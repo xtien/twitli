@@ -19,5 +19,5 @@ interface WiktionaryBot {
      * @throws IOException
      */
     @Throws(IOException::class, SQLException::class)
-    fun classify(string: String?): List<Word?>?
+    fun classify(string: String): List<Word>
 }

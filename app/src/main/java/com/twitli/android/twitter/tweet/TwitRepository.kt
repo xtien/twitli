@@ -18,7 +18,9 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class TwitRepository @Inject constructor(application: Application?, twitManager: TwitManager, chatbot: ChatBot) {
 
     private val twitManager: TwitManager

@@ -7,6 +7,8 @@
 package com.twitli.android.twitter.dagger
 
 import android.app.Application
+import com.twitli.android.twitter.bot.impl.ChatBotImpl
+import com.twitli.android.twitter.bot.wiki.impl.WiktionaryBotImpl
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApiImpl
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.tweet.TwitFragment
@@ -25,6 +27,8 @@ interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(twitManager: TwitManagerImpl)
     fun inject(wiktionaryApi: WiktionaryApiImpl)
+    fun inject(wikBot: WiktionaryBotImpl)
+    fun inject(chatBot: ChatBotImpl)
 
     @Component.Builder
     interface Builder {
@@ -34,4 +38,6 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
+
+    fun inject(application: Application)
 }

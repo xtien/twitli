@@ -8,4 +8,8 @@ open class Word  {
     fun setWordString(string: String) {
         this.wordString = string
     }
+
+    fun getWordString(): String? {
+        return wordString
+    }
 }

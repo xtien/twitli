@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
+import com.twitli.android.twitter.bot.wiki.type.Word
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
 import com.twitli.android.twitter.dagger.MyDaggerMockLiveRule
 import com.twitli.android.twitter.dagger.MyDaggerMockRule
@@ -29,10 +30,10 @@ import twitter4j.TwitterException
 import twitter4j.User
 import javax.inject.Inject
 
-class WiktionaryNounLiveTest {
+class WiktionaryPageLiveTest {
 
     @Inject
-    lateinit var wikBot: WiktionaryBot
+    lateinit var bot: WiktionaryBot
 
     @Inject
     lateinit var twitManager: TwitManager
@@ -66,7 +67,8 @@ class WiktionaryNounLiveTest {
 
     @Test
     fun testLiveGetNoun() {
-        val string = wikBot.classify(nounString)
+        val string :List<Word> = bot!!.classify(nounString)
         Assert.assertNotNull(string)
+        Assert.assertTrue("fiets" == string[0].getWordString())
     }
 }

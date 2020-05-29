@@ -1,7 +1,14 @@
-package com.twitli.android.twitter.bot.wiki
+/*
+ * Copyright (c) 2020, Zaphod Consulting BV, Christine Karman
+ * This project is free software: you can redistribute it and/or modify it under the terms of
+ * the Apache License, Version 2.0. You can find a copy of the license at
+ * http://www.apache.org/licenses/LICENSE-2.0.
+ */
 
+package com.twitli.android.twitter.bot.wiki.impl
+
+import com.twitli.android.twitter.bot.wiki.*
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
-import com.twitli.android.twitter.bot.wiki.api.WiktionaryApiImpl
 import com.twitli.android.twitter.bot.wiki.type.MyNumber
 import com.twitli.android.twitter.bot.wiki.type.Noun
 import com.twitli.android.twitter.bot.wiki.type.Word
@@ -113,7 +120,7 @@ class WiktionaryBotImpl : WiktionaryBot {
         return words
     }
 
-    override fun classify(string: String?): List<Word?>? {
+    override fun classify(string: String): List<Word> {
 
         var words: MutableList<Word> = ArrayList<Word>()
 
