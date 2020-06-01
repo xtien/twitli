@@ -134,7 +134,7 @@ class TwitService : LifecycleService() {
                     user
                 }
             } else {
-                count = count + 1L
+                count += 1L
             }
         }, init, 3600L, TimeUnit.SECONDS)
         val filter = IntentFilter("nl.christine.app.message")

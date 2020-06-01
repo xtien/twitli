@@ -18,13 +18,11 @@ import java.sql.SQLException
 import java.util.*
 import javax.inject.Inject
 
-class WiktionaryBotImpl : WiktionaryBot {
+class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
 
-    @Inject
-    lateinit var dictionaryRepository: DictionaryRepository
+    private var dictionaryRepository: DictionaryRepository = dictionaryRepository
 
-    @Inject
-    lateinit var wiktionaryApi: WiktionaryApi
+    private var wiktionaryApi: WiktionaryApi = wiktionaryApi
 
     var formOfDefinitionString = "form-of-definition-link"
     var ref = "href=\"/wiki/%s#english"

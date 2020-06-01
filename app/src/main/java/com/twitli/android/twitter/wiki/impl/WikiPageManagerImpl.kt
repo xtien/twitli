@@ -17,11 +17,10 @@ import org.jsoup.Jsoup
 import java.io.IOException
 import javax.inject.Inject
 
-class WikiPageManagerImpl @Inject constructor(application: Application): WikiPageManager {
+class WikiPageManagerImpl @Inject constructor(application: Application, repository: ContentRepository): WikiPageManager {
     private val baseUrl = "https://nl.wikipedia.org/wiki/"
 
-    @Inject
-    lateinit var repository: ContentRepository
+    private var repository: ContentRepository = repository
 
     var application: Context = application
 

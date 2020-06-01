@@ -7,15 +7,14 @@ import com.twitli.android.twitter.MyApplication
 import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
-class WiktionaryApiImpl @Inject constructor(application: Application): WiktionaryApi {
+class WiktionaryApiImpl @Inject constructor(application: Application, myHttp: MyHttp): WiktionaryApi {
 
     private val LOGTAG = WiktionaryApiImpl::class.qualifiedName
     private val httpString: String = "https://nl.wiktionary.org/wiki/"
 
     var context: Context = application
 
-    @Inject
-    lateinit var client: MyHttp
+    private var client: MyHttp = myHttp
 
     init {
         (context!!.applicationContext as MyApplication).appComponent!!.inject(this)

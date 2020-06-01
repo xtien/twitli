@@ -67,14 +67,13 @@ class SettingsFragment : Fragment() {
 
         (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
 
-//        settingsViewModel.isActive().observeForever { b: Boolean? ->
-//            if (b != null && activeSwitch!!.isChecked != b) {
-//                activeSwitch!!.isChecked = b
-//            }
-//        }
-        versionView!!.text = BuildConfig.VERSION_NAME
+        settingsViewModel.isActive().observeForever { b: Boolean? ->
+            if (b != null && activeSwitch!!.isChecked != b) {
+                activeSwitch!!.isChecked = b
+            }
+        }
 
-        (activity!!.applicationContext as MyApplication).appComponent?.inject(this)
+        versionView!!.text = BuildConfig.VERSION_NAME
 
         Log.d(LOGTAG, if ("wikiPageManager $wikiPageManager" == null) "null" else "not null")
     }

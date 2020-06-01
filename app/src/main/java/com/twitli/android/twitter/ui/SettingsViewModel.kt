@@ -14,10 +14,9 @@ import javax.inject.Inject
 
 class SettingsViewModel @Inject constructor(application: Application, settingsRepository: SettingsRepository) : AndroidViewModel(application!!) {
 
-    lateinit var active: LiveData<Boolean>
+    var active: LiveData<Boolean>
 
-    @Inject
-    lateinit var repository: SettingsRepository
+    private var repository: SettingsRepository = settingsRepository
 
     fun setActive(isChecked: Boolean) {
         repository.setActive(isChecked)
@@ -28,8 +27,6 @@ class SettingsViewModel @Inject constructor(application: Application, settingsRe
     }
 
     init {
-        if(this::repository.isInitialized){
-            active = repository.isActive
-        }
+        active = repository.isActive
     }
 }

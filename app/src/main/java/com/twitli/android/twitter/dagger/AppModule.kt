@@ -71,8 +71,8 @@ class AppModule() {
     }
 
     @Provides
-    fun wikiPageManager(application: Application): WikiPageManager {
-        return WikiPageManagerImpl(application)
+    fun wikiPageManager(application: Application, contentRepository: ContentRepository): WikiPageManager {
+        return WikiPageManagerImpl(application, contentRepository)
     }
 
     @Provides
@@ -89,13 +89,13 @@ class AppModule() {
     }
 
     @Provides
-    fun wiktionaryApi(application: Application): WiktionaryApi {
-        return WiktionaryApiImpl(application)
+    fun wiktionaryApi(application: Application, myHttp: MyHttp): WiktionaryApi {
+        return WiktionaryApiImpl(application, myHttp)
     }
 
     @Provides
-    fun wiktionaryBot(): WiktionaryBot {
-        return WiktionaryBotImpl()
+    fun wiktionaryBot(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
+        return WiktionaryBotImpl(dictionaryRepository,wiktionaryApi)
     }
 
     @Provides

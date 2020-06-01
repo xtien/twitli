@@ -15,11 +15,16 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
+import javax.inject.Inject
 
 
 class TestGetPage {
 
-    var contentRepository: ContentRepository? = null
+    @Inject
+    lateinit var contentRepository: ContentRepository
+
+    @Inject
+    lateinit var wikiPageManager: WikiPageManager
 
     @Before
     fun createDb() {
@@ -30,7 +35,6 @@ class TestGetPage {
     @get:Test
     val page: Unit
         get() {
-            val wikiPageManager: WikiPageManager = WikiPageManagerImpl()
             wikiPageManager.getPage("1")
             var content = contentRepository!!.getFirst("1")
             Assert.assertNotNull(content)
