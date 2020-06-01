@@ -14,7 +14,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,7 +21,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.bot.ChatBot
-import com.twitli.android.twitter.dagger.TwitViewModelFactory
 import com.twitli.android.twitter.tweet.listener.OnLikeClickListener
 import com.twitli.android.twitter.tweet.listener.OnReplyClickListener
 import org.apache.commons.lang3.math.NumberUtils
@@ -33,7 +31,6 @@ import kotlin.collections.ArrayList
 
 class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
 
-    private var twitViewModel: TwitViewModel? = null
     private var listView: RecyclerView? = null
     private var adapter: TwitAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
@@ -51,6 +48,9 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
     private var swipeContainer: SwipeRefreshLayout? = null
 
     var es = Executors.newCachedThreadPool()
+
+    @Inject
+    lateinit var twitViewModel: TwitViewModel
 
     @Inject
     lateinit var twitManager: TwitManager
@@ -84,8 +84,6 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
 
         isTweeting = false
 
-        val factory = TwitViewModelFactory(activity!!.application, twitManager, chatbot)
-        twitViewModel = ViewModelProvider(this, factory).get(TwitViewModel::class.java)
         twitViewModel!!.tweets?.observe(activity!!, Observer { tweets: List<Tweet?>? ->
             if (tweets != null) {
                 for (tweet in tweets) {

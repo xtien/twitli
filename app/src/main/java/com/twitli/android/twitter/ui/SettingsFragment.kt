@@ -25,7 +25,9 @@ import javax.inject.Inject
 
 class SettingsFragment : Fragment() {
 
-    var settingsViewModel: SettingsViewModel? = null
+    @Inject
+    lateinit var settingsViewModel: SettingsViewModel
+
     private var versionView: TextView? = null
 
     @Inject
@@ -62,12 +64,14 @@ class SettingsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
-        settingsViewModel!!.isActive().observeForever { b: Boolean? ->
-            if (b != null && activeSwitch!!.isChecked != b) {
-                activeSwitch!!.isChecked = b
-            }
-        }
+
+        (activity!!.applicationContext as MyApplication).appComponent!!.inject(this)
+
+//        settingsViewModel.isActive().observeForever { b: Boolean? ->
+//            if (b != null && activeSwitch!!.isChecked != b) {
+//                activeSwitch!!.isChecked = b
+//            }
+//        }
         versionView!!.text = BuildConfig.VERSION_NAME
 
         (activity!!.applicationContext as MyApplication).appComponent?.inject(this)

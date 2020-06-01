@@ -6,6 +6,7 @@
  */
 package com.twitli.android.twitter.wiki.impl
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.text.Html
@@ -14,15 +15,15 @@ import com.twitli.android.twitter.data.ContentRepository
 import com.twitli.android.twitter.wiki.WikiPageManager
 import org.jsoup.Jsoup
 import java.io.IOException
+import javax.inject.Inject
 
-class WikiPageManagerImpl : WikiPageManager {
+class WikiPageManagerImpl @Inject constructor(application: Application): WikiPageManager {
     private val baseUrl = "https://nl.wikipedia.org/wiki/"
-    private val repository: ContentRepository
 
-    var application: Context = MyApplication.instance
+    @Inject
+    lateinit var repository: ContentRepository
 
-    constructor() {
-    }
+    var application: Context = application
 
     override fun analyzePage(string: String?) {}
 
@@ -92,9 +93,5 @@ class WikiPageManagerImpl : WikiPageManager {
                 Html.fromHtml(html).toString()
             }
         }
-    }
-
-    init {
-        repository = ContentRepository(application)
     }
 }

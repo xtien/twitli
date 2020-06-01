@@ -8,18 +8,42 @@ package com.twitli.android.twitter.dagger
 
 import android.app.Application
 import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.bot.impl.ChatBotImpl
 import com.twitli.android.twitter.bot.wiki.DictionaryRepository
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.api.MyHttp
 import com.twitli.android.twitter.bot.wiki.api.MyHttpImpl
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
+import com.twitli.android.twitter.bot.wiki.api.WiktionaryApiImpl
+import com.twitli.android.twitter.bot.wiki.impl.WiktionaryBotImpl
+import com.twitli.android.twitter.data.ContentRepository
+import com.twitli.android.twitter.data.SettingsRepository
+import com.twitli.android.twitter.data.UserRepository
 import com.twitli.android.twitter.tweet.TwitManager
+import com.twitli.android.twitter.tweet.TwitRepository
+import com.twitli.android.twitter.tweet.TwitViewModel
+import com.twitli.android.twitter.tweet.impl.TwitManagerImpl
+import com.twitli.android.twitter.ui.SettingsViewModel
 import com.twitli.android.twitter.wiki.WikiPageManager
+import com.twitli.android.twitter.wiki.impl.WikiPageManagerImpl
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class AppModule() {
+
+    lateinit var twitManager: TwitManager
+
+    @Provides
+    fun twitViewModel(application: Application, twitManager: TwitManager, chatbot: ChatBot): TwitViewModel {
+        return TwitViewModel(application, twitManager, chatbot)
+    }
+
+    @Provides
+    fun settingsViewModel(application: Application, settingsRepository: SettingsRepository): SettingsViewModel {
+        return SettingsViewModel(application, settingsRepository)
+    }
 
     @Provides
     fun dictionaryRepository(application: Application): DictionaryRepository {
@@ -27,28 +51,51 @@ class AppModule() {
     }
 
     @Provides
-    fun wikiPageManager(): WikiPageManager {
-        return WikiPageManagerFactory.get()
+    fun settingsRepository(application: Application): SettingsRepository {
+        return SettingsRepository(application)
     }
 
     @Provides
-    fun twitManager(): TwitManager {
-        return TwitManagerFactory.get()
+    fun twitRepository(application: Application?, twitManager: TwitManager, chatbot: ChatBot): TwitRepository {
+        return TwitRepository(application, twitManager, chatbot)
     }
 
     @Provides
-    fun chatbot(): ChatBot {
-        return ChatBotFactory.get();
+    fun userRepository(application: Application): UserRepository {
+        return UserRepository(application)
     }
 
     @Provides
-    fun wiktionaryApi(): WiktionaryApi {
-        return WiktionaryApiFactory.get()
+    fun contentRepository(application: Application): ContentRepository {
+        return ContentRepository(application)
+    }
+
+    @Provides
+    fun wikiPageManager(application: Application): WikiPageManager {
+        return WikiPageManagerImpl(application)
+    }
+
+    @Provides
+    fun provideTwitManager(application: Application, chatbot: ChatBot): TwitManager {
+        if(!this::twitManager.isInitialized){
+            twitManager = TwitManagerImpl(application, chatbot)
+        }
+        return twitManager
+    }
+
+    @Provides
+    fun chatbot(application: Application): ChatBot {
+        return ChatBotImpl(application)
+    }
+
+    @Provides
+    fun wiktionaryApi(application: Application): WiktionaryApi {
+        return WiktionaryApiImpl(application)
     }
 
     @Provides
     fun wiktionaryBot(): WiktionaryBot {
-        return WiktionaryBotFactory.get()
+        return WiktionaryBotImpl()
     }
 
     @Provides

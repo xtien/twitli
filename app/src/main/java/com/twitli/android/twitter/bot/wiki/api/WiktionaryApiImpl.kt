@@ -1,17 +1,18 @@
 package com.twitli.android.twitter.bot.wiki.api
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.twitli.android.twitter.MyApplication
 import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
-class WiktionaryApiImpl : WiktionaryApi {
+class WiktionaryApiImpl @Inject constructor(application: Application): WiktionaryApi {
 
     private val LOGTAG = WiktionaryApiImpl::class.qualifiedName
     private val httpString: String = "https://nl.wiktionary.org/wiki/"
 
-    var context: Context = MyApplication.instance
+    var context: Context = application
 
     @Inject
     lateinit var client: MyHttp

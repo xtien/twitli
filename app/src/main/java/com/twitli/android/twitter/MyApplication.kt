@@ -17,10 +17,6 @@ import javax.inject.Inject
 
 class MyApplication : Application(), HasAndroidInjector {
 
-    companion object{
-        lateinit var instance: MyApplication
-    }
-
      lateinit var appComponent: AppComponent
 
     @Inject
@@ -32,8 +28,6 @@ class MyApplication : Application(), HasAndroidInjector {
 
     override fun onCreate() {
         super.onCreate()
-
-        instance = this;
 
         appComponent = DaggerAppComponent.builder()
                 .application(this)

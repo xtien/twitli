@@ -9,8 +9,10 @@ package com.twitli.android.twitter.data
 import android.app.Application
 import androidx.lifecycle.LiveData
 import twitter4j.User
+import javax.inject.Inject
 
-class UserRepository(application: Application?) {
+class UserRepository @Inject constructor(application: Application?) {
+
     private val userDao: UserDao
     val followersCount: LiveData<Long?>?
 

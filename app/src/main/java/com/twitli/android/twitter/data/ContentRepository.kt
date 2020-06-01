@@ -8,8 +8,9 @@ package com.twitli.android.twitter.data
 
 import android.content.Context
 import android.util.Log
+import javax.inject.Inject
 
-class ContentRepository(context: Context) {
+class ContentRepository @Inject constructor(context: Context) {
     private val contentDao: ContentDao?
     fun addContent(year: String?, datum: String?, text: String?) {
         contentDao!!.addContent(year, datum, text)

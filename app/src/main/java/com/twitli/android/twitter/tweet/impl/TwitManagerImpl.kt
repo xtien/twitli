@@ -6,6 +6,7 @@
  */
 package com.twitli.android.twitter.tweet.impl
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.twitli.android.twitter.MyApplication
@@ -21,26 +22,24 @@ import javax.inject.Inject
 
 class TwitManagerImpl : TwitManager {
 
-    private val twitter: Twitter
+    lateinit var context: Context
 
-    var context: Context = MyApplication.instance
+    private var twitter: Twitter = TwitterFactory.getSingleton()
 
-    @Inject
-    lateinit var chatbot : ChatBot
+    lateinit var chatbot: ChatBot
 
     var es = Executors.newCachedThreadPool()!!
 
-    init {
-        (context!!.applicationContext as MyApplication).appComponent!!.inject(this)
-    }
+    @Inject
+    constructor(application: Application, chatbot: ChatBot) {
+        context = application
+        this.chatbot = chatbot
 
-    constructor() {
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val accessTokenKey = prefs.getString("access_token", null)
         val accesTokenSecret = prefs.getString("access_token_secret", null)
-        twitter = TwitterFactory.getSingleton()
-        twitter.setOAuthConsumer(context.getString(R.string.api_key), context.getString(R.string.api_secret))
         if (accessTokenKey != null && accesTokenSecret != null) {
+            twitter.setOAuthConsumer(context.getString(R.string.api_key), context.getString(R.string.api_secret))
             val accessToken = AccessToken(accessTokenKey, accesTokenSecret)
             twitter.oAuthAccessToken = accessToken
         }

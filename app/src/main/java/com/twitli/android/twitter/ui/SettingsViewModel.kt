@@ -12,10 +12,12 @@ import androidx.lifecycle.LiveData
 import com.twitli.android.twitter.data.SettingsRepository
 import javax.inject.Inject
 
-class SettingsViewModel @Inject constructor(application: Application?) : AndroidViewModel(application!!) {
+class SettingsViewModel @Inject constructor(application: Application, settingsRepository: SettingsRepository) : AndroidViewModel(application!!) {
 
-    private val active: LiveData<Boolean>
-    private val repository: SettingsRepository = SettingsRepository(application)
+    lateinit var active: LiveData<Boolean>
+
+    @Inject
+    lateinit var repository: SettingsRepository
 
     fun setActive(isChecked: Boolean) {
         repository.setActive(isChecked)
@@ -26,6 +28,8 @@ class SettingsViewModel @Inject constructor(application: Application?) : Android
     }
 
     init {
-        active = repository.isActive
+        if(this::repository.isInitialized){
+            active = repository.isActive
+        }
     }
 }

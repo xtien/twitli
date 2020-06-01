@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     var requestToken: RequestToken? = null
 
     @Inject
+    lateinit var twitRepository: TwitRepository
+
+    @Inject
     lateinit var twitManager: TwitManager
 
     @Inject
@@ -67,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                         val editor = prefs.edit()
                         editor.putLong("last_tweet_load", System.currentTimeMillis())
                         editor.apply()
-                        TwitRepository(application, twitManager, chatbot).loadTweets()
+                        twitRepository.loadTweets()
                     }
                 } catch (e: TwitterException) {
                     if (e.statusCode == TwitterException.UNAUTHORIZED) {

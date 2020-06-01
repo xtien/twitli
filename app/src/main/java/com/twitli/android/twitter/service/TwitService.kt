@@ -33,10 +33,18 @@ import javax.inject.Singleton
 @Singleton
 class TwitService : LifecycleService() {
 
-    private var settingsRepository: SettingsRepository? = null
-    private var contentRepository: ContentRepository? = null
-    private var userRepository: UserRepository? = null
-    private var twitRepository: TwitRepository? = null
+    @Inject
+    lateinit var settingsRepository: SettingsRepository
+
+    @Inject
+    lateinit var contentRepository: ContentRepository
+
+    @Inject
+    lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var twitRepository: TwitRepository
+
     private val init = 10L
     var count = 999L
     private var intervals: List<String>? = null
@@ -85,10 +93,7 @@ class TwitService : LifecycleService() {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         currentYear = calendar[Calendar.YEAR]
-        contentRepository = ContentRepository(application)
-        settingsRepository = SettingsRepository(application)
-        userRepository = UserRepository(application)
-        twitRepository = TwitRepository(application, twitManager ,chatbot)
+
         es.execute {
             year = userRepository!!.year
             Log.d(LOGTAG, "year = $year")

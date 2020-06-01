@@ -8,8 +8,9 @@ package com.twitli.android.twitter.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
 
-class SettingsRepository(application: Application?) {
+class SettingsRepository @Inject constructor(application: Application?) {
 
     val isActive: LiveData<Boolean>
     private val settingsDao: SettingsDao
