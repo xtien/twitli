@@ -9,15 +9,12 @@ package com.twitli.android.twitter.bot.wiki.impl
 
 import com.twitli.android.twitter.bot.wiki.*
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
-import com.twitli.android.twitter.bot.wiki.type.MyNumber
-import com.twitli.android.twitter.bot.wiki.type.Noun
-import com.twitli.android.twitter.bot.wiki.type.Word
+import com.twitli.android.twitter.bot.wiki.type.*
 import twitter4j.Status
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.sql.SQLException
 import java.util.*
-import java.util.function.Predicate
 import java.util.stream.Collectors
 import javax.inject.Inject
 
@@ -38,7 +35,7 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
    FileNotFoundException if page does not exist in wiktionary
     */
     @Throws(IOException::class, SQLException::class)
-    private fun getType(string: String): MutableList<Word> {
+    override fun getType(string: String): MutableList<Word> {
 
         var string = string
         val words: MutableList<Word> = ArrayList<Word>()
@@ -76,8 +73,8 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
                             }
                             "Verb".equals(type, ignoreCase = true) -> {
                                 val v = Verb()
-                                v.setPresentTense(string)
-                                v.setPresentTenseThirdPersonSingular(string)
+                                v.presentTense = string
+                                v.presentTenseThirdPersonSingular = string
                                 v.setWordString(string)
                                 v.setType(type)
                                 this.dictionaryRepository?.create(v)
@@ -85,7 +82,7 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
                             }
                             "Adverb".equals(type, ignoreCase = true) -> {
                                 val v = Adverb()
-                                v.setPositive(string)
+                                v.positive = string
                                 v.setWordString(string)
                                 v.setType(type)
                                 this.dictionaryRepository?.create(v)
@@ -93,7 +90,7 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
                             }
                             "Adjective".equals(type, ignoreCase = true) -> {
                                 val a = Adjective()
-                                a.setPositive(string)
+                                a.positive = string
                                 a.setWordString(string)
                                 a.setType(type)
                                 this.dictionaryRepository?.create(a)

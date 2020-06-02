@@ -18,7 +18,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class WikiPageManagerImpl @Inject constructor(application: Application, repository: ContentRepository): WikiPageManager {
-    private val baseUrl = "https://nl.wikipedia.org/wiki/"
+    private val baseUrl = "https://en.wikipedia.org/wiki/"
 
     private var repository: ContentRepository = repository
 

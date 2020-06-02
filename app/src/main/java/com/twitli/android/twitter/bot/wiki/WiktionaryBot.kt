@@ -23,4 +23,6 @@ interface WiktionaryBot {
     fun classify(string: String): List<Word>
 
     fun getNouns(status: Status): List<String>
+
+    fun getType(string: String): MutableList<Word>
 }

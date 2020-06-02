@@ -10,15 +10,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.twitli.android.twitter.bot.wiki.type.Adjective
+import com.twitli.android.twitter.bot.wiki.type.Adverb
 import com.twitli.android.twitter.bot.wiki.DictionaryDao
+import com.twitli.android.twitter.bot.wiki.type.Verb
 import com.twitli.android.twitter.bot.wiki.type.Noun
 import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitDao
 import java.util.concurrent.Executors
 
-@Database(entities = [MySettings::class, Content::class, User::class, Tweet::class, Noun::class], version = 3, exportSchema = false)
+@Database(entities = [MySettings::class, Content::class, User::class, Tweet::class, Noun::class, Verb::class, Adjective::class, Adverb::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun settingsDao(): SettingsDao
     abstract fun contentDao(): ContentDao?

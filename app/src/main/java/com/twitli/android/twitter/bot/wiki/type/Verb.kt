@@ -1,4 +1,11 @@
-package com.twitli.android.twitter.bot.wiki
+/*
+ * Copyright (c) 2020, Zaphod Consulting BV, Christine Karman
+ * This project is free software: you can redistribute it and/or modify it under the terms of
+ * the Apache License, Version 2.0. You can find a copy of the license at
+ * http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+package com.twitli.android.twitter.bot.wiki.type
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -15,49 +22,36 @@ class Verb : Word() {
     var id: Long? = null
 
     @ColumnInfo(name = "presentTense")
-    private var presentTense: String? = null
+    var presentTense: String? = null
 
     @ColumnInfo(name = "presentTenseFirstPersonSingular")
-    val presentTenseFirstPersonSingular: String? = null
+    var presentTenseFirstPersonSingular: String = ""
 
     @ColumnInfo(name = "presentTenseThirdPersonSingular")
-    private var presentTenseThirdPersonSingular: String? = null
+    var presentTenseThirdPersonSingular: String = ""
 
     @ColumnInfo(name = "presentTensePlural")
-    var presentTensePlural: String? = null
+    var presentTensePlural: String = ""
 
     @ColumnInfo(name = "presentParticiple")
-    var presentParticiple: String? = null
+    var presentParticiple: String = ""
 
     @ColumnInfo(name = "gerund")
-    var gerund: String? = null
+    var gerund: String = ""
 
     @ColumnInfo(name = "infinitive")
-    var infinitive   : String? = null
+    var infinitive: String = ""
 
     @ColumnInfo(name = "pastParticiple")
-    var pastParticiple: String? = null
+    var pastParticiple: String = ""
 
     @ColumnInfo(name = "pastTense")
-    var pastTense: String? = null
+    var pastTense: String = ""
 
     @ColumnInfo(name = "pastTensePlural")
-    var pastTensePlural: String? = null
-
-    fun setPresentTense(string: String?) {
-        presentTense = string
-    }
-
-    override fun toString(): String {
-        return presentTenseThirdPersonSingular!!
-    }
+    var pastTensePlural: String = ""
 
     override fun hashCode(): Int {
         return HashCodeBuilder().append(presentTense).append(37).toHashCode()
     }
-
-    fun setPresentTenseThirdPersonSingular(string: String) {
-        this.presentTenseThirdPersonSingular = string
-    }
-
 }

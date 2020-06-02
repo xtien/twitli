@@ -38,7 +38,7 @@ class WiktionaryPageLiveTest {
     @Inject
     lateinit var twitManager: TwitManager
 
-    private val nounString = "fiets"
+    private val nounString = "bicycle"
 
     var user: User? = null
 
@@ -67,7 +67,7 @@ class WiktionaryPageLiveTest {
 
     @Test
     fun testLiveGetNoun() {
-        val string :List<Word> = bot!!.classify(nounString)
+        val string :List<Word> = bot.getType(nounString)
         Assert.assertNotNull(string)
         Assert.assertTrue("fiets" == string[0].getWordString())
     }

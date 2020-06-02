@@ -1,15 +1,9 @@
 package com.twitli.android.twitter.bot.wiki
 
 import android.app.Application
-import com.twitli.android.twitter.bot.ChatBot
-import com.twitli.android.twitter.bot.wiki.type.MyNumber
-import com.twitli.android.twitter.bot.wiki.type.Noun
-import com.twitli.android.twitter.bot.wiki.type.Word
+import com.twitli.android.twitter.bot.wiki.type.*
 import com.twitli.android.twitter.data.AppDatabase
-import com.twitli.android.twitter.tweet.TwitManager
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class DictionaryRepository @Inject constructor(application: Application?) {
 
@@ -24,16 +18,16 @@ class DictionaryRepository @Inject constructor(application: Application?) {
         AppDatabase.databaseWriteExecutor.execute { dictionaryDao.createOrUpdate(n) }
     }
 
-    fun create(n: Verb) {
-        TODO("Not yet implemented")
+    fun create(v: Verb) {
+        AppDatabase.databaseWriteExecutor.execute { dictionaryDao.createOrUpdate(v) }
     }
 
-    fun create(v: Adverb) {
-        TODO("Not yet implemented")
+    fun create(a: Adverb) {
+        AppDatabase.databaseWriteExecutor.execute { dictionaryDao.createOrUpdate(a) }
     }
 
     fun create(a: Adjective) {
-        TODO("Not yet implemented")
+        AppDatabase.databaseWriteExecutor.execute { dictionaryDao.createOrUpdate(a) }
     }
 
     fun create(a: ProperNoun) {

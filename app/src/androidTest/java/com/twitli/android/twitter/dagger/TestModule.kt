@@ -38,9 +38,4 @@ open class TestModule {
     fun provideChatBot(): ChatBot {
         return Mockito.mock(ChatBot::class.java)
     }
-
-    @Provides
-    fun wiktionaryBot() : WiktionaryBot {
-        return Mockito.mock(WiktionaryBot::class.java)
-    }
 }

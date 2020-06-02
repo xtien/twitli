@@ -1,4 +1,11 @@
-package com.twitli.android.twitter.bot.wiki
+/*
+ * Copyright (c) 2020, Zaphod Consulting BV, Christine Karman
+ * This project is free software: you can redistribute it and/or modify it under the terms of
+ * the Apache License, Version 2.0. You can find a copy of the license at
+ * http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+package com.twitli.android.twitter.bot.wiki.type
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -14,16 +21,11 @@ class Adverb : Word() {
     var id: Long? = null
 
     @ColumnInfo(name = "comparative")
-    private var comparative: String? = null
+     var comparative: String = ""
 
     @ColumnInfo(name = "superlative")
-    private var superlative: String? = null
+     var superlative: String = ""
 
     @ColumnInfo(name = "positive")
-    private var positive: String? = null
-
-    fun setPositive(string: String) {
-        TODO("Not yet implemented")
-    }
-
-}
+     var positive: String = ""
+ }

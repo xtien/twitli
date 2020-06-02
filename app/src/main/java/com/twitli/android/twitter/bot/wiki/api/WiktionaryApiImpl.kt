@@ -10,7 +10,7 @@ import javax.inject.Inject
 class WiktionaryApiImpl @Inject constructor(application: Application, myHttp: MyHttp): WiktionaryApi {
 
     private val LOGTAG = WiktionaryApiImpl::class.qualifiedName
-    private val httpString: String = "https://nl.wiktionary.org/wiki/"
+    private val httpString: String = "https://en.wiktionary.org/wiki/"
 
     var context: Context = application
 

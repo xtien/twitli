@@ -19,4 +19,6 @@ interface TestComponent : AppComponent {
     fun inject(scenarioTest: ScenarioTest?)
     fun inject(nounTest: WiktionaryNounTest?)
     override fun inject(mainActivity: MainActivity)
+
+
 }
