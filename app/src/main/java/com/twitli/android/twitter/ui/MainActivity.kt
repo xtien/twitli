@@ -6,13 +6,11 @@
  */
 package com.twitli.android.twitter.ui
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.twitli.android.twitter.MyApplication
@@ -20,6 +18,7 @@ import com.twitli.android.twitter.R
 import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.service.TwitService.LocalBinder
+import com.twitli.android.twitter.tweet.AuthCallbackActivity
 import com.twitli.android.twitter.tweet.TwitFragment
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
@@ -30,10 +29,15 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private var twitService: TwitService? = null
+    private val AUTH: Int = 2
+    private val INTRO: Int = 1
+    lateinit var twitService: TwitService
     private val es = Executors.newCachedThreadPool()
     private val tweetLoadTime = 120000L
-    var requestToken: RequestToken? = null
+    lateinit var requestToken: RequestToken
+
+    private lateinit var prefs: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     @Inject
     lateinit var twitRepository: TwitRepository
@@ -46,37 +50,63 @@ class MainActivity : AppCompatActivity() {
 
     private var pagerAdapter: ScreenSlidePagerAdapter? = null
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            INTRO -> doActivity()
+            AUTH -> {
+                twitManager.reset()
+                doActivity()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (applicationContext as MyApplication).appComponent.inject(this)
+        prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        editor = prefs.edit()
+
+        if (prefs.getBoolean("authorizing", false)) {
+            doActivity()
+        } else {
+            if (prefs.getInt("inits", 0) < 2 && (prefs.getLong("previousShowIntro", 0L) < (System.currentTimeMillis() - 3600000))) {
+                startActivityForResult(Intent(this, IntroActivity::class.java), INTRO)
+                editor.putInt("inits", prefs.getInt("inits", 0) + 1)
+                editor.putLong("previousShowIntro", System.currentTimeMillis());
+                editor.apply()
+            } else {
+                doActivity()
+            }
+        }
+    }
+
+    private fun doActivity() {
         setContentView(R.layout.activity_main)
-        val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
         pagerAdapter!!.addFragment(TwitFragment.newInstance())
         pagerAdapter!!.addFragment(SettingsFragment.newInstance())
-        val viewPager = findViewById(R.id.viewpager) as ViewPager
-        viewPager.setAdapter(pagerAdapter)
-        (applicationContext as MyApplication).appComponent?.inject(this)
+        val viewPager = findViewById<ViewPager>(R.id.viewpager)
+        viewPager.adapter = pagerAdapter
         val icycle = Intent(this, TwitService::class.java)
         bindService(icycle, connection, Context.BIND_AUTO_CREATE)
 
         es.execute {
             var accessToken = prefs.getString("access_token", null)
-            val accessTokenVerifier = prefs.getString("access_token_verifier", null)
             var accesTokenSecret = prefs.getString("access_token_secret", null)
+            val accessTokenVerifier = prefs.getString("access_token_verifier", null)
+
             if (accessToken != null && accesTokenSecret != null) {
                 try {
-                    twitManager!!.verifyCredentials()
+                    twitManager.verifyCredentials()
                     if (prefs.getLong("last_tweets_loaded", 0L) < System.currentTimeMillis() - tweetLoadTime) {
-                        val editor = prefs.edit()
                         editor.putLong("last_tweet_load", System.currentTimeMillis())
                         editor.apply()
                         twitRepository.loadTweets()
                     }
                 } catch (e: TwitterException) {
                     if (e.statusCode == TwitterException.UNAUTHORIZED) {
-                        accessToken = null
-                        accesTokenSecret = null
-                        val editor = prefs.edit()
                         editor.putString("access_token", null)
                         editor.putString("access_token_verifier", null)
                         editor.putString("access_token_secret", null)
@@ -85,18 +115,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (accessTokenVerifier != null && accesTokenSecret == null) {
-                twitManager!!.createAccessToken(accessTokenVerifier)
+                twitManager.createAccessToken(accessTokenVerifier)
             } else if (accessToken == null) {
-                try {
-                    requestToken = twitManager!!.createRequestToken()
-                } catch (e: TwitterException) {
-                    e.printStackTrace()
-                }
-                runOnUiThread {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(requestToken!!.authorizationURL))
-                    startActivity(browserIntent)
-                    finish()
-                }
+                authorize()
+            }
+        }
+    }
+
+    private fun authorize() {
+
+        es.submit {
+            try {
+                requestToken = twitManager.createRequestToken()
+            } catch (e: TwitterException) {
+                e.printStackTrace()
+            }
+            editor.putBoolean("authorizing", true);
+            editor.apply()
+            runOnUiThread {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.authorizationURL))
+                startActivityForResult(browserIntent, AUTH)
             }
         }
     }
@@ -112,6 +150,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val LOGTAG: String = MainActivity::class.java.getSimpleName()
+        private val LOGTAG: String = MainActivity::class.java.simpleName
     }
 }

@@ -8,6 +8,7 @@ package com.twitli.android.twitter.tweet.impl
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
@@ -17,14 +18,15 @@ import com.twitli.android.twitter.tweet.TwitManager
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
+import java.lang.IllegalStateException
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class TwitManagerImpl : TwitManager {
 
-    lateinit var context: Context
+    var context: Context
 
-    private var twitter: Twitter = TwitterFactory.getSingleton()
+    private var twitter: Twitter = TwitterFactory().instance
 
     lateinit var chatbot: ChatBot
 
@@ -38,8 +40,8 @@ class TwitManagerImpl : TwitManager {
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val accessTokenKey = prefs.getString("access_token", null)
         val accesTokenSecret = prefs.getString("access_token_secret", null)
+        twitter.setOAuthConsumer(context.getString(R.string.api_key), context.getString(R.string.api_secret))
         if (accessTokenKey != null && accesTokenSecret != null) {
-            twitter.setOAuthConsumer(context.getString(R.string.api_key), context.getString(R.string.api_secret))
             val accessToken = AccessToken(accessTokenKey, accesTokenSecret)
             twitter.oAuthAccessToken = accessToken
         }
@@ -104,11 +106,12 @@ class TwitManagerImpl : TwitManager {
     }
 
     @Throws(TwitterException::class)
-    override fun createRequestToken(): RequestToken? {
+    override fun createRequestToken(): RequestToken {
         val requestToken = twitter.oAuthRequestToken
         val editor = context.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
         editor.putString("request_token", requestToken.token)
         editor.putString("request_token_secret", requestToken.tokenSecret)
+        editor.putString("request_token_url", requestToken.authorizationURL)
         editor.apply()
         return requestToken
     }
@@ -134,8 +137,13 @@ class TwitManagerImpl : TwitManager {
         }
     }
 
+    override fun reset() {
+        twitter = TwitterFactory().instance
+        twitter.setOAuthConsumer(context.getString(R.string.api_key), context.getString(R.string.api_secret))
+    }
+
     @Throws(TwitterException::class)
-    override fun getHomeTimeline(paging: Paging?): List<Status?>? {
+    override fun getHomeTimeline(paging: Paging?): List<Status> {
         var tweets = twitter.getHomeTimeline(paging)
         chatbot.read(tweets)
         return tweets

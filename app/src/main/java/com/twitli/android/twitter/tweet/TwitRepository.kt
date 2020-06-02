@@ -71,6 +71,6 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
         tweets = twitDao.tweets
         this.twitManager = twitManager
         this.chatbot = chatbot
-        es.scheduleAtFixedRate({ loadTweets() }, 2, 300, TimeUnit.SECONDS)
+        es.scheduleAtFixedRate({ loadTweets() }, 300, 300, TimeUnit.SECONDS)
     }
 }

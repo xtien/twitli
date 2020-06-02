@@ -77,15 +77,15 @@ class AppModule() {
 
     @Provides
     fun provideTwitManager(application: Application, chatbot: ChatBot): TwitManager {
-        if(!this::twitManager.isInitialized){
+        if (!this::twitManager.isInitialized) {
             twitManager = TwitManagerImpl(application, chatbot)
         }
         return twitManager
     }
 
     @Provides
-    fun chatbot(application: Application): ChatBot {
-        return ChatBotImpl(application)
+    fun chatbot(application: Application, wikBot: WiktionaryBot): ChatBot {
+        return ChatBotImpl(application, wikBot)
     }
 
     @Provides
@@ -95,7 +95,7 @@ class AppModule() {
 
     @Provides
     fun wiktionaryBot(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
-        return WiktionaryBotImpl(dictionaryRepository,wiktionaryApi)
+        return WiktionaryBotImpl(dictionaryRepository, wiktionaryApi)
     }
 
     @Provides

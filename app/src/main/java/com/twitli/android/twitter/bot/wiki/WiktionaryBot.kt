@@ -1,6 +1,7 @@
 package com.twitli.android.twitter.bot.wiki
 
 import com.twitli.android.twitter.bot.wiki.type.Word
+import twitter4j.Status
 import java.io.IOException
 import java.sql.SQLException
 
@@ -20,4 +21,6 @@ interface WiktionaryBot {
      */
     @Throws(IOException::class, SQLException::class)
     fun classify(string: String): List<Word>
+
+    fun getNouns(status: Status): List<String>
 }

@@ -24,16 +24,18 @@ interface TwitManager {
     fun createAccessToken(verifier: String?)
 
     @Throws(TwitterException::class)
-    fun createRequestToken(): RequestToken?
+    fun createRequestToken(): RequestToken
 
     @Throws(TwitterException::class)
     fun verifyCredentials(): User?
     fun like(tweetId: Long?)
 
     @Throws(TwitterException::class)
-    fun getHomeTimeline(paging: Paging?): List<Status?>?
+    fun getHomeTimeline(paging: Paging?): List<Status>
 
     fun logout()
 
     fun unlike(tweetId: Long?)
+
+    fun reset()
 }

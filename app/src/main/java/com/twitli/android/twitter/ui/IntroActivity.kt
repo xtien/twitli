@@ -18,19 +18,10 @@ class IntroActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        if (prefs.getInt("inits", 0) > 2) {
-            startActivity(Intent(this, MainActivity::class.java))
+        setContentView(R.layout.activity_intro)
+        findViewById<View>(R.id.submit).setOnClickListener {
+            setResult(0)
             finish()
-        } else {
-            setContentView(R.layout.activity_intro)
-            findViewById<View>(R.id.submit).setOnClickListener { v: View? ->
-                val editor = prefs.edit()
-                editor.putInt("inits", prefs.getInt("inits", 0) + 1)
-                editor.apply()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }
         }
     }
 }

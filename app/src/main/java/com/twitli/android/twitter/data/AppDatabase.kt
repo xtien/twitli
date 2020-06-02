@@ -18,7 +18,7 @@ import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitDao
 import java.util.concurrent.Executors
 
-@Database(entities = [MySettings::class, Content::class, User::class, Tweet::class, Noun::class], version = 2, exportSchema = false)
+@Database(entities = [MySettings::class, Content::class, User::class, Tweet::class, Noun::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun settingsDao(): SettingsDao
     abstract fun contentDao(): ContentDao?
@@ -27,12 +27,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dictionaryDao(): DictionaryDao
 
     companion object {
-        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("CREATE TABLE noun (id INTEGER, singular TEXT, plural TEXT, wordString TEXT, PRIMARY KEY(id))")
-                database.execSQL("CREATE UNIQUE INDEX index_noun_singular_plural ON Noun(singular, plural)")
-            }
-        }
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -60,7 +54,6 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 AppDatabase::class.java, "app_database")
-                                .addMigrations(MIGRATION_1_2)
                                 .addCallback(databaseCallback)
                                 .build()
                     }

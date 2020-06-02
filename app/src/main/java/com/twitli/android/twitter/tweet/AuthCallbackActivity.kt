@@ -23,6 +23,7 @@ class AuthCallbackActivity : AppCompatActivity() {
         val edit = getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
         edit.putString("access_token", token)
         edit.putString("access_token_verifier", verifier)
+        edit.putBoolean("authorizing", false)
         edit.apply()
         startActivity(Intent(this, MainActivity::class.java))
     }

@@ -12,13 +12,16 @@ import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import com.twitli.android.twitter.bot.wiki.type.MyNumber
 import com.twitli.android.twitter.bot.wiki.type.Noun
 import com.twitli.android.twitter.bot.wiki.type.Word
+import twitter4j.Status
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.sql.SQLException
 import java.util.*
+import java.util.function.Predicate
+import java.util.stream.Collectors
 import javax.inject.Inject
 
-class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
+class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi) : WiktionaryBot {
 
     private var dictionaryRepository: DictionaryRepository = dictionaryRepository
 
@@ -62,53 +65,70 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
 
                 if (types != null) {
                     for (type in types) {
-                        if ("Noun".equals(type, ignoreCase = true)) {
-                            val n = Noun()
-                            n.setSingular(string)
-                            n.setWordString(string)
-                            this.dictionaryRepository?.create(n)
-                            words.add(n)
-                        } else if ("Verb".equals(type, ignoreCase = true)) {
-                            val v = Verb()
-                            v.setPresentTense(string)
-                            v.setPresentTenseThirdPersonSingular(string)
-                            v.setWordString(string)
-                            this.dictionaryRepository?.create(v)
-                            words.add(v)
-                        } else if ("Adverb".equals(type, ignoreCase = true)) {
-                            val v = Adverb()
-                            v.setPositive(string)
-                            v.setWordString(string)
-                            this.dictionaryRepository?.create(v)
-                            words.add(v)
-                        } else if ("Adjective".equals(type, ignoreCase = true)) {
-                            val a = Adjective()
-                            a.setPositive(string)
-                            a.setWordString(string)
-                            this.dictionaryRepository?.create(a)
-                            words.add(a)
-                        } else if ("Proper noun".equals(type, ignoreCase = true)) {
-                            val a = ProperNoun()
-                            a.setName(string)
-                            a.setWordString(string)
-                            this.dictionaryRepository?.create(a)
-                            words.add(a)
-                        } else if ("Conjunction".equals(type, ignoreCase = true)) {
-                            val a = Conjunction()
-                            a.setWordString(string)
-                            this.dictionaryRepository?.create(a)
-                            words.add(a)
-                        } else if ("Interjection".equals(type, ignoreCase = true)) {
-                            val a = Interjection()
-                            a.setWordString(string)
-                            this.dictionaryRepository?.create(a)
-                            words.add(a)
-                        } else if ("Proper noun".equals(type, ignoreCase = true)) {
-                            val a = ProperNoun()
-                            a.setName(string)
-                            a.setWordString(string)
-                            this.dictionaryRepository?.create(a)
-                            words.add(a)
+                        when {
+                            "Noun".equals(type, ignoreCase = true) -> {
+                                val n = Noun()
+                                n.setSingular(string)
+                                n.setWordString(string)
+                                n.setType(type)
+                                this.dictionaryRepository?.create(n)
+                                words.add(n)
+                            }
+                            "Verb".equals(type, ignoreCase = true) -> {
+                                val v = Verb()
+                                v.setPresentTense(string)
+                                v.setPresentTenseThirdPersonSingular(string)
+                                v.setWordString(string)
+                                v.setType(type)
+                                this.dictionaryRepository?.create(v)
+                                words.add(v)
+                            }
+                            "Adverb".equals(type, ignoreCase = true) -> {
+                                val v = Adverb()
+                                v.setPositive(string)
+                                v.setWordString(string)
+                                v.setType(type)
+                                this.dictionaryRepository?.create(v)
+                                words.add(v)
+                            }
+                            "Adjective".equals(type, ignoreCase = true) -> {
+                                val a = Adjective()
+                                a.setPositive(string)
+                                a.setWordString(string)
+                                a.setType(type)
+                                this.dictionaryRepository?.create(a)
+                                words.add(a)
+                            }
+                            "Proper noun".equals(type, ignoreCase = true) -> {
+                                val a = ProperNoun()
+                                a.setName(string)
+                                a.setWordString(string)
+                                a.setType(type)
+                                this.dictionaryRepository?.create(a)
+                                words.add(a)
+                            }
+                            "Conjunction".equals(type, ignoreCase = true) -> {
+                                val a = Conjunction()
+                                a.setWordString(string)
+                                a.setType(type)
+                                this.dictionaryRepository?.create(a)
+                                words.add(a)
+                            }
+                            "Interjection".equals(type, ignoreCase = true) -> {
+                                val a = Interjection()
+                                a.setWordString(string)
+                                a.setType(type)
+                                this.dictionaryRepository?.create(a)
+                                words.add(a)
+                            }
+                            "Proper noun".equals(type, ignoreCase = true) -> {
+                                val a = ProperNoun()
+                                a.setName(string)
+                                a.setWordString(string)
+                                a.setType(type)
+                                this.dictionaryRepository?.create(a)
+                                words.add(a)
+                            }
                         }
                     }
                 }
@@ -137,5 +157,14 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
             }
         }
         return words
+    }
+
+    override fun getNouns(status: Status): List<String> {
+        var list = status.text.split(" ").stream().filter { s -> (s != null && isNoun(s)) }.collect(Collectors.toList())
+        return list
+    }
+
+    private fun isNoun(s: String): Boolean {
+        return !classify(s).stream().filter { w -> "noun" == w.getType() }.collect(Collectors.toList()).isEmpty()
     }
 }

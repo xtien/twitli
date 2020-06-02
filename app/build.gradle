@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.twitli.android.twitter"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 3
         versionName "2.0"
