@@ -24,5 +24,5 @@ interface WiktionaryBot {
 
     fun getNouns(status: Status): List<String>
 
-    fun getType(string: String): MutableList<Word>
+    fun getType(string: String): List<Word>
 }

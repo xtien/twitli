@@ -45,4 +45,12 @@ class DictionaryRepository @Inject constructor(application: Application?) {
     fun create(a: MyNumber) {
         TODO("Not yet implemented")
     }
+
+    fun getType(string: String): MutableList<Word> {
+        var resultList: MutableList<Word> = mutableListOf()
+        resultList.addAll(dictionaryDao.getNoun(string))
+        resultList.addAll(dictionaryDao.getVerb(string))
+        resultList.addAll(dictionaryDao.getAdjective(string))
+        return resultList
+    }
 }

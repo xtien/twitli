@@ -43,11 +43,21 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
         noEntry = context.getString(R.string.no_entry)
     }
 
+    @Throws(IOException::class, SQLException::class)
+    fun getTypeLocal(string: String): MutableList<Word> {
+        return dictionaryRepository.getType(string)
+    }
+
     /*
-   FileNotFoundException if page does not exist in wiktionary
+     FileNotFoundException if page does not exist in wiktionary
     */
     @Throws(IOException::class, SQLException::class)
     override fun getType(string: String): MutableList<Word> {
+
+        val localResult = getTypeLocal(string)
+        if(localResult !=null){
+            return localResult
+        }
 
         var string = string
         val words: MutableList<Word> = ArrayList<Word>()

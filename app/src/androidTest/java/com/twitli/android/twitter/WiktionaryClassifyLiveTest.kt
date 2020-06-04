@@ -80,21 +80,22 @@ class WiktionaryClassifyLiveTest {
         val adjectives: ArrayList<Word> = ArrayList()
         for(string in wordStrings){
             var word = wikBot.classify(string)
-            if(!word.isEmpty()){
+            if(word.isNotEmpty()){
                 words.addAll(word)
                 for(w in word){
-                    if("noun".equals(w.getType())){
+                    if("noun" == w.getType()){
                         nouns.add(w)
                     }
-                    if("verb".equals(w.getType())){
+                    if("verb" == w.getType()){
                         verbs.add(w)
                     }
-                    if("adjective".equals(w.getType())){
+                    if("adjective" == w.getType()){
                         adjectives.add(w)
                     }
                 }
             }
         }
+
         Assert.assertEquals(5, words.size)
         Assert.assertEquals(3, nouns.size)
         Assert.assertEquals(1, verbs.size)

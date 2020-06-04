@@ -8,10 +8,7 @@
 package com.twitli.android.twitter.bot.wiki
 
 import androidx.room.*
-import com.twitli.android.twitter.bot.wiki.type.Adjective
-import com.twitli.android.twitter.bot.wiki.type.Adverb
-import com.twitli.android.twitter.bot.wiki.type.Noun
-import com.twitli.android.twitter.bot.wiki.type.Verb
+import com.twitli.android.twitter.bot.wiki.type.*
 
 @Dao
 interface DictionaryDao {
@@ -71,4 +68,13 @@ interface DictionaryDao {
             update(noun)
         }
     }
+
+    @Query("select * from noun WHERE wordString = :string")
+    fun getNoun(string: String) : List<Noun>
+
+    @Query("select * from verb WHERE wordString = :string")
+    fun getVerb(string: String): List<Verb>
+
+    @Query("select * from adjective WHERE wordString = :string")
+    fun getAdjective(string: String): List<Adjective>
 }
