@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Twitli</string>
 
-    <string name="settings">Settings</string>
-    <string name="active">Active</string>
+    <string name="settings">Instellingen</string>
+    <string name="active">Actief</string>
     <string name="auth_title">Auth</string>
     <string name="submit">Tweet</string>
-    <string name="intro">Introduction</string>
+    <string name="intro">Introductie</string>
     <string name="ok">OK</string>
     <string name="tweet_interval">Tweet interval</string>
     <string name="year_text">You set active to true, the app will use your follower count to fetch a line from Wikipedia. </string>
@@ -27,7 +27,7 @@
     <string name="h_ref_wiki_string">href=\"/wiki/</string>
     <string name="no_entry">"wiktionary does not yet have an entry for "</string>
     <string name="wiktionary_http_string">https://en.wiktionary.org/wiki/</string>
-    <string name="wikipage_base_url">https://en.wikipedia.org/wiki/</string>
-    <string name="gebeurtenissen">Events</string>
+    <string name="wikipage_base_url">https://nl.wikipedia.org/wiki/</string>
+    <string name="gebeurtenissen">Gebeurtenissen</string>
 
 </resources>

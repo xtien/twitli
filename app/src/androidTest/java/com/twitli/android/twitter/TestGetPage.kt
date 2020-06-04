@@ -7,18 +7,33 @@
 
 package com.twitli.android.twitter
 
-import androidx.test.core.app.ApplicationProvider
+import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import com.twitli.android.twitter.dagger.ApiLiveTestComponent
 import com.twitli.android.twitter.data.ContentRepository
+import com.twitli.android.twitter.rule.InitPreferencesTestRule
+import com.twitli.android.twitter.rule.MyDaggerMockLiveRule
+import com.twitli.android.twitter.tweet.TwitManager
+import com.twitli.android.twitter.ui.MainActivity
 import com.twitli.android.twitter.wiki.WikiPageManager
-import com.twitli.android.twitter.wiki.impl.WikiPageManagerImpl
+import it.cosenonjaviste.daggermock.DaggerMockRule
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
+import org.mockito.Mockito
+import twitter4j.TwitterException
+import twitter4j.User
+import java.util.*
 import javax.inject.Inject
 
 
 class TestGetPage {
+
+    private val year = "1821"
 
     @Inject
     lateinit var contentRepository: ContentRepository
@@ -26,22 +41,48 @@ class TestGetPage {
     @Inject
     lateinit var wikiPageManager: WikiPageManager
 
+    @Inject
+    lateinit var twitManager: TwitManager
+
+    var user: User? = null
+
+    @Rule
+    @JvmField
+    var daggerRule: DaggerMockRule<ApiLiveTestComponent> = MyDaggerMockLiveRule()
+
+    @Rule
+    @JvmField
+    var activityRule = ActivityTestRule(MainActivity::class.java, false, false)
+
+    @Rule
+    @JvmField
+    var prefsRule = InitPreferencesTestRule()
+
     @Before
-    fun createDb() {
-        contentRepository = ContentRepository(ApplicationProvider.getApplicationContext())
+    @Throws(TwitterException::class)
+    fun setup() {
+
+        activityRule.launchActivity(Intent())
+        val appComponent: ApiLiveTestComponent = (activityRule.activity.application as MyApplication).appComponent as ApiLiveTestComponent
+        appComponent.inject(this)
+        contentRepository.clear();
+
+        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
+        Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
     }
 
-    @get:Throws(IOException::class)
-    @get:Test
-    val page: Unit
-        get() {
-            wikiPageManager.getPage("1")
-            var content = contentRepository!!.getFirst("1")
-            Assert.assertNotNull(content)
-            Assert.assertTrue(content!!.text!!.contains("Aarde"))
-            contentRepository!!.setDone(content.id)
-            content = contentRepository!!.getFirst("1")
-            Assert.assertNotNull(content)
-            Assert.assertTrue(content!!.text!!.contains("China"))
-        }
+    @Test
+    fun getPageNL() {
+        wikiPageManager.getPage(year)
+        var content = contentRepository!!.getFirst(year)
+        val list = contentRepository!!.getAll(year)
+        Assert.assertNotNull(list)
+        Assert.assertEquals(22, list?.size)
+        Assert.assertNotNull(content)
+        Assert.assertTrue(content!!.text!!.contains("Antarctic"))
+        contentRepository!!.setDone(content.id)
+        content = contentRepository!!.getFirstUnused(year)
+        Assert.assertNotNull(content)
+        Assert.assertTrue(content!!.text!!.contains("Bellingshausen"))
+    }
 }

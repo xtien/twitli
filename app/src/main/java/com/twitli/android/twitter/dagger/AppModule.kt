@@ -94,8 +94,8 @@ class AppModule() {
     }
 
     @Provides
-    fun wiktionaryBot(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
-        return WiktionaryBotImpl(dictionaryRepository, wiktionaryApi)
+    fun wiktionaryBot(application: Application, dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
+        return WiktionaryBotImpl(application, dictionaryRepository, wiktionaryApi)
     }
 
     @Provides

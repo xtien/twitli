@@ -11,6 +11,7 @@ import android.content.Context
 import android.os.Build
 import android.text.Html
 import com.twitli.android.twitter.MyApplication
+import com.twitli.android.twitter.R
 import com.twitli.android.twitter.data.ContentRepository
 import com.twitli.android.twitter.wiki.WikiPageManager
 import org.jsoup.Jsoup
@@ -18,16 +19,23 @@ import java.io.IOException
 import javax.inject.Inject
 
 class WikiPageManagerImpl @Inject constructor(application: Application, repository: ContentRepository): WikiPageManager {
-    private val baseUrl = "https://en.wikipedia.org/wiki/"
 
+    private var gebeurtenissen = ""
+    private var baseUrl = ""
     private var repository: ContentRepository = repository
 
     var application: Context = application
 
     override fun analyzePage(string: String?) {}
 
+    init {
+        baseUrl = application.getString(R.string.wikipage_base_url)
+        gebeurtenissen = application.getString(R.string.gebeurtenissen)
+    }
+
     @Throws(IOException::class)
     override fun getPage(year: String?): String? {
+
         var result: String? = null
         var numberOfItems = 0
         val doc = Jsoup.connect(baseUrl + year).get()
@@ -65,13 +73,13 @@ class WikiPageManagerImpl @Inject constructor(application: Application, reposito
                 if (scan && string.contains("<h2>")) {
                     break
                 }
-                if (string.contains("<h2>") && string.contains("Gebeurtenissen")) {
+                if (string.contains("<h2>") && string.contains(gebeurtenissen)) {
                     scan = true
                 }
                 if (scan && string.startsWith("<li><a href=") && string.contains("title=")) {
                     var text = e.text()
                     text = fromHtml(if (text.length < 280) text else text.substring(0, 280))
-                    repository.addContent(year, text)
+                    repository.addContent(year, null, text)
                     if (result == null) {
                         result = "$year: $text"
                     }

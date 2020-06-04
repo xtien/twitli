@@ -17,7 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.twitli.android.twitter.dagger.MyDaggerMockRule
+import com.twitli.android.twitter.rule.MyDaggerMockRule
 import com.twitli.android.twitter.dagger.TestComponent
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.ui.MainActivity

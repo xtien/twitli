@@ -19,14 +19,6 @@ open class TestModule {
     lateinit var wikiPageManager: WikiPageManager
 
     @Provides
-    fun provideWikiPageManager(): WikiPageManager {
-        if (!this::wikiPageManager.isInitialized) {
-            wikiPageManager = Mockito.mock(WikiPageManager::class.java)
-        }
-        return wikiPageManager
-    }
-
-    @Provides
     fun provideTwitManager(): TwitManager {
         if (!this::twitManager.isInitialized) run {
             twitManager = Mockito.mock(TwitManager::class.java)

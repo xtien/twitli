@@ -7,6 +7,7 @@
 package com.twitli.android.twitter
 
 import android.app.Application
+import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.twitli.android.twitter.dagger.AppComponent
 import com.twitli.android.twitter.dagger.DaggerAppComponent
@@ -37,5 +38,10 @@ class MyApplication : Application(), HasAndroidInjector {
     @VisibleForTesting
     fun setComponent(component: AppComponent) {
         appComponent = component
+    }
+
+    @VisibleForTesting
+    fun attachContext(context: Context){
+        super.attachBaseContext(context)
     }
 }

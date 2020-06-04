@@ -7,6 +7,9 @@
 
 package com.twitli.android.twitter.bot.wiki.impl
 
+import android.app.Application
+import android.content.Context
+import com.twitli.android.twitter.R
 import com.twitli.android.twitter.bot.wiki.*
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import com.twitli.android.twitter.bot.wiki.type.*
@@ -18,10 +21,10 @@ import java.util.*
 import java.util.stream.Collectors
 import javax.inject.Inject
 
-class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi) : WiktionaryBot {
+class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi) : WiktionaryBot {
 
     private var dictionaryRepository: DictionaryRepository = dictionaryRepository
-
+    private var context: Context = app
     private var wiktionaryApi: WiktionaryApi = wiktionaryApi
 
     var formOfDefinitionString = "form-of-definition-link"
@@ -30,6 +33,15 @@ class WiktionaryBotImpl @Inject constructor(dictionaryRepository: DictionaryRepo
     var ref3 = "href=\"https://en.wiktionary.org/wiki/%s"
     var hRefWikiString = "href=\"/wiki/"
     var noEntry = "wiktionary does not yet have an entry for "
+
+    init {
+        formOfDefinitionString = context.getString(R.string.form_of_definition_link)
+        ref = context.getString(R.string.wiki_ref)
+        ref2 = context.getString(R.string.wiki_ref2)
+        ref3 = context.getString(R.string.wiki_ref3)
+        hRefWikiString = context.getString(R.string.h_ref_wiki_string)
+        noEntry = context.getString(R.string.no_entry)
+    }
 
     /*
    FileNotFoundException if page does not exist in wiktionary

@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     twitManager.verifyCredentials()
                     if (prefs.getLong("last_tweets_loaded", 0L) < System.currentTimeMillis() - tweetLoadTime) {
-                        editor.putLong("last_tweet_load", System.currentTimeMillis())
+                        editor.putLong("last_tweets_loaded", System.currentTimeMillis())
                         editor.apply()
                         twitRepository.loadTweets()
                     }

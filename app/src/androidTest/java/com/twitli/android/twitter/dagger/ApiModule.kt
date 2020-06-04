@@ -17,6 +17,8 @@ import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
 import com.twitli.android.twitter.tweet.TwitViewModel
 import com.twitli.android.twitter.ui.SettingsViewModel
+import com.twitli.android.twitter.wiki.WikiPageManager
+import com.twitli.android.twitter.wiki.impl.WikiPageManagerImpl
 import dagger.Module
 import dagger.Provides
 import org.mockito.Mockito
@@ -64,15 +66,19 @@ open class ApiModule {
         return WiktionaryApiImpl(application, myHttp)
     }
 
-
     @Provides
-    fun wiktionaryBot(dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
-        return WiktionaryBotImpl(dictionaryRepository, wiktionaryApi)
+    fun wiktionaryBot(application: Application, dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi): WiktionaryBot {
+        return WiktionaryBotImpl(application, dictionaryRepository, wiktionaryApi)
     }
 
     @Provides
     fun myHttp(): MyHttp {
         return MyHttpImpl()
+    }
+
+    @Provides
+    fun wikiPageManager(application: Application, contentRepository: ContentRepository): WikiPageManager {
+        return WikiPageManagerImpl(application, contentRepository)
     }
 
     @Provides

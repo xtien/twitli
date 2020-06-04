@@ -12,17 +12,40 @@ import javax.inject.Inject
 
 class ContentRepository @Inject constructor(context: Context) {
     private val contentDao: ContentDao?
+
     fun addContent(year: String?, datum: String?, text: String?) {
-        contentDao!!.addContent(year, datum, text)
+
+        var existingContent: Content = if (datum != null) {
+            getContent(year, datum, text)
+        } else {
+            getContentNoDate(year, text)
+        }
+
+        if (existingContent == null) {
+            contentDao!!.addContent(year, datum, text)
+        }
     }
 
-    fun addContent(year: String?, text: String?) {
-        contentDao!!.addContent(year, text)
+    private fun getContent(year: String?, datum: String?, text: String?): Content {
+        return contentDao!!.getContentForDate(year, datum, text)
+    }
+
+    private fun getContentNoDate(year: String?, text: String?): Content {
+        return contentDao!!.getContentNoDate(year, text)
+    }
+
+    fun getFirstUnused(year: String?): Content? {
+        val list = contentDao!!.getFirstUnused(year)
+        return if (list!!.isEmpty()) null else list[0]
     }
 
     fun getFirst(year: String?): Content? {
         val list = contentDao!!.getFirst(year)
         return if (list!!.isEmpty()) null else list[0]
+    }
+
+    fun getAll(year: String?): List<Content?>? {
+        return contentDao!!.getAll(year)
     }
 
     fun setDone(id: Int) {
@@ -48,6 +71,10 @@ class ContentRepository @Inject constructor(context: Context) {
 
     fun getAvailable(year: Int): List<Content?>? {
         return contentDao!!.getAvailable(year)
+    }
+
+    fun clear() {
+        contentDao!!.clear()
     }
 
     companion object {

@@ -16,12 +16,15 @@ import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
 import com.twitli.android.twitter.tweet.TwitViewModel
 import com.twitli.android.twitter.ui.SettingsViewModel
+import com.twitli.android.twitter.wiki.WikiPageManager
 import dagger.Module
 import dagger.Provides
 import org.mockito.Mockito
 
 @Module
 open class ApiTestModule {
+
+    lateinit var wikiPageManager: WikiPageManager
 
     @Provides
     fun twitViewModel(application: Application, twitManager: TwitManager, chatbot: ChatBot): TwitViewModel {
@@ -66,6 +69,14 @@ open class ApiTestModule {
     @Provides
     fun wiktionaryBot() : WiktionaryBot {
         return Mockito.mock(WiktionaryBot::class.java)
+    }
+
+    @Provides
+    fun provideWikiPageManager(): WikiPageManager {
+        if (!this::wikiPageManager.isInitialized) {
+            wikiPageManager = Mockito.mock(WikiPageManager::class.java)
+        }
+        return wikiPageManager
     }
 
     @Provides

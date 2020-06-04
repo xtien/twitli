@@ -4,20 +4,21 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.twitli.android.twitter.MyApplication
+import com.twitli.android.twitter.R
 import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
 class WiktionaryApiImpl @Inject constructor(application: Application, myHttp: MyHttp): WiktionaryApi {
 
     private val LOGTAG = WiktionaryApiImpl::class.qualifiedName
-    private val httpString: String = "https://en.wiktionary.org/wiki/"
+    private var httpString: String = ""
 
     var context: Context = application
 
     private var client: MyHttp = myHttp
 
     init {
-        (context!!.applicationContext as MyApplication).appComponent!!.inject(this)
+        httpString = context.getString(R.string.wiktionary_http_string)
     }
 
     override fun getWikiWord(string: String): String? {

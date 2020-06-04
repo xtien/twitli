@@ -180,7 +180,7 @@ class TwitService : LifecycleService() {
             when (contentStatus) {
                 ContentStatus.AVAILABLE -> {
                     Log.d(LOGTAG, "AVAILABLE")
-                    val content = contentRepository!!.getFirst(Integer.toString(year))
+                    val content = contentRepository!!.getFirstUnused(Integer.toString(year))
                     if (content != null) {
                         contentRepository!!.setDone(content.id)
                         Log.d(LOGTAG, "setDone " + content.text)

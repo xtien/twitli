@@ -8,8 +8,6 @@
 package com.twitli.android.twitter.dagger
 
 import com.twitli.android.twitter.*
-import com.twitli.android.twitter.bot.wiki.WiktionaryBot
-import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import com.twitli.android.twitter.ui.MainActivity
 import dagger.Component
 
@@ -18,5 +16,7 @@ interface ApiLiveTestComponent : TestComponent {
 
     fun inject(nounTest: WiktionaryNounLiveTest)
     fun inject(pageTest: WiktionaryPageLiveTest)
+    fun inject(pageTest: TestGetNLPage)
+    fun inject(pageTest: TestGetPage)
     override fun inject(mainActivity: MainActivity)
 }

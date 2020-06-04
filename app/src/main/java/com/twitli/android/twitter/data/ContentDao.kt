@@ -18,10 +18,10 @@ interface ContentDao {
     @Query("insert into content_table (year, date, text, used) values (:year, :datum, :text, 0)")
     fun addContent(year: String?, datum: String?, text: String?)
 
-    @Query("insert into content_table (year, text, used) values (:year,  :text, 0)")
-    fun addContent(year: String?, text: String?)
-
     @Query("select * from content_table where NOT used and year = :year")
+    fun getFirstUnused(year: String?): List<Content?>?
+
+    @Query("select * from content_table where year = :year")
     fun getFirst(year: String?): List<Content?>?
 
     @Query("select * from content_table where NOT used and year = :year")
@@ -32,4 +32,16 @@ interface ContentDao {
 
     @Query("update content_table set used = 1 where id = :id")
     fun setDone(id: Int)
+
+    @Query("select * from content_table where year = :year")
+    fun getAll(year: String?): List<Content?>?
+
+    @Query("select * from content_table where year = :year AND date = :datum AND text = :text")
+    fun getContentForDate(year: String?, datum: String?, text: String?): Content
+
+    @Query("select * from content_table where year = :year AND text = :text")
+    fun getContentNoDate(year: String?, text: String?): Content
+
+    @Query("delete from content_table")
+    fun clear()
 }
