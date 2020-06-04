@@ -14,6 +14,7 @@ import androidx.test.rule.ActivityTestRule
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.type.Word
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
+import com.twitli.android.twitter.rule.InitPreferencesTestRule
 import com.twitli.android.twitter.rule.MyDaggerMockLiveRule
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.ui.MainActivity
@@ -41,6 +42,10 @@ class WiktionaryPageLiveTest {
 
     @Rule
     @JvmField
+    var prefsRule = InitPreferencesTestRule()
+
+    @Rule
+    @JvmField
     var daggerRule: DaggerMockRule<ApiLiveTestComponent> = MyDaggerMockLiveRule()
 
     @Rule
@@ -50,12 +55,6 @@ class WiktionaryPageLiveTest {
     @Before
     @Throws(TwitterException::class)
     fun setup() {
-        val prefs = InstrumentationRegistry.getInstrumentation().targetContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val edit = prefs.edit()
-        edit.putString("access_token", "123")
-        edit.putString("access_token_secret", "123")
-        edit.putLong("last_tweets_loaded", System.currentTimeMillis())
-        edit.apply()
         activityRule.launchActivity(Intent())
         val appComponent: ApiLiveTestComponent = (activityRule.activity.application as MyApplication).appComponent as ApiLiveTestComponent
         appComponent.inject(this)

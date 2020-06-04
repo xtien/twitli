@@ -19,6 +19,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.twitli.android.twitter.rule.MyDaggerMockRule
 import com.twitli.android.twitter.dagger.TestComponent
+import com.twitli.android.twitter.rule.InitPreferencesTestRule
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.ui.MainActivity
 import it.cosenonjaviste.daggermock.DaggerMockRule
@@ -39,6 +40,10 @@ class ScenarioTest {
 
     @Rule
     @JvmField
+    var prefsRule = InitPreferencesTestRule()
+
+    @Rule
+    @JvmField
     var daggerRule: DaggerMockRule<TestComponent> = MyDaggerMockRule()
 
     @Rule
@@ -48,12 +53,7 @@ class ScenarioTest {
     @Before
     @Throws(TwitterException::class)
     fun setup() {
-        val prefs = InstrumentationRegistry.getInstrumentation().targetContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val edit = prefs.edit()
-        edit.putString("access_token", "123")
-        edit.putString("access_token_secret", "123")
-        edit.apply()
-        activityRule.launchActivity(Intent())
+       activityRule.launchActivity(Intent())
         val appComponent: TestComponent = (activityRule.activity.application as MyApplication).appComponent as TestComponent
         appComponent.inject(this)
         Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)

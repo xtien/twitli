@@ -18,5 +18,6 @@ interface ApiLiveTestComponent : TestComponent {
     fun inject(pageTest: WiktionaryPageLiveTest)
     fun inject(pageTest: TestGetNLPage)
     fun inject(pageTest: TestGetPage)
+    fun inject(test: WiktionaryClassifyLiveTest)
     override fun inject(mainActivity: MainActivity)
 }
