@@ -22,7 +22,7 @@ interface WiktionaryBot {
     @Throws(IOException::class, SQLException::class)
     fun classify(string: String): List<Word>
 
-    fun getNouns(status: Status): List<String>
-
     fun getType(string: String): List<Word>
+
+    fun getWords(status: Status): MutableList<MutableList<Word>>
 }

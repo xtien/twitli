@@ -29,7 +29,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot) :
     }
 
     private fun processStatus(status: Status) {
-        var nouns = wikBot.getNouns(status)
+        var words = wikBot.getWords(status)
     }
 
     override fun read(tweets: List<Status?>?) {

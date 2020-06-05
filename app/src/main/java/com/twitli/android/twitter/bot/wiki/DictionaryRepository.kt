@@ -53,4 +53,14 @@ class DictionaryRepository @Inject constructor(application: Application?) {
         resultList.addAll(dictionaryDao.getAdjective(string))
         return resultList
     }
+
+    fun create(word: WordString) {
+        AppDatabase.databaseWriteExecutor.execute { dictionaryDao.createOrUpdate(word) }
+    }
+
+    fun clear() {
+        dictionaryDao.clearNouns()
+        dictionaryDao.clearVerbs()
+        dictionaryDao.clearAdjectives()
+    }
 }

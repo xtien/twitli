@@ -1,18 +1,20 @@
 package com.twitli.android.twitter.bot.wiki.type
 
+import androidx.room.ColumnInfo
+
 
 abstract class Word {
 
-    private var wordString: String? = null
-     private lateinit var type: String
+    @ColumnInfo(name = "wordString")
+    var wordString: String = ""
 
-    fun setWordString(string: String) {
-        this.wordString = string
-    }
+    @ColumnInfo(name = "timeStamp")
+    var timeStamp: Long = 0L
 
-    fun getWordString(): String? {
-        return wordString
-    }
+    @ColumnInfo(name = "timesUsed")
+    var timesUsed: Long = 0L
+
+    private var type: String = "string"
 
     fun setType(type: String) {
         this.type = type

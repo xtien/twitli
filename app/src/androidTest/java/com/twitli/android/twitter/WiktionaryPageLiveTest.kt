@@ -66,7 +66,7 @@ class WiktionaryPageLiveTest {
     fun testLiveGetNoun() {
         val word :List<Word> = bot.getType(nounString)
         Assert.assertNotNull(word)
-        Assert.assertTrue(nounString == word[0].getWordString())
+        Assert.assertTrue(nounString == word[0].wordString)
         Assert.assertTrue("noun" == word[0].getType())
     }
 }

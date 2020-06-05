@@ -31,7 +31,7 @@ class Adjective : Word() {
 
     fun Adjective(string: String) {
         positive = string
-        setWordString(string)
+        wordString = string
     }
 
     fun getString(): String? {

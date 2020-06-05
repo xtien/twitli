@@ -14,10 +14,10 @@ import dagger.Component
 @Component(modules = [TestModule::class, ApiModule::class])
 interface ApiLiveTestComponent : TestComponent {
 
-    fun inject(nounTest: WiktionaryNounLiveTest)
+    fun inject(classifyTest: WiktionaryClassifyLiveTest)
     fun inject(pageTest: WiktionaryPageLiveTest)
     fun inject(pageTest: TestGetNLPage)
     fun inject(pageTest: TestGetPage)
-    fun inject(test: WiktionaryClassifyLiveTest)
+    fun inject(test: WiktionaryNounLiveTest)
     override fun inject(mainActivity: MainActivity)
 }

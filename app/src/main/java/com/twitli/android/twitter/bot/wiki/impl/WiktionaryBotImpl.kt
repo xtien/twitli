@@ -55,7 +55,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
     override fun getType(string: String): MutableList<Word> {
 
         val localResult = getTypeLocal(string)
-        if(localResult !=null){
+        if (localResult.isNotEmpty()) {
             return localResult
         }
 
@@ -88,7 +88,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
                             "Noun".equals(type, ignoreCase = true) -> {
                                 val n = Noun()
                                 n.setSingular(string)
-                                n.setWordString(string)
+                                n.wordString = string
                                 n.setType(type)
                                 this.dictionaryRepository?.create(n)
                                 words.add(n)
@@ -97,7 +97,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
                                 val v = Verb()
                                 v.presentTense = string
                                 v.presentTenseThirdPersonSingular = string
-                                v.setWordString(string)
+                                v.wordString = string
                                 v.setType(type)
                                 this.dictionaryRepository?.create(v)
                                 words.add(v)
@@ -105,7 +105,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
                             "Adverb".equals(type, ignoreCase = true) -> {
                                 val v = Adverb()
                                 v.positive = string
-                                v.setWordString(string)
+                                v.wordString = string
                                 v.setType(type)
                                 this.dictionaryRepository?.create(v)
                                 words.add(v)
@@ -113,47 +113,55 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
                             "Adjective".equals(type, ignoreCase = true) -> {
                                 val a = Adjective()
                                 a.positive = string
-                                a.setWordString(string)
+                                a.wordString = string
                                 a.setType(type)
                                 this.dictionaryRepository?.create(a)
                                 words.add(a)
                             }
-                            "Proper noun".equals(type, ignoreCase = true) -> {
-                                val a = ProperNoun()
-                                a.setName(string)
-                                a.setWordString(string)
-                                a.setType(type)
-                                this.dictionaryRepository?.create(a)
-                                words.add(a)
-                            }
-                            "Conjunction".equals(type, ignoreCase = true) -> {
-                                val a = Conjunction()
-                                a.setWordString(string)
-                                a.setType(type)
-                                this.dictionaryRepository?.create(a)
-                                words.add(a)
-                            }
-                            "Interjection".equals(type, ignoreCase = true) -> {
-                                val a = Interjection()
-                                a.setWordString(string)
-                                a.setType(type)
-                                this.dictionaryRepository?.create(a)
-                                words.add(a)
-                            }
-                            "Proper noun".equals(type, ignoreCase = true) -> {
-                                val a = ProperNoun()
-                                a.setName(string)
-                                a.setWordString(string)
-                                a.setType(type)
-                                this.dictionaryRepository?.create(a)
-                                words.add(a)
-                            }
-                        }
+//                            "Proper noun".equals(type, ignoreCase = true) -> {
+//                                val a = ProperNoun()
+//                                a.setName(string)
+//                                a.wordString = string
+//                                a.setType(type)
+//                                this.dictionaryRepository?.create(a)
+//                                words.add(a)
+//                            }
+//                            "Conjunction".equals(type, ignoreCase = true) -> {
+//                                val a = Conjunction()
+//                                a.wordString = string
+//                                a.setType(type)
+//                                this.dictionaryRepository?.create(a)
+//                                words.add(a)
+//                            }
+//                            "Interjection".equals(type, ignoreCase = true) -> {
+//                                val a = Interjection()
+//                                a.wordString = string
+//                                a.setType(type)
+//                                this.dictionaryRepository?.create(a)
+//                                words.add(a)
+//                            }
+//                            "Proper noun".equals(type, ignoreCase = true) -> {
+//                                val a = ProperNoun()
+//                                a.setName(string)
+//                                a.wordString = string
+//                                a.setType(type)
+//                                this.dictionaryRepository?.create(a)
+//                                words.add(a)
+//                            }
+                       }
                     }
                 }
             }
         } catch (fnfe: FileNotFoundException) {
         }
+
+        if (words.isEmpty()) {
+            val w = WordString()
+            w.wordString = string
+            words.add(w)
+            dictionaryRepository.create(w)
+        }
+
         return words
     }
 
@@ -169,7 +177,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
             if (string != null && string.matches(Regex(".*\\d.*"))) {
                 val a = MyNumber()
                 if (string != null) {
-                    a.setWordString(string)
+                    a.wordString = string
                 }
                 this.dictionaryRepository?.create(a)
                 words.add(a)
@@ -178,12 +186,13 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
         return words
     }
 
-    override fun getNouns(status: Status): List<String> {
-        var list = status.text.split(" ").stream().filter { s -> (s != null && isNoun(s)) }.collect(Collectors.toList())
+    override fun getWords(status: Status): MutableList<MutableList<Word>> {
+        var list: MutableList<MutableList<Word>> = mutableListOf()
+        var strings = status.text.split(" ")
+        for (string in strings) {
+            val type = getType(string)
+            list.add(type)
+        }
         return list
-    }
-
-    private fun isNoun(s: String): Boolean {
-        return !classify(s).stream().filter { w -> "noun" == w.getType() }.collect(Collectors.toList()).isEmpty()
     }
 }

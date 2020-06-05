@@ -11,7 +11,7 @@ class ProperNoun : Word {
 
     constructor(name: String) {
         this.name = name
-       setWordString(name)
+        wordString = name
     }
 
     fun setName(string: String) {

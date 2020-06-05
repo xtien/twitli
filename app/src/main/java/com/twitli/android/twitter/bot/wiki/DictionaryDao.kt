@@ -21,6 +21,8 @@ interface DictionaryDao {
 
     @Transaction
     fun createOrUpdate(noun: Noun) {
+        noun.timeStamp = System.currentTimeMillis()
+        noun.timesUsed++
         val id = insert(noun)
         if (id == -1L) {
             update(noun)
@@ -28,46 +30,55 @@ interface DictionaryDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertVerb(noun: Verb): Long;
+    fun insertVerb(verb: Verb): Long;
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateVerb(noun: Verb)
+    fun updateVerb(verb: Verb)
 
     @Transaction
-    fun createOrUpdate(noun: Verb) {
-        val id = insertVerb(noun)
+    fun createOrUpdate(verb: Verb) {
+        verb.timeStamp = System.currentTimeMillis()
+        verb.timesUsed++
+        val id = insertVerb(verb)
         if (id == -1L) {
-            updateVerb(noun)
+            updateVerb(verb)
         }
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAdjective(noun: Adjective): Long;
+    fun insertAdjective(adjective: Adjective): Long;
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateAdjective(noun: Adjective)
+    fun updateAdjective(adjective: Adjective)
 
     @Transaction
-    fun createOrUpdate(noun: Adjective) {
-        val id = insertAdjective(noun)
+    fun createOrUpdate(adjective: Adjective) {
+        adjective.timeStamp = System.currentTimeMillis()
+        adjective.timesUsed++
+        val id = insertAdjective(adjective)
         if (id == -1L) {
-            updateAdjective(noun)
+            updateAdjective(adjective)
         }
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(noun: Adverb): Long;
+    fun insert(adverb: Adverb): Long;
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(noun: Adverb)
+    fun update(adverb: Adverb)
 
     @Transaction
-    fun createOrUpdate(noun: Adverb) {
-        val id = insert(noun)
+    fun createOrUpdate(adverb: Adverb) {
+        adverb.timeStamp = System.currentTimeMillis()
+        adverb.timesUsed++
+        val id = insert(adverb)
         if (id == -1L) {
-            update(noun)
+            update(adverb)
         }
     }
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun createOrUpdate(word: WordString)
 
     @Query("select * from noun WHERE wordString = :string")
     fun getNoun(string: String) : List<Noun>
@@ -77,4 +88,13 @@ interface DictionaryDao {
 
     @Query("select * from adjective WHERE wordString = :string")
     fun getAdjective(string: String): List<Adjective>
+
+    @Query("delete from noun")
+    fun clearNouns()
+
+    @Query("delete from verb")
+    fun clearVerbs()
+
+    @Query("delete from adjective")
+    fun clearAdjectives()
 }
