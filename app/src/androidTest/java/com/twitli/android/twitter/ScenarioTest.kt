@@ -56,7 +56,7 @@ class ScenarioTest {
        activityRule.launchActivity(Intent())
         val appComponent: TestComponent = (activityRule.activity.application as MyApplication).appComponent as TestComponent
         appComponent.inject(this)
-        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
+        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
     }
 
     @Test

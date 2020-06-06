@@ -15,7 +15,7 @@ import it.cosenonjaviste.daggermock.DaggerMockRule
 class MyDaggerMockRule : DaggerMockRule<TestComponent>(TestComponent::class.java) {
 
     private val app: MyApplication
-        private get() = InstrumentationRegistry.getInstrumentation()
+        get() = InstrumentationRegistry.getInstrumentation()
                 .targetContext.applicationContext as MyApplication
 
     init {

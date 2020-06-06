@@ -10,6 +10,7 @@ package com.twitli.android.twitter
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
@@ -63,26 +64,38 @@ class TestGetPage {
     fun setup() {
 
         activityRule.launchActivity(Intent())
+        setLocale(Locale("en", "US"))
         val appComponent: ApiLiveTestComponent = (activityRule.activity.application as MyApplication).appComponent as ApiLiveTestComponent
         appComponent.inject(this)
         contentRepository.clear();
 
-        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
-        Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
+        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
+        Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
     }
 
     @Test
-    fun getPageNL() {
+    fun getPage() {
         wikiPageManager.getPage(year)
-        var content = contentRepository!!.getFirst(year)
-        val list = contentRepository!!.getAll(year)
+        var content = contentRepository.getFirst(year)
+        val list = contentRepository.getAll(year)
         Assert.assertNotNull(list)
+        println("page: " + content!!.text!!)
         Assert.assertEquals(22, list?.size)
         Assert.assertNotNull(content)
         Assert.assertTrue(content!!.text!!.contains("Antarctic"))
-        contentRepository!!.setDone(content.id)
-        content = contentRepository!!.getFirstUnused(year)
+        contentRepository.setDone(content.id)
+        content = contentRepository.getFirstUnused(year)
         Assert.assertNotNull(content)
         Assert.assertTrue(content!!.text!!.contains("Bellingshausen"))
+    }
+
+
+    @Suppress("DEPRECATION")
+    private fun setLocale(locale: Locale?) {
+        val resources: Resources = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext.resources
+        Locale.setDefault(locale)
+        val config: Configuration = resources.configuration
+        config.locale = locale
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }

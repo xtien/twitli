@@ -57,14 +57,13 @@ class WiktionaryClassifyLiveTest {
         activityRule.launchActivity(Intent())
         val appComponent: ApiLiveTestComponent = (activityRule.activity.application as MyApplication).appComponent as ApiLiveTestComponent
         appComponent.inject(this)
-        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
-        Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
+        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
+        Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
     }
 
     @Test
     fun testLiveGetNoun() {
         val words = wikBot.classify(nounString)
-        Assert.assertNotNull(words)
         Assert.assertEquals("noun", words[0].getType())
     }
 }

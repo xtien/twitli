@@ -66,25 +66,26 @@ class TestGetNLPage {
         appComponent.inject(this)
         contentRepository.clear();
 
-        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
-        Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
+        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
+        Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
     }
 
     @Test
     fun getPageNL() {
         wikiPageManager.getPage("1")
-        var content = contentRepository!!.getFirst("1")
-        val list = contentRepository!!.getAll("1")
+        var content = contentRepository.getFirst("1")
+        val list = contentRepository.getAll("1")
         Assert.assertNotNull(list)
         Assert.assertEquals(10, list?.size)
         Assert.assertNotNull(content)
         Assert.assertTrue(content!!.text!!.contains("Aarde"))
-        contentRepository!!.setDone(content.id)
-        content = contentRepository!!.getFirstUnused("1")
+        contentRepository.setDone(content.id)
+        content = contentRepository.getFirstUnused("1")
         Assert.assertNotNull(content)
         Assert.assertTrue(content!!.text!!.contains("China"))
     }
 
+    @Suppress("DEPRECATION")
     private fun setLocale(locale: Locale?) {
         val resources: Resources = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext.resources
         Locale.setDefault(locale)

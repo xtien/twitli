@@ -57,8 +57,8 @@ class TestTweet {
          activityRule.launchActivity(Intent())
         val appComponent: TestComponent = (activityRule.activity.application as MyApplication).appComponent as TestComponent
         appComponent.inject(this)
-        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
-        Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
+        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
+        Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
     }
 
     @Test

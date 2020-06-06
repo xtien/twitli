@@ -99,9 +99,8 @@ class TwitService : LifecycleService() {
             Log.d(LOGTAG, "year = $year")
         }
         userRepository!!.followersCount?.observeForever { followers: Long? ->
-            Log.d(LOGTAG, if ("followers count is $followers" != null) (followers!!).toString() else "null")
             if (followers != null && followers != 0L) {
-                year = (followers % currentYear).toInt()
+                  year = (followers % currentYear).toInt()
                 Log.d(LOGTAG, "doWiki 111 $year")
                 doWiki(year)
             }

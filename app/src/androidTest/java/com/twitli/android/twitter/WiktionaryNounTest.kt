@@ -57,14 +57,14 @@ class WiktionaryNounTest {
         activityRule.launchActivity(Intent())
         val appComponent: TestComponent = (activityRule.activity.application as MyApplication).appComponent as TestComponent
         appComponent.inject(this)
-        Mockito.`when`(twitManager!!.verifyCredentials()).thenReturn(user)
-        Mockito.verify(twitManager!!, Mockito.times(1))?.verifyCredentials()
+        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
+        Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
         Mockito.`when`(api.getWikiWord(nounString)).thenReturn(nounString)
     }
 
     @Test
     fun testGetNoun() {
-        val string = api!!.getWikiWord(nounString)
+        val string = api.getWikiWord(nounString)
         Assert.assertNotNull(string)
     }
 }
