@@ -13,7 +13,9 @@ class Patterns() {
 
     companion object {
         val patterns: List<Pattern> = mutableListOf(
+                Pattern("verb", "any", "adjective", "noun"),
                 Pattern("adjective", "noun"),
+                Pattern("noun", "verb", "adjective"),
                 Pattern("noun", "any", "noun"),
                 Pattern("noun", "any", "verb", "any", "noun")
         )

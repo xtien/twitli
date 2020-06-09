@@ -25,9 +25,4 @@ open class TestModule {
         }
         return twitManager
     }
-
-    @Provides
-    fun provideChatBot(): ChatBot {
-        return Mockito.mock(ChatBot::class.java)
-    }
 }

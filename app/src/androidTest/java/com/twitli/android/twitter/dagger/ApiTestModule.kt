@@ -84,6 +84,11 @@ open class ApiTestModule {
     }
 
     @Provides
+    fun provideChatBot(): ChatBot {
+        return Mockito.mock(ChatBot::class.java)
+    }
+
+    @Provides
     fun app() :Application {
         return getInstrumentation().targetContext.applicationContext as Application
     }

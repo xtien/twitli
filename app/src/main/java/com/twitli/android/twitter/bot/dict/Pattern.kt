@@ -7,9 +7,41 @@
 
 package com.twitli.android.twitter.bot.dict
 
-import android.provider.UserDictionary
+import com.twitli.android.twitter.bot.dict.type.Word
 
-class Pattern (vararg words: String){
+class Pattern(vararg words: String) {
 
-    val wordTypes: Array<out String> = words
+    fun matches(list: List<List<Word>>): Boolean {
+        var iterator = list.iterator()
+        var patternIterator = wordTypes.iterator()
+        var count = 0
+        while (iterator.hasNext() && patternIterator.hasNext()) {
+           var i = iterator.next()
+           var p = patternIterator.next()
+            count++
+            if (isOfType(i, p)) {
+            } else if (p == "any") {
+                p = patternIterator.next()
+                count++
+                if (!isOfType(i, p)) {
+                    i = iterator.next()
+                }
+            }
+        }
+        return count == wordTypes.size
+    }
+
+    private fun isOfType(words: List<Word>, type: String): Boolean {
+        for (word in words) {
+            if (word.type == type) {
+                return true
+            }
+            if (word.type == "string" && type == "any") {
+                return true
+            }
+        }
+        return false
+    }
+
+    private val wordTypes: Array<out String> = words
 }

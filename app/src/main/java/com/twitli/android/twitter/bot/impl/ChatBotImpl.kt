@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.bot.dict.Pattern
+import com.twitli.android.twitter.bot.dict.Patterns
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.dict.type.Word
 import twitter4j.Status
@@ -29,12 +31,23 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot) :
         }, 2, 2, TimeUnit.SECONDS)
     }
 
-    private fun processStatus(status: Status) {
+    override fun processStatus(status: Status) : List<Word> {
         var words = wikBot.getWords(status)
         var pattern = analyzeSentence(words)
+        return pattern
     }
 
-    private fun analyzeSentence(words: List<List<Word>>): Any {
+    private fun analyzeSentence(words: List<List<Word>>): List<Word> {
+        var result = mutableListOf<Word>()
+        for(p in Patterns.patterns){
+            if(p.matches(words)){
+                return processPattern(words, p);
+            }
+        }
+        return result
+    }
+
+    private fun processPattern(words: List<List<Word>>, p: Pattern): List<Word> {
         TODO("Not yet implemented")
     }
 
