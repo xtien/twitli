@@ -9,11 +9,9 @@ package com.twitli.android.twitter
 
 import android.content.Intent
 import androidx.test.rule.ActivityTestRule
-import com.twitli.android.twitter.bot.wiki.DictionaryRepository
+import com.twitli.android.twitter.bot.dict.DictionaryRepository
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
-import com.twitli.android.twitter.bot.wiki.type.Noun
-import com.twitli.android.twitter.bot.wiki.type.Verb
-import com.twitli.android.twitter.bot.wiki.type.Word
+import com.twitli.android.twitter.bot.dict.type.Word
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
 import com.twitli.android.twitter.rule.InitPreferencesTestRule
 import com.twitli.android.twitter.rule.MyDaggerMockLiveRule
@@ -30,7 +28,7 @@ import twitter4j.TwitterException
 import twitter4j.User
 import javax.inject.Inject
 
-class WiktionaryNounLiveTest {
+class WiktionarySentenceLiveTest {
 
     private val statusText: String = "The woman owns a red bicycle"
     private val status: Status = Mockito.mock(Status::class.java)
@@ -73,7 +71,7 @@ class WiktionaryNounLiveTest {
     }
 
     @Test
-    fun testLiveNounTest() {
+    fun testLiveSentenceTest() {
 
         val wordStrings = wikBot.getWords(status)
         Assert.assertNotNull(wordStrings)
@@ -82,23 +80,28 @@ class WiktionaryNounLiveTest {
         val verbs: ArrayList<Word> = ArrayList()
         val nouns: ArrayList<Word> = ArrayList()
         val adjectives: ArrayList<Word> = ArrayList()
+        val strings: ArrayList<Word> = ArrayList()
         for (s in wordStrings) {
             for (w in s) {
-                if ("noun" == w.getType()) {
+                if ("noun" == w.type) {
                     nouns.add(w)
                 }
-                if ("verb" == w.getType()) {
+                if ("verb" == w.type) {
                     verbs.add(w)
                 }
-                if ("adjective" == w.getType()) {
+                if ("adjective" == w.type) {
                     adjectives.add(w)
+                }
+                if("string" == w.type){
+                    strings.add(w)
                 }
             }
         }
 
         Assert.assertEquals(6, wordStrings.size)
-        Assert.assertEquals(4, nouns.size)
-        Assert.assertEquals(3, verbs.size)
-        Assert.assertEquals(2, adjectives.size)
+        Assert.assertEquals(3, nouns.size)
+        Assert.assertEquals(2, verbs.size)
+        Assert.assertEquals(1, adjectives.size)
+        Assert.assertEquals(2, strings.size)
     }
 }

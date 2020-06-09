@@ -5,10 +5,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-package com.twitli.android.twitter.bot.wiki.type
+package com.twitli.android.twitter.bot.dict.type
 
 import androidx.room.*
-import com.twitli.android.twitter.bot.wiki.type.Word
 
 @Entity(tableName = "string", indices = [Index(value = ["wordString"], unique = true)])
 class WordString : Word() {

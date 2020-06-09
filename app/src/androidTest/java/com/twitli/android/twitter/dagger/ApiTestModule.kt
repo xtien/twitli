@@ -1,10 +1,9 @@
 package com.twitli.android.twitter.dagger
 
 import android.app.Application
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.twitli.android.twitter.bot.ChatBot
-import com.twitli.android.twitter.bot.wiki.DictionaryRepository
+import com.twitli.android.twitter.bot.dict.DictionaryRepository
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.api.MyHttp
 import com.twitli.android.twitter.bot.wiki.api.MyHttpImpl

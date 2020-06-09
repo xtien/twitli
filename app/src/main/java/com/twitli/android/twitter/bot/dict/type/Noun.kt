@@ -1,4 +1,4 @@
-package com.twitli.android.twitter.bot.wiki.type
+package com.twitli.android.twitter.bot.dict.type
 
 
 import androidx.room.ColumnInfo
@@ -15,28 +15,12 @@ class Noun : Word() {
     var id: Long? = null
 
     @ColumnInfo(name = "singular")
-    private var singular: String = ""
+    var singular: String = ""
 
     @ColumnInfo(name = "plural")
-    private var plural: String = ""
+    var plural: String = ""
 
     override fun hashCode(): Int {
         return HashCodeBuilder(17, 37).append(singular).append(plural).toHashCode()
-    }
-
-    fun setSingular(string: String) {
-        this.singular = string
-    }
-
-    fun getSingular(): String {
-        return this.singular
-    }
-
-    fun getPlural(): String {
-        return this.plural
-    }
-
-    fun setPlural(plural:String){
-        this.plural = plural
     }
 }

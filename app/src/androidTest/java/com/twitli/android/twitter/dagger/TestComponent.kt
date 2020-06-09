@@ -18,6 +18,8 @@ interface TestComponent : AppComponent {
     fun inject(testSwipe: TestSwipe?)
     fun inject(scenarioTest: ScenarioTest?)
     fun inject(nounTest: WiktionaryNounTest?)
+    fun inject(pronounTest: TestPersonalPronouns)
+
     override fun inject(mainActivity: MainActivity)
 
 

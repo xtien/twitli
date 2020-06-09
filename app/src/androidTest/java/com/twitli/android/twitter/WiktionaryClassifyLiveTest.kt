@@ -64,6 +64,6 @@ class WiktionaryClassifyLiveTest {
     @Test
     fun testLiveGetNoun() {
         val words = wikBot.classify(nounString)
-        Assert.assertEquals("noun", words[0].getType())
+        Assert.assertEquals("noun", words[0].type)
     }
 }

@@ -1,6 +1,6 @@
-package com.twitli.android.twitter.bot.wiki
+package com.twitli.android.twitter.bot.dict.type
 
-import com.twitli.android.twitter.bot.wiki.type.Word
+import com.twitli.android.twitter.bot.dict.type.Word
 
 
 class ProperNoun : Word {

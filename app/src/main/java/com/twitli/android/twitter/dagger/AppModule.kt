@@ -9,7 +9,7 @@ package com.twitli.android.twitter.dagger
 import android.app.Application
 import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.bot.impl.ChatBotImpl
-import com.twitli.android.twitter.bot.wiki.DictionaryRepository
+import com.twitli.android.twitter.bot.dict.DictionaryRepository
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.api.MyHttp
 import com.twitli.android.twitter.bot.wiki.api.MyHttpImpl
@@ -28,7 +28,6 @@ import com.twitli.android.twitter.wiki.WikiPageManager
 import com.twitli.android.twitter.wiki.impl.WikiPageManagerImpl
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class AppModule() {

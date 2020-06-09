@@ -5,13 +5,12 @@
  * http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-package com.twitli.android.twitter.bot.wiki.type
+package com.twitli.android.twitter.bot.dict.type
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.twitli.android.twitter.bot.wiki.type.Word
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
 @Entity(tableName = "verb", indices = [Index(value = ["presentTense", "infinitive"], unique = true)])

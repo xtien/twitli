@@ -5,10 +5,10 @@
  * http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-package com.twitli.android.twitter.bot.wiki
+package com.twitli.android.twitter.bot.dict
 
 import androidx.room.*
-import com.twitli.android.twitter.bot.wiki.type.*
+import com.twitli.android.twitter.bot.dict.type.*
 
 @Dao
 interface DictionaryDao {
@@ -97,4 +97,19 @@ interface DictionaryDao {
 
     @Query("delete from adjective")
     fun clearAdjectives()
-}
+
+    @Insert
+    fun createOrUpdate(personalPronoun: PersonalPronoun)
+
+    @Insert
+    fun insertAll(populateData: Array<PersonalPronoun>)
+
+    @Query("select * from personalpronoun WHERE wordString = :string")
+    fun getPersonalPronoun(string: String): List<PersonalPronoun>
+
+    @Query("select * from personalpronoun")
+    fun getPersonalPronouns()  : List<PersonalPronoun>
+
+    @Query("select * from noun")
+    fun getNouns(): List<Noun>
+ }

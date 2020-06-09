@@ -1,4 +1,4 @@
-package com.twitli.android.twitter.bot.wiki.type
+package com.twitli.android.twitter.bot.dict.type
 
 import androidx.room.ColumnInfo
 
@@ -14,13 +14,6 @@ abstract class Word {
     @ColumnInfo(name = "timesUsed")
     var timesUsed: Long = 0L
 
-    private var type: String = "string"
-
-    fun setType(type: String) {
-        this.type = type
-    }
-
-    fun getType(): String {
-        return type
-    }
+    @ColumnInfo(name = "type")
+    var type: String = "string"
 }

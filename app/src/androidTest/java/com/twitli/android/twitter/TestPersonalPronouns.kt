@@ -9,34 +9,31 @@ package com.twitli.android.twitter
 
 import android.content.Intent
 import androidx.test.rule.ActivityTestRule
+import com.twitli.android.twitter.bot.dict.DictionaryRepository
+import com.twitli.android.twitter.bot.dict.type.Gender
+import com.twitli.android.twitter.bot.dict.type.Noun
+import com.twitli.android.twitter.bot.dict.type.PersonalPronoun
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
-import com.twitli.android.twitter.bot.dict.type.Word
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
+import com.twitli.android.twitter.dagger.TestComponent
 import com.twitli.android.twitter.rule.InitPreferencesTestRule
 import com.twitli.android.twitter.rule.MyDaggerMockLiveRule
-import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.ui.MainActivity
 import it.cosenonjaviste.daggermock.DaggerMockRule
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import twitter4j.TwitterException
-import twitter4j.User
 import javax.inject.Inject
 
-class WiktionaryPageLiveTest {
+class TestPersonalPronouns {
 
     @Inject
     lateinit var bot: WiktionaryBot
 
     @Inject
-    lateinit var twitManager: TwitManager
-
-    private val nounString = "bicycle"
-
-    var user: User? = null
+    lateinit var dictionaryRepository: DictionaryRepository
 
     @Rule
     @JvmField
@@ -54,17 +51,34 @@ class WiktionaryPageLiveTest {
     @Throws(TwitterException::class)
     fun setup() {
         activityRule.launchActivity(Intent())
-        val appComponent: ApiLiveTestComponent = (activityRule.activity.application as MyApplication).appComponent as ApiLiveTestComponent
+        val appComponent: TestComponent = (activityRule.activity.application as MyApplication).appComponent as TestComponent
         appComponent.inject(this)
-        Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
-        Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
+        activityRule.activity.application.deleteDatabase("dict_database")
     }
 
     @Test
-    fun testLiveGetNoun() {
-        val word :List<Word> = bot.getType(nounString)
-        Assert.assertNotNull(word)
-        Assert.assertTrue(nounString == word[0].wordString)
-        Assert.assertTrue("noun" == word[0].type)
+    fun testPersonalPronounsPopulate() {
+
+        var noun = Noun()
+        noun.singular = "car"
+        noun.plural = "cars"
+        noun.wordString = "car"
+        noun.type = "noun"
+        dictionaryRepository.create(noun)
+
+        var result = dictionaryRepository.getNouns()
+
+        var pp = PersonalPronoun()
+        pp.setGender(Gender.F)
+        pp.type ="personalpronoun"
+        pp.wordString = "me"
+        pp.setPerson(1)
+        pp.setPlural(false)
+        dictionaryRepository.create(pp)
+        var resultPP = dictionaryRepository.getPersonalPronouns()
+        Assert.assertEquals(29, resultPP.size)
+
+        var me = bot.getType("me")
+        Assert.assertTrue(me.isNotEmpty())
     }
 }

@@ -5,36 +5,26 @@
  * http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-package com.twitli.android.twitter.bot.wiki.type
+package com.twitli.android.twitter.bot.dict.type
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.twitli.android.twitter.bot.wiki.type.Word
 
-@Entity(tableName = "adjective", indices = [Index(value = ["positive"], unique = true)])
-class Adjective : Word() {
+@Entity(tableName = "adverb", indices = [Index(value = ["positive"], unique = true)])
+class Adverb : Word() {
 
     @ColumnInfo(name = "id")
     @PrimaryKey
     var id: Long? = null
 
-    @ColumnInfo(name = "superlative")
-    var superlative: String = ""
-
     @ColumnInfo(name = "comparative")
     var comparative: String = ""
 
+    @ColumnInfo(name = "superlative")
+    var superlative: String = ""
+
     @ColumnInfo(name = "positive")
     var positive: String = ""
-
-    fun Adjective(string: String) {
-        positive = string
-        wordString = string
-    }
-
-    fun getString(): String? {
-        return positive
-    }
 }
