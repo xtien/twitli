@@ -22,8 +22,8 @@ class MyHttpImpl : MyHttp {
             urlConnection!!.connectTimeout = 5000
             urlConnection.instanceFollowRedirects = true
             val br = BufferedReader(InputStreamReader(urlConnection.inputStream), 512)
-            br.use { br ->
-                string = br.readText()
+            br.use { b ->
+                string = b.readText()
             }
 
             val msg = urlConnection.responseMessage

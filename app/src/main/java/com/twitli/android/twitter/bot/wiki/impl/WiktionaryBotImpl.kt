@@ -11,9 +11,10 @@ import android.app.Application
 import android.content.Context
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.bot.dict.DictionaryRepository
-import com.twitli.android.twitter.bot.wiki.*
-import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import com.twitli.android.twitter.bot.dict.type.*
+import com.twitli.android.twitter.bot.wiki.WiktionaryBot
+import com.twitli.android.twitter.bot.wiki.WiktionaryPage
+import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
 import twitter4j.Status
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -52,71 +53,71 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
      FileNotFoundException if page does not exist in wiktionary
     */
     @Throws(IOException::class, SQLException::class)
-    override fun getType(s: String): MutableList<Word> {
+    override fun getType(string: String): MutableList<Word> {
 
-        val localResult = getTypeLocal(s)
+        val localResult = getTypeLocal(string)
         if (localResult.isNotEmpty()) {
             return localResult
         }
 
-        var string = s.decapitalize()
+        var stringD = string.decapitalize()
         val words: MutableList<Word> = ArrayList<Word>()
-        val refString = String.format(ref, string).toLowerCase()
-        val refString2 = String.format(ref2, string).toLowerCase()
-        val refString3 = String.format(ref3, string).toLowerCase()
+        val refString = String.format(ref, stringD).toLowerCase()
+        val refString2 = String.format(ref2, stringD).toLowerCase()
+        val refString3 = String.format(ref3, stringD).toLowerCase()
 
         try {
-            var wikiPage: String? = this.wiktionaryApi?.getWikiWord(string)?.toLowerCase()
+            var wikiPage: String? = this.wiktionaryApi.getWikiWord(stringD)?.toLowerCase()
             if (wikiPage != null) {
 
                 if (!wikiPage.contains(refString) && !wikiPage.contains(refString2) && !wikiPage.contains(refString3)) {
                     if (wikiPage.contains(noEntry)) {
                         return words
                     }
-                    string = wikiPage.substring(wikiPage.indexOf(formOfDefinitionString) + formOfDefinitionString.length, wikiPage.length)
-                    string = string.substring(string.indexOf(hRefWikiString) + hRefWikiString.length, string.length)
-                    string = string.substring(0, string.indexOf("#")).toLowerCase()
-                    wikiPage = this.wiktionaryApi?.getWikiWord(string)
+                    stringD = wikiPage.substring(wikiPage.indexOf(formOfDefinitionString) + formOfDefinitionString.length, wikiPage.length)
+                    stringD = stringD.substring(stringD.indexOf(hRefWikiString) + hRefWikiString.length, stringD.length)
+                    stringD = stringD.substring(0, stringD.indexOf("#")).toLowerCase()
+                    wikiPage = this.wiktionaryApi.getWikiWord(stringD)
                 }
 
                 val page = WiktionaryPage(wikiPage!!)
                 val types: List<String> = page.parseForWord()
 
-                if (types != null && !types.contains("article")) {
+                if (!types.contains("article")) {
                     for (type in types) {
 
                         when {
                             "Noun".equals(type, ignoreCase = true) -> {
                                 val n = Noun()
-                                n.singular =string
-                                n.wordString = string
+                                n.singular =stringD
+                                n.wordString = stringD
                                 n.type=type
-                                this.dictionaryRepository?.create(n)
+                                this.dictionaryRepository.create(n)
                                 words.add(n)
                             }
                             "Verb".equals(type, ignoreCase = true) -> {
                                 val v = Verb()
-                                v.presentTense = string
-                                v.presentTenseThirdPersonSingular = string
-                                v.wordString = string
+                                v.presentTense = stringD
+                                v.presentTenseThirdPersonSingular = stringD
+                                v.wordString = stringD
                                 v.type=type
-                                this.dictionaryRepository?.create(v)
+                                this.dictionaryRepository.create(v)
                                 words.add(v)
                             }
                             "Adverb".equals(type, ignoreCase = true) -> {
                                 val v = Adverb()
-                                v.positive = string
-                                v.wordString = string
+                                v.positive = stringD
+                                v.wordString = stringD
                                 v.type=type
-                                this.dictionaryRepository?.create(v)
+                                this.dictionaryRepository.create(v)
                                 words.add(v)
                             }
                             "Adjective".equals(type, ignoreCase = true) -> {
                                 val a = Adjective()
-                                a.positive = string
-                                a.wordString = string
+                                a.positive = stringD
+                                a.wordString = stringD
                                 a.type =type
-                                this.dictionaryRepository?.create(a)
+                                this.dictionaryRepository.create(a)
                                 words.add(a)
                             }
                          }
@@ -128,7 +129,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
 
         if (words.isEmpty()) {
             val w = WordString()
-            w.wordString = string
+            w.wordString = stringD
             words.add(w)
             dictionaryRepository.create(w)
         }
@@ -140,7 +141,7 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
 
         var words: MutableList<Word> = ArrayList<Word>()
 
-        if (string != null && string.length > 2 && !string.matches(Regex(".*\\d.*"))) {
+        if (string.length > 2 && !string.matches(Regex(".*\\d.*"))) {
             words = getType(string)
         }
 

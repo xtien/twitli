@@ -9,8 +9,6 @@ package com.twitli.android.twitter.bot.dict
 
 import android.app.Application
 import com.twitli.android.twitter.bot.dict.type.*
-import com.twitli.android.twitter.bot.dict.type.Interjection
-import com.twitli.android.twitter.bot.dict.type.ProperNoun
 import javax.inject.Inject
 
 class DictionaryRepository @Inject constructor(application: Application?) {

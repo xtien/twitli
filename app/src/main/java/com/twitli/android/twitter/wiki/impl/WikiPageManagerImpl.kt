@@ -9,8 +9,10 @@ package com.twitli.android.twitter.wiki.impl
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.text.Html
-import com.twitli.android.twitter.MyApplication
+import android.text.Html.fromHtml
+import androidx.core.text.HtmlCompat
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.data.ContentRepository
 import com.twitli.android.twitter.wiki.WikiPageManager
@@ -34,7 +36,7 @@ class WikiPageManagerImpl @Inject constructor(application: Application, reposito
     }
 
     @Throws(IOException::class)
-    override fun getPage(year: String?): String? {
+    override fun getPage(year: String): String {
 
         var result: String? = null
         var numberOfItems = 0
@@ -86,7 +88,7 @@ class WikiPageManagerImpl @Inject constructor(application: Application, reposito
                 }
             }
         }
-        return result
+        return result.toString()
     }
 
     companion object {
@@ -94,10 +96,10 @@ class WikiPageManagerImpl @Inject constructor(application: Application, reposito
         fun fromHtml(html: String?): String {
             return if (html == null) {
                 ""
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString()
+            } else if (SDK_INT >= Build.VERSION_CODES.N) {
+                fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString()
             } else {
-                Html.fromHtml(html).toString()
+                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
             }
         }
     }

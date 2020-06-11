@@ -16,7 +16,6 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
-import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.data.*
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
@@ -56,9 +55,6 @@ class TwitService : LifecycleService() {
     @Inject
     lateinit var twitManager: TwitManager
 
-    @Inject
-    lateinit var chatbot: ChatBot
-
     private val es = Executors.newScheduledThreadPool(2)
     private var year = 42
     private var currentYear = 0
@@ -72,11 +68,11 @@ class TwitService : LifecycleService() {
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val bundle = intent.extras
-            val message = bundle!!.getString("message")
+            val message = bundle!!.getString("message").toString()
             es.execute {
                 try {
-                    val text = wikiPageManager!!.getPage(message)
-                    twitManager!!.tweet(text)
+                    val text :String = wikiPageManager.getPage(message).toString()
+                    twitManager.tweet(text)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -95,17 +91,17 @@ class TwitService : LifecycleService() {
         currentYear = calendar[Calendar.YEAR]
 
         es.execute {
-            year = userRepository!!.year
+            year = userRepository.year
             Log.d(LOGTAG, "year = $year")
         }
-        userRepository!!.followersCount?.observeForever { followers: Long? ->
+        userRepository.followersCount?.observeForever { followers: Long? ->
             if (followers != null && followers != 0L) {
                   year = (followers % currentYear).toInt()
                 Log.d(LOGTAG, "doWiki 111 $year")
                 doWiki(year)
             }
         }
-        settingsRepository!!.isActive?.observeForever { active: Boolean? ->
+        settingsRepository.isActive.observeForever { active: Boolean? ->
             if (active != null) {
                 if (active) {
                     if (System.currentTimeMillis() - tweetedHistory > 900000L) {
@@ -117,7 +113,7 @@ class TwitService : LifecycleService() {
         }
         val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         intervals = Arrays.asList(*applicationContext.resources.getStringArray(R.array.tweet_interval))
-        settingsRepository!!.isActive?.observeForever { active: Boolean? ->
+        settingsRepository.isActive.observeForever { active: Boolean? ->
             Log.d(LOGTAG, "active = " + this.active + " " + active)
             if (active != null) {
                 this@TwitService.active = active
@@ -143,7 +139,7 @@ class TwitService : LifecycleService() {
     }
 
     private fun cleanupTwitRepository() {
-        twitRepository!!.cleanUp()
+        twitRepository.cleanUp()
     }
 
     override fun onDestroy() {
@@ -154,14 +150,14 @@ class TwitService : LifecycleService() {
 
     private fun tweet(content: Content) {
         Log.d(LOGTAG, "tweet " + content.year + " " + content.text)
-        twitManager!!.tweet(content)
+        twitManager.tweet(content)
     }
 
     private val user: Int
-        private get() = try {
-            val user = twitManager!!.verifyCredentials()
+        get() = try {
+            val user = twitManager.verifyCredentials()
             if (user != null) {
-                userRepository!!.persist(user)
+                userRepository.persist(user)
                 user.followersCount
             } else {
                 0
@@ -175,13 +171,13 @@ class TwitService : LifecycleService() {
         Log.d(LOGTAG, "doWiki 179 $year")
         es.execute {
             tweetedHistory = System.currentTimeMillis()
-            val contentStatus = contentRepository!!.getStatus(year)
+            val contentStatus = contentRepository.getStatus(year)
             when (contentStatus) {
                 ContentStatus.AVAILABLE -> {
                     Log.d(LOGTAG, "AVAILABLE")
-                    val content = contentRepository!!.getFirstUnused(Integer.toString(year))
+                    val content = contentRepository.getFirstUnused(Integer.toString(year))
                     if (content != null) {
-                        contentRepository!!.setDone(content.id)
+                        contentRepository.setDone(content.id)
                         Log.d(LOGTAG, "setDone " + content.text)
                         tweet(content)
                     } else {
@@ -191,7 +187,7 @@ class TwitService : LifecycleService() {
                 ContentStatus.NONE -> {
                     Log.d(LOGTAG, "NONE")
                     try {
-                        wikiPageManager!!.getPage(Integer.toString(year))
+                        wikiPageManager.getPage(Integer.toString(year))
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }

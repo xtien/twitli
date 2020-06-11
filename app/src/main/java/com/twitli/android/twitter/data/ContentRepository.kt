@@ -11,19 +11,16 @@ import android.util.Log
 import javax.inject.Inject
 
 class ContentRepository @Inject constructor(context: Context) {
-    private val contentDao: ContentDao?
+
+    private val contentDao: ContentDao
+
+    init {
+        val db = AppDatabase.getDatabase(context)
+        contentDao = db.contentDao()
+    }
 
     fun addContent(year: String?, datum: String?, text: String?) {
-
-        var existingContent: Content = if (datum != null) {
-            getContent(year, datum, text)
-        } else {
-            getContentNoDate(year, text)
-        }
-
-        if (existingContent == null) {
-            contentDao!!.addContent(year, datum, text)
-        }
+        contentDao.addContent(year, datum, text)
     }
 
     private fun getContent(year: String?, datum: String?, text: String?): Content {
@@ -61,7 +58,7 @@ class ContentRepository @Inject constructor(context: Context) {
         return if (available.size > 0) {
             ContentStatus.AVAILABLE
         } else {
-            if (done!!.size > 0) {
+            if (done!!.isNotEmpty()) {
                 ContentStatus.DONE
             } else {
                 ContentStatus.NONE
@@ -70,19 +67,14 @@ class ContentRepository @Inject constructor(context: Context) {
     }
 
     fun getAvailable(year: Int): List<Content?>? {
-        return contentDao!!.getAvailable(year)
+        return contentDao.getAvailable(year)
     }
 
     fun clear() {
-        contentDao!!.clear()
+        contentDao.clear()
     }
 
     companion object {
         private val LOGTAG = ContentRepository::class.java.simpleName
-    }
-
-    init {
-        val db = AppDatabase.getDatabase(context!!)
-        contentDao = db!!.contentDao()
     }
 }

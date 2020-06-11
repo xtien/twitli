@@ -10,15 +10,12 @@ import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
-import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.service.TwitService.LocalBinder
-import com.twitli.android.twitter.tweet.AuthCallbackActivity
 import com.twitli.android.twitter.tweet.TwitFragment
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
@@ -44,9 +41,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var twitManager: TwitManager
-
-    @Inject
-    lateinit var chatbot: ChatBot
 
     private var pagerAdapter: ScreenSlidePagerAdapter? = null
 

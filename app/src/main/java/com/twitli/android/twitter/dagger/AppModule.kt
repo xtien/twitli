@@ -8,8 +8,8 @@ package com.twitli.android.twitter.dagger
 
 import android.app.Application
 import com.twitli.android.twitter.bot.ChatBot
-import com.twitli.android.twitter.bot.impl.ChatBotImpl
 import com.twitli.android.twitter.bot.dict.DictionaryRepository
+import com.twitli.android.twitter.bot.impl.ChatBotImpl
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.api.MyHttp
 import com.twitli.android.twitter.bot.wiki.api.MyHttpImpl
@@ -35,8 +35,8 @@ class AppModule() {
     lateinit var twitManager: TwitManager
 
     @Provides
-    fun twitViewModel(application: Application, twitManager: TwitManager, chatbot: ChatBot): TwitViewModel {
-        return TwitViewModel(application, twitManager, chatbot)
+    fun twitViewModel(application: Application, twitManager: TwitManager): TwitViewModel {
+        return TwitViewModel(application, twitManager)
     }
 
     @Provides
@@ -55,8 +55,8 @@ class AppModule() {
     }
 
     @Provides
-    fun twitRepository(application: Application?, twitManager: TwitManager, chatbot: ChatBot): TwitRepository {
-        return TwitRepository(application, twitManager, chatbot)
+    fun twitRepository(application: Application?, twitManager: TwitManager): TwitRepository {
+        return TwitRepository(application, twitManager)
     }
 
     @Provides
@@ -75,16 +75,16 @@ class AppModule() {
     }
 
     @Provides
-    fun provideTwitManager(application: Application, chatbot: ChatBot): TwitManager {
+    fun provideTwitManager(application: Application): TwitManager {
         if (!this::twitManager.isInitialized) {
-            twitManager = TwitManagerImpl(application, chatbot)
+            twitManager = TwitManagerImpl(application)
         }
         return twitManager
     }
 
     @Provides
-    fun chatbot(application: Application, wikBot: WiktionaryBot): ChatBot {
-        return ChatBotImpl(application, wikBot)
+    fun chatbot(application: Application, wikBot: WiktionaryBot, twit: TwitManager): ChatBot {
+        return ChatBotImpl(application, wikBot, twit)
     }
 
     @Provides

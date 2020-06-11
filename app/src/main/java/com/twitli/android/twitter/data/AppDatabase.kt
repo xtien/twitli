@@ -11,7 +11,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.twitli.android.twitter.bot.dict.type.*
 import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitDao
 import java.util.concurrent.Executors
@@ -24,9 +23,9 @@ import java.util.concurrent.Executors
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun settingsDao(): SettingsDao
-    abstract fun contentDao(): ContentDao?
+    abstract fun contentDao(): ContentDao
     abstract fun userDao(): UserDao
-    abstract fun twitDao(): TwitDao?
+    abstract fun twitDao(): TwitDao
 
     companion object {
 
@@ -51,7 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        fun getDatabase(context: Context): AppDatabase? {
+        fun getDatabase(context: Context): AppDatabase {
             if (!this::INSTANCE.isInitialized) {
                 synchronized(AppDatabase::class.java) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,

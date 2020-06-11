@@ -7,7 +7,10 @@
 
 package com.twitli.android.twitter.bot.dict.type
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.twitli.android.twitter.bot.dict.Converters
 
 @Entity(tableName = "personalpronoun")

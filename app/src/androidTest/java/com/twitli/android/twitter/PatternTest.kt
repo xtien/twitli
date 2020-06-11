@@ -149,7 +149,7 @@ class PatternTest {
 
     private fun makeString(s: String): List<Word> {
         var the = WordString()
-        the.wordString = "the"
+        the.wordString = s
         the.type = "string"
         var stringList = mutableListOf<WordString>()
         stringList.add(the)
@@ -159,7 +159,7 @@ class PatternTest {
     private fun makeAdjective(s: String): List<Word> {
         var adjective = Adjective()
         adjective.type = "adjective"
-        adjective.positive = "red"
+        adjective.positive = s
         var adjectiveList = mutableListOf<Adjective>()
         adjectiveList.add(adjective)
         return adjectiveList.toList()
@@ -169,8 +169,8 @@ class PatternTest {
     private fun makeVerb(s: String): List<Word> {
         var verb = Verb()
         verb.type = "verb"
-        verb.presentTense = "is"
-        verb.wordString = "is"
+        verb.presentTense = s
+        verb.wordString = s
         var verbList = mutableListOf<Verb>()
         verbList.add(verb)
         return verbList.toList()
@@ -179,7 +179,7 @@ class PatternTest {
     private fun makeNoun(s: String): List<Word> {
         var noun = Noun()
         noun.type = "noun"
-        noun.wordString = "bike"
+        noun.wordString = s
         var nounList = mutableListOf<Word>()
         nounList.add(noun)
         return nounList.toList()
@@ -188,12 +188,12 @@ class PatternTest {
     private fun makeAdjectiveNoun(s: String): List<Word> {
         var noun = Noun()
         noun.type = "noun"
-        noun.wordString = "red"
+        noun.wordString = s
         var nounList = mutableListOf<Word>()
         nounList.add(noun)
         var adjective = Adjective()
         adjective.type = "adjective"
-        adjective.wordString = "red"
+        adjective.wordString = s
         nounList.add(adjective)
         return nounList.toList()
     }

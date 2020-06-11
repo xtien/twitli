@@ -7,8 +7,6 @@
 
 package com.twitli.android.twitter.bot.dict
 
-import com.twitli.android.twitter.bot.dict.Pattern
-
 class Patterns() {
 
     companion object {

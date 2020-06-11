@@ -19,7 +19,7 @@ interface TwitManager {
 
     fun reply(string: String?, replyToId: Long?)
 
-    fun tweet(toString: String?)
+    fun tweet(string: String)
 
     fun createAccessToken(verifier: String?)
 
@@ -38,4 +38,5 @@ interface TwitManager {
     fun unlike(tweetId: Long?)
 
     fun reset()
+    fun takeStatus(): Status
 }

@@ -9,7 +9,6 @@ package com.twitli.android.twitter.tweet
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.data.AppDatabase
 import twitter4j.Paging
 import twitter4j.Status
@@ -21,10 +20,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TwitRepository @Inject constructor(application: Application?, twitManager: TwitManager, chatbot: ChatBot) {
+class TwitRepository @Inject constructor(application: Application?, twitManager: TwitManager) {
 
     private val twitManager: TwitManager
-    private val chatbot: ChatBot
     private val twitDao: TwitDao
     val tweets: LiveData<List<Tweet?>?>?
     var es = Executors.newScheduledThreadPool(1)!!
@@ -39,8 +37,7 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
         var tweets: List<Status?>? = ArrayList()
         try {
             tweets = twitManager.getHomeTimeline(paging)
-            chatbot.read(tweets)
-        } catch (e: TwitterException) {
+         } catch (e: TwitterException) {
             Log.e(LOGTAG, "Twitter error " + e.exceptionCode + " " + e.message)
         }
         for (status in tweets!!) {
@@ -70,7 +67,6 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
         twitDao = db?.twitDao()!!
         tweets = twitDao.tweets
         this.twitManager = twitManager
-        this.chatbot = chatbot
         es.scheduleAtFixedRate({ loadTweets() }, 300, 300, TimeUnit.SECONDS)
     }
 }

@@ -103,17 +103,16 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
             nameView.text = tweet.name.toString()
             tweetTextView.text = tweet.text.toString()
             val text = tweet.text.toString()
-            val len = text.length
-            if (tweet.text!!.length == 280) {
+             if (tweet.text!!.length == 280) {
                 tweetTextView.setTextColor(ContextCompat.getColor(context!!, R.color.tweet_highlight))
             } else {
                 tweetTextView.setTextColor(ContextCompat.getColor(context!!, R.color.tweet_text))
             }
-            like.setOnClickListener { v: View? -> onLikeClickListener!!.onLikeClicked(tweet.tweetId, tweet.isLiked) }
-            reply.setOnClickListener { v: View? -> onReplyClickListener!!.onReplyClicked(tweet.tweetId) }
+            like.setOnClickListener { onLikeClickListener!!.onLikeClicked(tweet.tweetId, tweet.isLiked) }
+            reply.setOnClickListener { onReplyClickListener!!.onReplyClicked(tweet.tweetId) }
         }
 
-        protected override fun clear() {
+        override fun clear() {
             twitterIdView.text = ""
             timeView.text = ""
             nameView.text = ""

@@ -26,8 +26,8 @@ open class ApiTestModule {
     lateinit var wikiPageManager: WikiPageManager
 
     @Provides
-    fun twitViewModel(application: Application, twitManager: TwitManager, chatbot: ChatBot): TwitViewModel {
-        return TwitViewModel(application, twitManager, chatbot)
+    fun twitViewModel(application: Application, twitManager: TwitManager): TwitViewModel {
+        return TwitViewModel(application, twitManager)
     }
 
     @Provides
@@ -46,8 +46,8 @@ open class ApiTestModule {
     }
 
     @Provides
-    fun twitRepository(application: Application?, twitManager: TwitManager, chatbot: ChatBot): TwitRepository {
-        return TwitRepository(application, twitManager, chatbot)
+    fun twitRepository(application: Application?, twitManager: TwitManager): TwitRepository {
+        return TwitRepository(application, twitManager)
     }
 
     @Provides

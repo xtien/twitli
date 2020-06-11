@@ -28,8 +28,8 @@ import org.mockito.Mockito
 open class ApiModule {
 
     @Provides
-    fun twitViewModel(application: Application, twitManager: TwitManager, chatbot: ChatBot): TwitViewModel {
-        return TwitViewModel(application, twitManager, chatbot)
+    fun twitViewModel(application: Application, twitManager: TwitManager): TwitViewModel {
+        return TwitViewModel(application, twitManager)
     }
 
     @Provides
@@ -48,8 +48,8 @@ open class ApiModule {
     }
 
     @Provides
-    fun twitRepository(application: Application?, twitManager: TwitManager, chatbot: ChatBot): TwitRepository {
-        return TwitRepository(application, twitManager, chatbot)
+    fun twitRepository(application: Application?, twitManager: TwitManager): TwitRepository {
+        return TwitRepository(application, twitManager)
     }
 
     @Provides
@@ -83,8 +83,8 @@ open class ApiModule {
     }
 
     @Provides
-    fun provideChatBot(application: Application, wikBot: WiktionaryBot): ChatBot {
-        return ChatBotImpl(application, wikBot)
+    fun provideChatBot(application: Application, wikBot: WiktionaryBot, twit: TwitManager): ChatBot {
+        return ChatBotImpl(application, wikBot, twit)
     }
 
     @Provides

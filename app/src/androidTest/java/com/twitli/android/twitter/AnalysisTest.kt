@@ -53,8 +53,8 @@ class AnalysisTest {
     fun testProcessStatus1(){
 
         var status : Status = StatusImpl("the bike is red")
-        var list = chatbot.processStatus(status)
+        chatbot.processStatus(status)
 
-        assertEquals(3, list.size)
+
     }
 }

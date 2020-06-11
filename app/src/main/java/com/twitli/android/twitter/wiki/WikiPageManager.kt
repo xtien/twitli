@@ -14,5 +14,5 @@ interface WikiPageManager {
     fun analyzePage(string: String?)
 
     @Throws(IOException::class)
-    fun getPage(year: String?): String?
+    fun getPage(year: String): String
 }

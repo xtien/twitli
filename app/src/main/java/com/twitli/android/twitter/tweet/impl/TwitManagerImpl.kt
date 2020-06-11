@@ -8,34 +8,31 @@ package com.twitli.android.twitter.tweet.impl
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
-import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.data.Content
 import com.twitli.android.twitter.tweet.TwitManager
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
-import java.lang.IllegalStateException
+import java.util.concurrent.BlockingQueue
 import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
 import javax.inject.Inject
 
 class TwitManagerImpl : TwitManager {
 
     var context: Context
 
-    private var twitter: Twitter = TwitterFactory().instance
+    private val queue: BlockingQueue<Status> = LinkedBlockingQueue()
 
-    lateinit var chatbot: ChatBot
+    private var twitter: Twitter = TwitterFactory().instance
 
     var es = Executors.newCachedThreadPool()!!
 
     @Inject
-    constructor(application: Application, chatbot: ChatBot) {
+    constructor(application: Application) {
         context = application
-        this.chatbot = chatbot
 
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val accessTokenKey = prefs.getString("access_token", null)
@@ -56,7 +53,7 @@ class TwitManagerImpl : TwitManager {
         tweetIt(string, replyToId)
     }
 
-    override fun tweet(string: String?) {
+    override fun tweet(string: String) {
         tweetIt(string, null)
     }
 
@@ -145,8 +142,20 @@ class TwitManagerImpl : TwitManager {
     @Throws(TwitterException::class)
     override fun getHomeTimeline(paging: Paging?): List<Status> {
         var tweets = twitter.getHomeTimeline(paging)
-        chatbot.read(tweets)
+        es.submit {
+            queue(tweets)
+        }
         return tweets
+    }
+
+    private fun queue(tweets: ResponseList<Status>) {
+        if (tweets.isNotEmpty()) {
+            tweets.stream().forEach { t -> queue.put(t) }
+        }
+    }
+
+    override fun takeStatus(): Status {
+        return queue.take()
     }
 
     override fun logout() {
