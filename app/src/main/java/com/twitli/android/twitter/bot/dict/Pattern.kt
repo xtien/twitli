@@ -11,23 +11,44 @@ import com.twitli.android.twitter.bot.dict.type.Word
 
 class Pattern(vararg words: String) {
 
+    val wordTypes: Array<out String> = words
+
     fun matches(list: List<List<Word>>): Boolean {
         var iterator = list.iterator()
         var patternIterator = wordTypes.iterator()
         var count = 0
-        while (iterator.hasNext() && patternIterator.hasNext()) {
-           var i = iterator.next()
-           var p = patternIterator.next()
-            count++
+        var i = iterator.next()
+        var p = patternIterator.next()
+        while (count < wordTypes.size) {
             if (isOfType(i, p)) {
-            } else if (p == "any") {
-                p = patternIterator.next()
                 count++
-                if (!isOfType(i, p)) {
+                if (count >= wordTypes.size) {
+                    return true
+                }
+                if (iterator.hasNext()) {
+                    i = iterator.next()
+                } else {
+                    return false
+                }
+                if (patternIterator.hasNext()) {
+                    p = patternIterator.next()
+                } else {
+                    return false
+                }
+             } else {
+                if (!iterator.hasNext()) {
+                    return false
+                }
+                i = iterator.next()
+                while (patternIterator.hasNext() && p == "any") {
+                    p = patternIterator.next()
+                }
+                while (iterator.hasNext() && isOfType(i, "string")) {
                     i = iterator.next()
                 }
             }
         }
+
         return count == wordTypes.size
     }
 
@@ -42,6 +63,4 @@ class Pattern(vararg words: String) {
         }
         return false
     }
-
-    private val wordTypes: Array<out String> = words
 }

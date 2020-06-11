@@ -13,6 +13,7 @@ import java.util.concurrent.*
 
 class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot) : ChatBot {
 
+    private val typeString: String = "%s: %s."
     private var wikBot: WiktionaryBot = wikBot
     private var context: Context = application
 
@@ -31,16 +32,26 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot) :
         }, 2, 2, TimeUnit.SECONDS)
     }
 
-    override fun processStatus(status: Status) : List<Word> {
+    override fun processStatus(status: Status): List<Word> {
         var words = wikBot.getWords(status)
-        var pattern = analyzeSentence(words)
-        return pattern
+        var analysis = analyzeSentence(words)
+        var string = sentenceWords(analysis)
+        return analysis
+    }
+
+    override fun sentenceWords(words: List<Word>): List<String> {
+
+        var resultList = mutableListOf<String>()
+        for (word in words) {
+            resultList.add(String.format(typeString, word.type, word.wordString))
+        }
+        return resultList.toList()
     }
 
     private fun analyzeSentence(words: List<List<Word>>): List<Word> {
         var result = mutableListOf<Word>()
-        for(p in Patterns.patterns){
-            if(p.matches(words)){
+        for (p in Patterns.patterns) {
+            if (p.matches(words)) {
                 return processPattern(words, p);
             }
         }
@@ -48,7 +59,25 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot) :
     }
 
     private fun processPattern(words: List<List<Word>>, p: Pattern): List<Word> {
-        TODO("Not yet implemented")
+
+        var wordIterator = words.iterator()
+        var patternIterator = p.wordTypes.iterator()
+
+        var resultList = mutableListOf<Word>()
+        while (patternIterator.hasNext()) {
+            var p = patternIterator.next()
+            loop@ while (wordIterator.hasNext()) {
+                var wordList = wordIterator.next()
+                for (word in wordList) {
+                    if (p.equals(word.type)) {
+                        resultList.add(word)
+                        break@loop
+                    }
+                }
+            }
+        }
+
+        return resultList
     }
 
     override fun read(tweets: List<Status?>?) {

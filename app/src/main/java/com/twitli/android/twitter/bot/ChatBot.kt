@@ -8,4 +8,6 @@ interface ChatBot {
     fun read(tweets: List<Status?>?)
 
     fun processStatus(status: Status): List<Word>
+
+    fun sentenceWords(status: List<Word>): List<String>
 }

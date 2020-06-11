@@ -11,6 +11,7 @@ import android.content.Intent
 import android.provider.UserDictionary
 import androidx.test.rule.ActivityTestRule
 import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.bot.dict.Pattern
 import com.twitli.android.twitter.bot.dict.Patterns
 import com.twitli.android.twitter.bot.dict.type.*
 import com.twitli.android.twitter.bot.impl.ChatBotImpl
@@ -33,9 +34,6 @@ import twitter4j.TwitterException
 import javax.inject.Inject
 
 class PatternTest {
-
-    private val statusText = "red bike"
-    private val status: Status = StatusImpl(statusText)
 
     @Inject
     lateinit var chatbot: ChatBot
@@ -65,19 +63,8 @@ class PatternTest {
 
         var words: MutableList<List<Word>> = mutableListOf()
 
-        var adjective = Adjective()
-        adjective.type = "adjective"
-        adjective.positive = "red"
-        var adjectiveList = mutableListOf<Adjective>()
-        adjectiveList.add(adjective)
-        words.add(adjectiveList.toList())
-
-        var noun = Noun()
-        noun.type = "noun"
-        noun.wordString = "bike"
-        var nounList = mutableListOf<Word>()
-        nounList.add(noun)
-        words.add(nounList.toList())
+        words.add(makeAdjective("red"))
+        words.add(makeNoun("bike"))
 
         val pattern = Patterns.patterns[1]
         Assert.assertTrue(pattern.matches(words))
@@ -88,27 +75,9 @@ class PatternTest {
 
         var words: MutableList<List<Word>> = mutableListOf()
 
-        var noun = Noun()
-        noun.type = "noun"
-        noun.wordString = "bike"
-        var nounList = mutableListOf<Word>()
-        nounList.add(noun)
-        words.add(nounList.toList())
-
-        var verb = Verb()
-        verb.type = "verb"
-        verb.presentTense = "is"
-        verb.wordString = "is"
-        var verbList = mutableListOf<Verb>()
-        verbList.add(verb)
-        words.add(verbList.toList())
-
-        var adjective = Adjective()
-        adjective.type = "adjective"
-        adjective.positive = "red"
-        var adjectiveList = mutableListOf<Adjective>()
-        adjectiveList.add(adjective)
-        words.add(adjectiveList.toList())
+        words.add(makeNoun("bike"))
+        words.add(makeVerb("is"))
+        words.add(makeAdjective("red"))
 
 
         val pattern = Patterns.patterns[2]
@@ -120,38 +89,113 @@ class PatternTest {
 
         var words: MutableList<List<Word>> = mutableListOf()
 
+        words.add(makeString("the"))
+        words.add(makeNoun("bike"))
+        words.add(makeVerb("is"))
+        words.add(makeAdjective("red"))
+
+        val pattern = Patterns.patterns[2]
+        Assert.assertTrue(pattern.matches(words))
+    }
+
+    @Test
+    fun testPattern5() {
+
+        var words: MutableList<List<Word>> = mutableListOf()
+
+        words.add(makeString("the"))
+        words.add(makeNoun("bike"))
+        words.add(makeVerb("is"))
+        words.add(makeAdjectiveNoun("red"))
+
+        val pattern = Patterns.patterns[1]
+        Assert.assertFalse(pattern.matches(words))
+    }
+
+    @Test
+    fun testPattern6() {
+
+        var words: MutableList<List<Word>> = mutableListOf()
+
+        words.add(makeString("the"))
+        words.add(makeNoun("bike"))
+        words.add(makeVerb("is"))
+        words.add(makeAdjective("red"))
+
+        val pattern = Patterns.patterns[1]
+        Assert.assertFalse(pattern.matches(words))
+    }
+
+    @Test
+    fun testPattern7(){
+        var words: MutableList<List<Word>> = mutableListOf()
+
+        words.add(makeString("the"))
+        words.add(makeNoun("bike"))
+        words.add(makeVerb("is"))
+        words.add(makeAdjective("old"))
+        words.add(makeString("and"))
+        words.add(makeAdjective("red"))
+
+        lateinit var pat : Pattern
+        for(p in Patterns.patterns){
+            if(p.matches(words)){
+                pat = p
+                break
+            }
+        }
+        Assert.assertEquals(Patterns.patterns[2],pat)
+    }
+
+    private fun makeString(s: String): List<Word> {
         var the = WordString()
         the.wordString = "the"
         the.type = "string"
         var stringList = mutableListOf<WordString>()
         stringList.add(the)
-        words.add(stringList)
+        return stringList
+    }
 
-        var noun = Noun()
-        noun.type = "noun"
-        noun.wordString = "bike"
-        var nounList = mutableListOf<Word>()
-        nounList.add(noun)
-        words.add(nounList.toList())
+    private fun makeAdjective(s: String): List<Word> {
+        var adjective = Adjective()
+        adjective.type = "adjective"
+        adjective.positive = "red"
+        var adjectiveList = mutableListOf<Adjective>()
+        adjectiveList.add(adjective)
+        return adjectiveList.toList()
 
+    }
+
+    private fun makeVerb(s: String): List<Word> {
         var verb = Verb()
         verb.type = "verb"
         verb.presentTense = "is"
         verb.wordString = "is"
         var verbList = mutableListOf<Verb>()
         verbList.add(verb)
-        words.add(verbList.toList())
+        return verbList.toList()
+    }
 
+    private fun makeNoun(s: String): List<Word> {
+        var noun = Noun()
+        noun.type = "noun"
+        noun.wordString = "bike"
+        var nounList = mutableListOf<Word>()
+        nounList.add(noun)
+        return nounList.toList()
+    }
+
+    private fun makeAdjectiveNoun(s: String): List<Word> {
+        var noun = Noun()
+        noun.type = "noun"
+        noun.wordString = "red"
+        var nounList = mutableListOf<Word>()
+        nounList.add(noun)
         var adjective = Adjective()
         adjective.type = "adjective"
-        adjective.positive = "red"
-        var adjectiveList = mutableListOf<Adjective>()
-        adjectiveList.add(adjective)
-        words.add(adjectiveList.toList())
-
-
-        val pattern = Patterns.patterns[2]
-        Assert.assertTrue(pattern.matches(words))
+        adjective.wordString = "red"
+        nounList.add(adjective)
+        return nounList.toList()
     }
 
 }
