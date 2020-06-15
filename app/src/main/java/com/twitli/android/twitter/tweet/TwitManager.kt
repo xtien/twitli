@@ -28,6 +28,7 @@ interface TwitManager {
 
     @Throws(TwitterException::class)
     fun verifyCredentials(): User?
+
     fun like(tweetId: Long?)
 
     @Throws(TwitterException::class)
@@ -38,5 +39,4 @@ interface TwitManager {
     fun unlike(tweetId: Long?)
 
     fun reset()
-    fun takeStatus(): Status
-}
+ }

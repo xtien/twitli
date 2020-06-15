@@ -3,24 +3,28 @@ package com.twitli.android.twitter.bot.impl
 import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.util.Log
 import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.bot.dict.Pattern
 import com.twitli.android.twitter.bot.dict.Patterns
 import com.twitli.android.twitter.bot.dict.type.Word
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
+import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitManager
-import twitter4j.Status
+import com.twitli.android.twitter.tweet.TwitRepository
 import java.util.concurrent.*
 
-class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, twit: TwitManager) : ChatBot {
+class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, twit: TwitManager, twitRepository: TwitRepository) : ChatBot {
+
+    private val LOGTAG: String = javaClass.name
 
     private val typeString: String = "%s: %s."
     private var wikBot: WiktionaryBot = wikBot
+    private var twitRepository = twitRepository
     private var context: Context = application
     private val twit = twit
 
     private var myUserId: Long
-    private val queue: BlockingQueue<Status> = LinkedBlockingQueue()
     private val es: ScheduledExecutorService = Executors.newScheduledThreadPool(2)
 
     init {
@@ -29,16 +33,24 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
         myUserId = prefs.getLong("my_user_id", 0L);
 
         es.scheduleAtFixedRate({
-            var status = twit.takeStatus()
-            processStatus(status)
+            var status = takeStatus()
+            if(status !=null){
+                processTweet(status)
+            }
         }, 2, 2, TimeUnit.SECONDS)
     }
 
-    override fun processStatus(status: Status) {
-        var words = wikBot.getWords(status)
+    private fun takeStatus(): Tweet {
+        return twitRepository.getNewTweet()
+    }
+
+    override fun processTweet(tweet: Tweet) {
+        Log.d(LOGTAG, "processing: " + tweet.text)
+        var words = wikBot.getWords(tweet)
         var analysis = analyzeSentence(words)
         var stringList = sentenceWords(analysis)
         twit.tweet(makeString(stringList))
+        twitRepository.setTweetDone(tweet.tweetId)
     }
 
     private fun makeString(stringList: List<String>): String {
@@ -88,15 +100,5 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
         }
 
         return resultList
-    }
-
-    override fun read(tweets: List<Status?>?) {
-        es.submit {
-            tweets?.forEach {
-                if (it != null && it.inReplyToStatusId == myUserId) {
-                    queue.offer(it)
-                }
-            }
-        }
     }
 }

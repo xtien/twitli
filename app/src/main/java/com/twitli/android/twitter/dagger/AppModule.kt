@@ -83,8 +83,8 @@ class AppModule() {
     }
 
     @Provides
-    fun chatbot(application: Application, wikBot: WiktionaryBot, twit: TwitManager): ChatBot {
-        return ChatBotImpl(application, wikBot, twit)
+    fun chatbot(application: Application, wikBot: WiktionaryBot, twit: TwitManager, twitRepository: TwitRepository): ChatBot {
+        return ChatBotImpl(application, wikBot, twit, twitRepository)
     }
 
     @Provides

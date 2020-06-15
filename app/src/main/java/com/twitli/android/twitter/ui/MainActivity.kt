@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.service.TwitService
 import com.twitli.android.twitter.service.TwitService.LocalBinder
 import com.twitli.android.twitter.tweet.TwitFragment
@@ -35,6 +36,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+
+    @Inject
+    lateinit var chatBot: ChatBot
 
     @Inject
     lateinit var twitRepository: TwitRepository

@@ -24,8 +24,6 @@ class TwitManagerImpl : TwitManager {
 
     var context: Context
 
-    private val queue: BlockingQueue<Status> = LinkedBlockingQueue()
-
     private var twitter: Twitter = TwitterFactory().instance
 
     var es = Executors.newCachedThreadPool()!!
@@ -33,7 +31,6 @@ class TwitManagerImpl : TwitManager {
     @Inject
     constructor(application: Application) {
         context = application
-
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val accessTokenKey = prefs.getString("access_token", null)
         val accesTokenSecret = prefs.getString("access_token_secret", null)
@@ -141,21 +138,14 @@ class TwitManagerImpl : TwitManager {
 
     @Throws(TwitterException::class)
     override fun getHomeTimeline(paging: Paging?): List<Status> {
-        var tweets = twitter.getHomeTimeline(paging)
-        es.submit {
-            queue(tweets)
+        try {
+            return twitter.getHomeTimeline(paging)
+        } catch (exception: TwitterException) {
+            var limits = twitter.getRateLimitStatus()
+            var limit = limits.get("/statuses/home_timeline")
+            Log.e(LOGTAG, limit.toString())
+            throw(exception)
         }
-        return tweets
-    }
-
-    private fun queue(tweets: ResponseList<Status>) {
-        if (tweets.isNotEmpty()) {
-            tweets.stream().forEach { t -> queue.put(t) }
-        }
-    }
-
-    override fun takeStatus(): Status {
-        return queue.take()
     }
 
     override fun logout() {

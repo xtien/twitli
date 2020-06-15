@@ -9,7 +9,7 @@ class Tweet {
 
     @ColumnInfo(name = "tweet_id")
     @PrimaryKey
-    var tweetId: Long? = null
+    var tweetId: Long = 0L
 
     @ColumnInfo(name = "name")
     var name: String? = null
@@ -29,4 +29,6 @@ class Tweet {
     @ColumnInfo(name = "number_of_likes")
     var likes = 0
 
+    @ColumnInfo(name = "processed")
+    var processed = false
 }

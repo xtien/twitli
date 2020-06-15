@@ -15,6 +15,7 @@ import com.twitli.android.twitter.bot.dict.type.Word
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
 import com.twitli.android.twitter.rule.InitPreferencesTestRule
 import com.twitli.android.twitter.rule.MyDaggerMockLiveRule
+import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.ui.MainActivity
 import it.cosenonjaviste.daggermock.DaggerMockRule
@@ -23,7 +24,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import twitter4j.Status
 import twitter4j.TwitterException
 import twitter4j.User
 import javax.inject.Inject
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class WiktionarySentenceLiveTest {
 
     private val statusText: String = "The woman owns a red bicycle"
-    private val status: Status = Mockito.mock(Status::class.java)
+    private val tweet: Tweet = Tweet()
 
     @Inject
     lateinit var wikBot: WiktionaryBot
@@ -41,8 +41,6 @@ class WiktionarySentenceLiveTest {
 
     @Inject
     lateinit var dictionaryRepository: DictionaryRepository
-
-    private val nounString = "fiets"
 
     var user: User? = null
 
@@ -65,7 +63,7 @@ class WiktionarySentenceLiveTest {
         val appComponent: ApiLiveTestComponent = (activityRule.activity.application as MyApplication).appComponent as ApiLiveTestComponent
         appComponent.inject(this)
         dictionaryRepository.clear()
-        Mockito.`when`(status.text).thenReturn(statusText)
+        tweet.text = statusText
         Mockito.`when`(twitManager.verifyCredentials()).thenReturn(user)
         Mockito.verify(twitManager, Mockito.times(1))?.verifyCredentials()
     }
@@ -73,7 +71,7 @@ class WiktionarySentenceLiveTest {
     @Test
     fun testLiveSentenceTest() {
 
-        val wordStrings = wikBot.getWords(status)
+        val wordStrings = wikBot.getWords(tweet)
         Assert.assertNotNull(wordStrings)
         Assert.assertEquals(6, wordStrings.size)
 

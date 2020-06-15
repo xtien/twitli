@@ -112,4 +112,20 @@ interface DictionaryDao {
 
     @Query("select * from noun")
     fun getNouns(): List<Noun>
- }
+
+    @Transaction
+    fun createOrUpdate(number: MyNumber) {
+        number.timeStamp = System.currentTimeMillis()
+        number.timesUsed++
+        val id = insert(number)
+        if (id == -1L) {
+            update(number)
+        }
+    }
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun update(number: MyNumber)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(number: MyNumber): Long
+}

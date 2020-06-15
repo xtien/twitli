@@ -1,7 +1,7 @@
 package com.twitli.android.twitter.bot.wiki
 
 import com.twitli.android.twitter.bot.dict.type.Word
-import twitter4j.Status
+import com.twitli.android.twitter.tweet.Tweet
 import java.io.IOException
 import java.sql.SQLException
 
@@ -24,5 +24,5 @@ interface WiktionaryBot {
 
     fun getType(string: String): List<Word>
 
-    fun getWords(status: Status): List<List<Word>>
+    fun getWords(tweet: Tweet): List<List<Word>>
 }

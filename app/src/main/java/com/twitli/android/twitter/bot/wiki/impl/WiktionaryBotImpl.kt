@@ -9,13 +9,15 @@ package com.twitli.android.twitter.bot.wiki.impl
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.twitli.android.twitter.R
 import com.twitli.android.twitter.bot.dict.DictionaryRepository
 import com.twitli.android.twitter.bot.dict.type.*
 import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.bot.wiki.WiktionaryPage
 import com.twitli.android.twitter.bot.wiki.api.WiktionaryApi
-import twitter4j.Status
+import com.twitli.android.twitter.tweet.Tweet
+import org.apache.commons.lang3.math.NumberUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.sql.SQLException
@@ -23,6 +25,8 @@ import java.util.*
 import javax.inject.Inject
 
 class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryRepository: DictionaryRepository, wiktionaryApi: WiktionaryApi) : WiktionaryBot {
+
+    private val LOGTAG = javaClass.name
 
     private var dictionaryRepository: DictionaryRepository = dictionaryRepository
     private var context: Context = app
@@ -66,65 +70,76 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
         val refString2 = String.format(ref2, stringD).toLowerCase()
         val refString3 = String.format(ref3, stringD).toLowerCase()
 
-        try {
-            var wikiPage: String? = this.wiktionaryApi.getWikiWord(stringD)?.toLowerCase()
-            if (wikiPage != null) {
+        if (NumberUtils.isCreatable(string)) {
+            val n = MyNumber()
+            n.wordString = string
+            n.type = "number"
+            this.dictionaryRepository.create(n)
+            words.add(n)
+        } else {
 
-                if (!wikiPage.contains(refString) && !wikiPage.contains(refString2) && !wikiPage.contains(refString3)) {
-                    if (wikiPage.contains(noEntry)) {
-                        return words
+
+            try {
+                var wikiPage: String? = this.wiktionaryApi.getWikiWord(stringD)?.toLowerCase()
+                if (wikiPage != null) {
+
+                    if (!wikiPage.contains(refString) && !wikiPage.contains(refString2) && !wikiPage.contains(refString3)) {
+                        if (wikiPage.contains(noEntry)) {
+                            return words
+                        }
+                        stringD = wikiPage.substring(wikiPage.indexOf(formOfDefinitionString) + formOfDefinitionString.length, wikiPage.length)
+                        stringD = stringD.substring(stringD.indexOf(hRefWikiString) + hRefWikiString.length, stringD.length)
+                        stringD = stringD.substring(0, stringD.indexOf("#")).toLowerCase()
+                        wikiPage = this.wiktionaryApi.getWikiWord(stringD)
                     }
-                    stringD = wikiPage.substring(wikiPage.indexOf(formOfDefinitionString) + formOfDefinitionString.length, wikiPage.length)
-                    stringD = stringD.substring(stringD.indexOf(hRefWikiString) + hRefWikiString.length, stringD.length)
-                    stringD = stringD.substring(0, stringD.indexOf("#")).toLowerCase()
-                    wikiPage = this.wiktionaryApi.getWikiWord(stringD)
-                }
 
-                val page = WiktionaryPage(wikiPage!!)
-                val types: List<String> = page.parseForWord()
+                    val page = WiktionaryPage(wikiPage!!)
+                    val types: List<String> = page.parseForWord()
 
-                if (!types.contains("article")) {
-                    for (type in types) {
+                    if (!types.contains("article")) {
+                        for (type in types) {
 
-                        when {
-                            "Noun".equals(type, ignoreCase = true) -> {
-                                val n = Noun()
-                                n.singular =stringD
-                                n.wordString = stringD
-                                n.type=type
-                                this.dictionaryRepository.create(n)
-                                words.add(n)
+                            when {
+                                "noun".equals(type, ignoreCase = true) -> {
+                                    val n = Noun()
+                                    n.singular = stringD
+                                    n.wordString = stringD
+                                    n.type = type
+                                    this.dictionaryRepository.create(n)
+                                    words.add(n)
+                                }
+                                "verb".equals(type, ignoreCase = true) -> {
+                                    val v = Verb()
+                                    v.presentTense = stringD
+                                    v.presentTenseThirdPersonSingular = stringD
+                                    v.wordString = stringD
+                                    v.type = type
+                                    this.dictionaryRepository.create(v)
+                                    words.add(v)
+                                }
+                                "adverb".equals(type, ignoreCase = true) -> {
+                                    val v = Adverb()
+                                    v.positive = stringD
+                                    v.wordString = stringD
+                                    v.type = type
+                                    this.dictionaryRepository.create(v)
+                                    words.add(v)
+                                }
+                                "adjective".equals(type, ignoreCase = true) -> {
+                                    val a = Adjective()
+                                    a.positive = stringD
+                                    a.wordString = stringD
+                                    a.type = type
+                                    this.dictionaryRepository.create(a)
+                                    words.add(a)
+                                }
                             }
-                            "Verb".equals(type, ignoreCase = true) -> {
-                                val v = Verb()
-                                v.presentTense = stringD
-                                v.presentTenseThirdPersonSingular = stringD
-                                v.wordString = stringD
-                                v.type=type
-                                this.dictionaryRepository.create(v)
-                                words.add(v)
-                            }
-                            "Adverb".equals(type, ignoreCase = true) -> {
-                                val v = Adverb()
-                                v.positive = stringD
-                                v.wordString = stringD
-                                v.type=type
-                                this.dictionaryRepository.create(v)
-                                words.add(v)
-                            }
-                            "Adjective".equals(type, ignoreCase = true) -> {
-                                val a = Adjective()
-                                a.positive = stringD
-                                a.wordString = stringD
-                                a.type =type
-                                this.dictionaryRepository.create(a)
-                                words.add(a)
-                            }
-                         }
+                        }
                     }
                 }
+            } catch (fnfe: FileNotFoundException) {
+                Log.d(LOGTAG, "word not found " + string)
             }
-        } catch (fnfe: FileNotFoundException) {
         }
 
         if (words.isEmpty()) {
@@ -148,9 +163,9 @@ class WiktionaryBotImpl @Inject constructor(app: Application, dictionaryReposito
         return words.toList()
     }
 
-    override fun getWords(status: Status): List<List<Word>> {
+    override fun getWords(status: Tweet): List<List<Word>> {
         var list: MutableList<List<Word>> = mutableListOf()
-        var strings = status.text.split(" ")
+        var strings = status.text!!.split(" ")
         for (string in strings) {
             val type = getType(string)
             list.add(type.toList())

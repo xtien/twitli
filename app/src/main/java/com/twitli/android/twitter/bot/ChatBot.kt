@@ -1,13 +1,11 @@
 package com.twitli.android.twitter.bot
 
 import com.twitli.android.twitter.bot.dict.type.Word
-import twitter4j.Status
+import com.twitli.android.twitter.tweet.Tweet
 
 interface ChatBot {
 
-    fun read(tweets: List<Status?>?)
-
-    fun processStatus(status: Status)
+    fun processTweet(status: Tweet)
 
     fun sentenceWords(words: List<Word>): List<String>
 }

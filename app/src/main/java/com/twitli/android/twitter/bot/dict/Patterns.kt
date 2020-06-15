@@ -15,7 +15,8 @@ class Patterns() {
                 Pattern("adjective", "noun"),
                 Pattern("noun", "verb", "adjective"),
                 Pattern("noun", "any", "noun"),
-                Pattern("noun", "any", "verb", "any", "noun")
+                Pattern("noun", "any", "verb", "any", "noun"),
+                Pattern("number")
         )
     }
 }

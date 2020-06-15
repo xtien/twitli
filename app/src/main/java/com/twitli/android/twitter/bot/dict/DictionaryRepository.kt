@@ -66,4 +66,8 @@ class DictionaryRepository @Inject constructor(application: Application?) {
     fun getNouns(): List<Noun> {
         return dictionaryDao.getNouns()
     }
+
+    fun create(n: MyNumber) {
+        return dictionaryDao.createOrUpdate(n)
+    }
 }

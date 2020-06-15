@@ -13,10 +13,10 @@ import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.dagger.ApiLiveTestComponent
 import com.twitli.android.twitter.rule.InitPreferencesTestRule
 import com.twitli.android.twitter.rule.MyDaggerMockLiveRule
+import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.twit.StatusImpl
 import com.twitli.android.twitter.ui.MainActivity
 import it.cosenonjaviste.daggermock.DaggerMockRule
-import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,8 +52,9 @@ class AnalysisTest {
     @Test
     fun testProcessStatus1(){
 
-        var status : Status = StatusImpl("the bike is red")
-        chatbot.processStatus(status)
+        var tweet : Tweet = Tweet()
+        tweet.text = "the bike is red"
+        chatbot.processTweet(tweet)
 
 
     }

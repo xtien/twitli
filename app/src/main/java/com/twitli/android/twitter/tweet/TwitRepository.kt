@@ -57,6 +57,14 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
         twitDao.cleanUp(System.currentTimeMillis() - ONEHOUR)
     }
 
+    fun getNewTweet(): Tweet {
+        return twitDao.getNewTweet()
+    }
+
+    fun setTweetDone(tweetId: Long) {
+        twitDao.setTweetDone(tweetId)
+    }
+
     companion object {
         private val LOGTAG = TwitRepository::class.java.simpleName
         private const val ONEHOUR = 3600000L

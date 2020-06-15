@@ -21,7 +21,8 @@ import java.util.concurrent.Executors
     Adjective::class,
     Adverb::class,
     PersonalPronoun::class,
-    WordString::class], version = 3, exportSchema = false)
+    WordString::class,
+    MyNumber::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DictDatabase : RoomDatabase() {
 
@@ -47,11 +48,11 @@ abstract class DictDatabase : RoomDatabase() {
         fun getDatabase(context: Context): DictDatabase? {
             if (!this::INSTANCE.isInitialized) {
                 synchronized(DictDatabase::class.java) {
-                         INSTANCE = Room.databaseBuilder(context.applicationContext,
-                                DictDatabase::class.java, "dict_database")
-                                .addCallback(databaseCallback)
-                                .build()
-                    }
+                    INSTANCE = Room.databaseBuilder(context.applicationContext,
+                            DictDatabase::class.java, "dict_database")
+                            .addCallback(databaseCallback)
+                            .build()
+                }
             }
             return INSTANCE
         }

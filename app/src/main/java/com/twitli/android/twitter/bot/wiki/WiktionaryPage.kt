@@ -49,5 +49,4 @@ class WiktionaryPage(private val string: String) {
         }
         return result
     }
-
 }

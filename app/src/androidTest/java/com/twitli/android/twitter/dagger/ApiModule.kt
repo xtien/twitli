@@ -83,8 +83,8 @@ open class ApiModule {
     }
 
     @Provides
-    fun provideChatBot(application: Application, wikBot: WiktionaryBot, twit: TwitManager): ChatBot {
-        return ChatBotImpl(application, wikBot, twit)
+    fun provideChatBot(application: Application, wikBot: WiktionaryBot, twit: TwitManager, twitRepository: TwitRepository): ChatBot {
+        return ChatBotImpl(application, wikBot, twit, twitRepository)
     }
 
     @Provides

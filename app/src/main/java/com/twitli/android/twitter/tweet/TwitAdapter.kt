@@ -63,7 +63,7 @@ class TwitAdapter : RecyclerView.Adapter<BaseViewHolder>() {
         Collections.sort(tweets, object : Comparator<Tweet?> {
             override fun compare(o1: Tweet?, o2: Tweet?): Int {
                 if(o2 == null){
-                    return -1;
+                    return 1;
                 } else if (o1 == null){
                     return 1;
                 }
