@@ -9,9 +9,10 @@ package com.twitli.android.twitter.bot.dict
 
 import com.twitli.android.twitter.bot.dict.type.Word
 
-class Pattern(vararg words: String) {
+class Pattern(question: String?, vararg words: String) {
 
     val wordTypes: Array<out String> = words
+    private val question = question
 
     fun matches(list: List<List<Word>>): Boolean {
         var iterator = list.iterator()
@@ -62,5 +63,9 @@ class Pattern(vararg words: String) {
             }
         }
         return false
+    }
+
+    fun hasQuestion(): Boolean {
+        return question !=null
     }
 }

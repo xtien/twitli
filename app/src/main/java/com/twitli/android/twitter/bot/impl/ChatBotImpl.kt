@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.bot.PatternResult
 import com.twitli.android.twitter.bot.dict.Pattern
 import com.twitli.android.twitter.bot.dict.Patterns
 import com.twitli.android.twitter.bot.dict.type.Word
@@ -34,7 +35,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
 
         es.scheduleAtFixedRate({
             var status = takeStatus()
-            if(status !=null){
+            if (status != null) {
                 processTweet(status)
             }
         }, 2, 2, TimeUnit.SECONDS)
@@ -48,8 +49,14 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
         Log.d(LOGTAG, "processing: " + tweet.text)
         var words = wikBot.getWords(tweet)
         var analysis = analyzeSentence(words)
-        var stringList = sentenceWords(analysis)
-        twit.tweet(makeString(stringList))
+        if (analysis.pattern != null) {
+            if (analysis.pattern!!.hasQuestion()) {
+
+            } else {
+                var stringList = sentenceWords(analysis.words)
+                twit.tweet(makeString(stringList))
+            }
+        }
         twitRepository.setTweetDone(tweet.tweetId)
     }
 
@@ -70,8 +77,8 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
         return resultList.toList()
     }
 
-    private fun analyzeSentence(words: List<List<Word>>): List<Word> {
-        var result = mutableListOf<Word>()
+    private fun analyzeSentence(words: List<List<Word>>): PatternResult {
+        var result = PatternResult(null, mutableListOf())
         for (p in Patterns.patterns) {
             if (p.matches(words)) {
                 return processPattern(words, p);
@@ -80,7 +87,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
         return result
     }
 
-    private fun processPattern(words: List<List<Word>>, pat: Pattern): List<Word> {
+    private fun processPattern(words: List<List<Word>>, pat: Pattern): PatternResult {
 
         var wordIterator = words.iterator()
         var patternIterator = pat.wordTypes.iterator()
@@ -99,6 +106,6 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
             }
         }
 
-        return resultList
+        return PatternResult(pat, resultList)
     }
 }
