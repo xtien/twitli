@@ -5,7 +5,7 @@ import com.twitli.android.twitter.tweet.Tweet
 
 interface ChatBot {
 
-    fun processTweet(status: Tweet)
+    fun processTweet(tweet: Tweet)
 
     fun sentenceWords(words: List<Word>): List<String>
 }

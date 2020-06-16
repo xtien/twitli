@@ -100,7 +100,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
             loop@ while (wordIterator.hasNext()) {
                 var wordList = wordIterator.next()
                 for (word in wordList) {
-                    if (p == word.type) {
+                    if (p.equals(word.type)) {
                         resultList.add(word)
                         break@loop
                     }
