@@ -38,7 +38,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
             if (status != null) {
                 processTweet(status)
             }
-        }, 2, 2, TimeUnit.SECONDS)
+        }, 6, 10, TimeUnit.SECONDS)
     }
 
     private fun takeStatus(): Tweet {
@@ -46,18 +46,20 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
     }
 
     override fun processTweet(tweet: Tweet) {
-        Log.d(LOGTAG, "processing: " + tweet.text)
-        var words = wikBot.getWords(tweet)
-        var analysis = analyzeSentence(words)
-        if (analysis.pattern != null) {
-            if (analysis.pattern!!.hasQuestion()) {
+        es.submit {
+            Log.d(LOGTAG, "processing: " + tweet.text)
+            var words = wikBot.getWords(tweet)
+            var analysis = analyzeSentence(words)
+            if (analysis.pattern != null) {
+                if (analysis.pattern!!.hasQuestion()) {
 
-            } else {
-                var stringList = sentenceWords(analysis.words)
-                twit.tweet(makeString(stringList))
+                } else {
+                    var stringList = sentenceWords(analysis.words)
+                    twit.tweet(makeString(stringList))
+                }
             }
+            twitRepository.setTweetDone(tweet.tweetId)
         }
-        twitRepository.setTweetDone(tweet.tweetId)
     }
 
     private fun makeString(stringList: List<String>): String {
@@ -98,7 +100,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
             loop@ while (wordIterator.hasNext()) {
                 var wordList = wordIterator.next()
                 for (word in wordList) {
-                    if (p.equals(word.type)) {
+                    if (p == word.type) {
                         resultList.add(word)
                         break@loop
                     }

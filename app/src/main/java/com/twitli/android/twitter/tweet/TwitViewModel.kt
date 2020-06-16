@@ -13,6 +13,10 @@ class TwitViewModel(application: Application?, twitManager: TwitManager?) : Andr
         repository.loadTweets()
     }
 
+    fun onLikeClicked(tweetId: Long, liked: Boolean) {
+        repository.onLikeClicked(tweetId, liked)
+    }
+
     init {
         tweets = repository.tweets
     }

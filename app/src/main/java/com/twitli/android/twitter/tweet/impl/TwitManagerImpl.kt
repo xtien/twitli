@@ -46,7 +46,7 @@ class TwitManagerImpl : TwitManager {
         tweet(string)
     }
 
-    override fun reply(string: String?, replyToId: Long?) {
+    override fun reply(string: String, replyToId: Long) {
         tweetIt(string, replyToId)
     }
 
@@ -82,7 +82,7 @@ class TwitManagerImpl : TwitManager {
         }
     }
 
-    override fun createAccessToken(accessTokenVerifier: String?) {
+    override fun createAccessToken(accessTokenVerifier: String) {
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         try {
             val requestToken = RequestToken(prefs.getString("request_token", null), prefs.getString("request_token_secret", null))
@@ -111,21 +111,21 @@ class TwitManagerImpl : TwitManager {
     }
 
     @Throws(TwitterException::class)
-    override fun verifyCredentials(): User? {
+    override fun verifyCredentials(): User {
         return twitter.verifyCredentials()
     }
 
-    override fun like(tweetId: Long?) {
+    override fun like(tweetId: Long) {
         try {
-            twitter.createFavorite(tweetId!!)
+            twitter.createFavorite(tweetId)
         } catch (e: TwitterException) {
             e.printStackTrace()
         }
     }
 
-    override fun unlike(tweetId: Long?) {
+    override fun unlike(tweetId: Long) {
         try {
-            twitter.destroyFavorite(tweetId!!)
+            twitter.destroyFavorite(tweetId)
         } catch (e: TwitterException) {
             e.printStackTrace()
         }
@@ -137,12 +137,12 @@ class TwitManagerImpl : TwitManager {
     }
 
     @Throws(TwitterException::class)
-    override fun getHomeTimeline(paging: Paging?): List<Status> {
+    override fun getHomeTimeline(paging: Paging): List<Status> {
         try {
             return twitter.getHomeTimeline(paging)
         } catch (exception: TwitterException) {
-            var limits = twitter.getRateLimitStatus()
-            var limit = limits.get("/statuses/home_timeline")
+            var limits = twitter.rateLimitStatus
+            var limit = limits["/statuses/home_timeline"]
             Log.e(LOGTAG, limit.toString())
             throw(exception)
         }

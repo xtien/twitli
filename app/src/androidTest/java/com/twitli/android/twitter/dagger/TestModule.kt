@@ -16,7 +16,6 @@ import org.mockito.Mockito
 open class TestModule {
 
     lateinit var twitManager: TwitManager
-    lateinit var wikiPageManager: WikiPageManager
 
     @Provides
     fun provideTwitManager(): TwitManager {

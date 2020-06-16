@@ -17,26 +17,26 @@ interface TwitManager {
 
     fun tweet(content: Content?)
 
-    fun reply(string: String?, replyToId: Long?)
+    fun reply(string: String, replyToId: Long)
 
     fun tweet(string: String)
 
-    fun createAccessToken(verifier: String?)
+    fun createAccessToken(verifier: String)
 
     @Throws(TwitterException::class)
     fun createRequestToken(): RequestToken
 
     @Throws(TwitterException::class)
-    fun verifyCredentials(): User?
+    fun verifyCredentials(): User
 
-    fun like(tweetId: Long?)
+    fun like(tweetId: Long)
 
     @Throws(TwitterException::class)
-    fun getHomeTimeline(paging: Paging?): List<Status>
+    fun getHomeTimeline(paging: Paging): List<Status>
 
     fun logout()
 
-    fun unlike(tweetId: Long?)
+    fun unlike(tweetId: Long)
 
     fun reset()
  }

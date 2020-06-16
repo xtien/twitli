@@ -18,7 +18,7 @@ class Tweet {
     var screenName: String? = null
 
     @ColumnInfo(name = "time")
-    var time: String? = null
+    var time: Long = 0L
 
     @ColumnInfo(name = "text")
     var text: String? = null

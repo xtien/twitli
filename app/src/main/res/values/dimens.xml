@@ -20,4 +20,6 @@
 
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="design_fab_image_size" tools:override="true">56dp</dimen>
+
+    <dimen name="checkbox_like_size">16dp</dimen>
 </resources>

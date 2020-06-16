@@ -20,33 +20,39 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.twitli.android.twitter.MyApplication
 import com.twitli.android.twitter.R
+import com.twitli.android.twitter.bot.ChatBot
+import com.twitli.android.twitter.tweet.listener.OnInspectClickListener
 import com.twitli.android.twitter.tweet.listener.OnLikeClickListener
 import com.twitli.android.twitter.tweet.listener.OnReplyClickListener
 import org.apache.commons.lang3.math.NumberUtils
 import java.util.*
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
+class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener, OnInspectClickListener {
 
-    private var listView: RecyclerView? = null
-    private var adapter: TwitAdapter? = null
-    private var layoutManager: LinearLayoutManager? = null
-    private var button: FloatingActionButton? = null
-    private var tweetView: LinearLayout? = null
-    private var submitButton: Button? = null
-    private var replyView: LinearLayout? = null
-    private var replyButton: Button? = null
-    private var tweetText: EditText? = null
+    private lateinit var listView: RecyclerView
+    private lateinit var adapter: TwitAdapter
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var button: FloatingActionButton
+    private lateinit var tweetView: LinearLayout
+    private lateinit var submitButton: Button
+    private lateinit var replyView: LinearLayout
+    private lateinit var replyButton: Button
+    private lateinit var tweetText: EditText
     private var isTweeting = false
-    private var textLengthView: TextView? = null
+    private lateinit var textLengthView: TextView
     private val tweets: MutableMap<Long, Tweet> = HashMap()
-    private var replyText: EditText? = null
-    private var replyLengthView: TextView? = null
-    private var swipeContainer: SwipeRefreshLayout? = null
+    private lateinit var replyText: EditText
+    private lateinit var replyLengthView: TextView
+    private lateinit var swipeContainer: SwipeRefreshLayout
 
-    var es = Executors.newCachedThreadPool()
+    private var es = Executors.newScheduledThreadPool(2)
+
+    @Inject
+    lateinit var chatBot: ChatBot
 
     @Inject
     lateinit var twitViewModel: TwitViewModel
@@ -84,46 +90,47 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
             if (tweets != null) {
                 for (tweet in tweets) {
                     if (tweet?.tweetId != null) {
-                        this.tweets.put(tweet.tweetId!!, tweet)
+                        this.tweets[tweet.tweetId] = tweet
                     }
                 }
             }
 
             val list = ArrayList<Tweet>()
             list.addAll(this.tweets.values)
-            adapter!!.setTweets(list)
-            adapter!!.notifyDataSetChanged()
+            adapter.setTweets(list)
+            adapter.notifyDataSetChanged()
         })
 
         adapter = TwitAdapter()
-        adapter!!.setOnLikeClickListener(this)
-        adapter!!.setOnReplyClickListener(this)
+        adapter.setOnLikeClickListener(this)
+        adapter.setOnReplyClickListener(this)
+        adapter.setOnInspectClickListener(this)
         layoutManager = LinearLayoutManager(activity)
-        listView!!.layoutManager = layoutManager
-        listView!!.adapter = adapter
-        val tw: TextWatcher = MyTextWatcher(context!!, tweetText!!, textLengthView!!, submitButton!!)
-        val tw2: TextWatcher = MyTextWatcher(context!!, replyText!!, replyLengthView!!, replyButton!!)
-        tweetText!!.addTextChangedListener(tw)
-        replyText!!.addTextChangedListener(tw2)
-        button!!.setOnClickListener {
+        listView.layoutManager = layoutManager
+        listView.adapter = adapter
+        val tw: TextWatcher = MyTextWatcher(context!!, tweetText, textLengthView, submitButton)
+        val tw2: TextWatcher = MyTextWatcher(context!!, replyText, replyLengthView, replyButton)
+        tweetText.addTextChangedListener(tw)
+        replyText.addTextChangedListener(tw2)
+        button.setOnClickListener {
             if (!isTweeting) {
-                listView!!.alpha = 0.5f
-                tweetView!!.visibility = View.VISIBLE
+                listView.alpha = 0.5f
+                tweetView.visibility = View.VISIBLE
                 isTweeting = true
             } else {
-                listView!!.alpha = 1.0f
-                tweetView!!.visibility = View.INVISIBLE
-                replyView!!.visibility = View.INVISIBLE
+                listView.alpha = 1.0f
+                tweetView.visibility = View.INVISIBLE
+                replyView.visibility = View.INVISIBLE
                 isTweeting = false
             }
         }
-        swipeContainer!!.setOnRefreshListener {
+        swipeContainer.setOnRefreshListener {
             es.execute {
                 twitViewModel.loadTweets()
-                swipeContainer!!.isRefreshing = false
+                swipeContainer.isRefreshing = false
             }
         }
-        submitButton!!.setOnClickListener { doEdit(tweetView, tweetText) }
+        submitButton.setOnClickListener { doEdit(tweetView, tweetText) }
     }
 
     private fun doEdit(view: LinearLayout?, textview: TextView?) {
@@ -147,16 +154,20 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
                 }
             }
             if (tweetId == null) {
-                twitManager!!.tweet(replyText.text.toString())
+                twitManager.tweet(replyText.text.toString())
             } else {
-                twitManager!!.reply(replyText.text.toString(), tweetId)
+                twitManager.reply(replyText.text.toString(), tweetId)
             }
             replyText.text = ""
         }
     }
 
-    override fun onLikeClicked(tweetId: Long?, liked: Boolean) {
-        es.execute { if(liked)  twitManager!!.like(tweetId) else twitManager.unlike(tweetId) }
+    override fun onLikeClicked(tweetId: Long, liked: Boolean) {
+        twitViewModel.onLikeClicked(tweetId, liked)
+        es.execute { if (liked) twitManager.unlike(tweetId) else twitManager.like(tweetId) }
+        es.schedule({
+            activity!!.runOnUiThread { adapter.notifyDataSetChanged() }
+        }, 200L, TimeUnit.MILLISECONDS)
     }
 
     override fun onReplyClicked(tweetId: Long?) {
@@ -177,6 +188,14 @@ class TwitFragment : Fragment(), OnLikeClickListener, OnReplyClickListener {
                 view = View(activity)
             }
             imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    override fun onInspectClick(tweetId: Long) {
+
+        var tweet: Tweet? = tweets.get(tweetId)
+        if (tweet != null) {
+            chatBot.processTweet(tweet)
         }
     }
 }

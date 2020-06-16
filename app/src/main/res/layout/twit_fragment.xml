@@ -76,7 +76,7 @@
                     android:layout_weight="0"
                     android:textAllCaps="false"
                     android:id="@+id/submit_tweet"
-                    style="@style/text"
+                    style="@style/button"
                     android:text="@string/submit"/>
         </LinearLayout>
     </LinearLayout>
@@ -127,7 +127,7 @@
                     android:layout_weight="0"
                     android:textAllCaps="false"
                     android:id="@+id/submit_reply"
-                    style="@style/text"
+                    style="@style/button"
                     android:text="@string/submit"/>
         </LinearLayout>
     </LinearLayout>
@@ -136,11 +136,12 @@
             android:id="@+id/tweet_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@android:color/transparent"
+            app:backgroundTint="@android:color/holo_purple"
             app:borderWidth="0dp"
+            app:elevation="4dp"
             android:padding="0dp"
             android:layout_gravity="end|bottom"
-            android:src="@drawable/button"
+            android:src="@drawable/ic_create_black_24dp"
             android:contentDescription="@string/submit"/>
 
 </FrameLayout>

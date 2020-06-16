@@ -28,7 +28,7 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
     var es = Executors.newScheduledThreadPool(1)!!
 
     fun create(tweet: Tweet?) {
-        AppDatabase.databaseWriteExecutor.execute { twitDao.create(tweet) }
+        twitDao.create(tweet)
     }
 
     fun loadTweets() {
@@ -37,20 +37,19 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
         var tweets: List<Status?>? = ArrayList()
         try {
             tweets = twitManager.getHomeTimeline(paging)
-         } catch (e: TwitterException) {
+        } catch (e: TwitterException) {
             Log.e(LOGTAG, "Twitter error " + e.exceptionCode + " " + e.message)
         }
-        for (status in tweets!!) {
-            twitDao.store(status!!.id, status.user.name, status.user.screenName, status.createdAt.time, status.text, status.isFavorited, status.favoriteCount)
-        }
+        if (tweets != null)
+            for (status in tweets) {
+                if (status != null) {
+                    twitDao.store(status.id, status.user.name, status.user.screenName, status.createdAt.time, status.text, status.isFavorited, status.favoriteCount)
+                }
+            }
     }
 
     fun clear() {
         twitDao.clear()
-    }
-
-    fun getTweet(id: Int): LiveData<Tweet?>? {
-        return twitDao.getTweet(id)
     }
 
     fun cleanUp() {
@@ -63,6 +62,14 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
 
     fun setTweetDone(tweetId: Long) {
         twitDao.setTweetDone(tweetId)
+    }
+
+    fun onLikeClicked(tweetId: Long, liked: Boolean) {
+        AppDatabase.databaseWriteExecutor.execute { twitDao.onLikeClicked(tweetId, !liked) }
+    }
+
+    fun deleteTweet(tweetId: Long) {
+        twitDao.delete(tweetId)
     }
 
     companion object {
