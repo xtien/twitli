@@ -11,12 +11,12 @@ class Patterns() {
 
     companion object {
         val patterns: List<Pattern> = mutableListOf(
-                Pattern(null, "verb", "any", "adjective", "noun"),
-                Pattern(null, "adjective", "noun"),
-                Pattern(null, "noun", "verb", "adjective"),
-                Pattern(null, "noun", "any", "noun"),
-                Pattern(null, "noun", "any", "verb", "any", "noun"),
-                Pattern(null, "number")
+                Pattern("What about the %2\$s %3\$s?", "verb", "any", "adjective", "noun"),
+                Pattern("Tell me about the %2\$s %1\$s?", "adjective", "noun"),
+                Pattern("What about the %3\$s %1\$s?", "noun", "verb", "adjective"),
+                Pattern("", "noun", "any", "noun"),
+                Pattern("", "noun", "any", "verb", "any", "noun"),
+                Pattern("%s flowers...", "number")
         )
     }
 }

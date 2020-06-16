@@ -51,8 +51,9 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
             var words = wikBot.getWords(tweet)
             var analysis = analyzeSentence(words)
             if (analysis.pattern != null) {
-                if (analysis.pattern!!.hasQuestion()) {
-
+                val pattern = analysis.pattern
+                if (pattern !=null && pattern.hasQuestion()) {
+                    twit.tweet(pattern.toListString(words))
                 } else {
                     var stringList = sentenceWords(analysis.words)
                     twit.tweet(makeString(stringList))

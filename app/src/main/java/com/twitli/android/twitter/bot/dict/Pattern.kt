@@ -9,7 +9,7 @@ package com.twitli.android.twitter.bot.dict
 
 import com.twitli.android.twitter.bot.dict.type.Word
 
-class Pattern(question: String?, vararg words: String) {
+class Pattern(question: String, vararg words: String) {
 
     val wordTypes: Array<out String> = words
     private val question = question
@@ -67,5 +67,22 @@ class Pattern(question: String?, vararg words: String) {
 
     fun hasQuestion(): Boolean {
         return question !=null
+    }
+
+    fun toListString(lists :List<List<Word>>) : String {
+        val words = mutableListOf<Word>()
+        for(list in lists){
+            words.add(list[0])
+        }
+        return toString(words)
+    }
+
+    fun toString(words : List<Word>) : String{
+
+        var args: ArrayList<String> = arrayListOf<String>()
+        for(w in words){
+            args.add(w.wordString)
+        }
+        return String.format(question, *args.toArray())
     }
 }
