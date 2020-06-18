@@ -92,6 +92,7 @@ class TwitManagerImpl : TwitManager {
                 editor.putString("access_token_secret", accessToken.tokenSecret)
                 editor.putString("access_token", accessToken.token)
                 editor.putLong("user_id", accessToken.userId)
+                editor.putString("my_name", accessToken.screenName)
                 editor.apply()
             }
         } catch (e: Exception) {

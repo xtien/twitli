@@ -26,12 +26,14 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
     private val twit = twit
 
     private var myUserId: Long
+    private var myName: String
     private val es: ScheduledExecutorService = Executors.newScheduledThreadPool(2)
 
     init {
 
         var prefs = context.getSharedPreferences("prefs", MODE_PRIVATE)
-        myUserId = prefs.getLong("my_user_id", 0L);
+        myUserId = prefs.getLong("user_id", 0L)
+        myName = prefs.getString("my_name", "").toString()
 
         es.scheduleAtFixedRate({
             var status = takeStatus()
@@ -47,20 +49,26 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
 
     override fun processTweet(tweet: Tweet) {
         es.submit {
-            Log.d(LOGTAG, "processing: " + tweet.text)
-            var words = wikBot.getWords(tweet)
-            var analysis = analyzeSentence(words)
-            if (analysis.pattern != null) {
-                val pattern = analysis.pattern
-                if (pattern !=null && pattern.hasQuestion()) {
-                    twit.tweet(pattern.toListString(words))
-                } else {
-                    var stringList = sentenceWords(analysis.words)
-                    twit.tweet(makeString(stringList))
-                }
-            }
             twitRepository.setTweetDone(tweet.tweetId)
+            Log.d(LOGTAG, "processing: " + tweet.text)
+            var tweetWords = learnWords(tweet)
+            var patternResult = learnSentence(tweetWords)
+
+            if (tweet.screenName != myName)
+                if (patternResult.pattern != null) {
+                    val pattern = patternResult.pattern
+                    if (pattern != null && pattern.hasQuestion()) {
+                        twit.tweet(pattern.toListString(tweetWords))
+                    } else {
+                        var stringList = sentenceWords(patternResult.words)
+                        twit.tweet(makeString(stringList))
+                    }
+                }
         }
+    }
+
+    private fun learnWords(tweet: Tweet): List<List<Word>> {
+        return wikBot.getWords(tweet)
     }
 
     private fun makeString(stringList: List<String>): String {
@@ -80,7 +88,7 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
         return resultList.toList()
     }
 
-    private fun analyzeSentence(words: List<List<Word>>): PatternResult {
+    private fun learnSentence(words: List<List<Word>>): PatternResult {
         var result = PatternResult(null, mutableListOf())
         for (p in Patterns.patterns) {
             if (p.matches(words)) {
