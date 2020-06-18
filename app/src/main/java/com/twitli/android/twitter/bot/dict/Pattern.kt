@@ -36,7 +36,7 @@ class Pattern(question: String, vararg words: String) {
                 } else {
                     return false
                 }
-             } else {
+            } else {
                 if (!iterator.hasNext()) {
                     return false
                 }
@@ -66,23 +66,35 @@ class Pattern(question: String, vararg words: String) {
     }
 
     fun hasQuestion(): Boolean {
-        return question !=null
+        return question != null
     }
 
-    fun toListString(lists :List<List<Word>>) : String {
+    fun toListString(lists: List<List<Word>>): String {
         val words = mutableListOf<Word>()
-        for(list in lists){
+        for (list in lists) {
             words.add(list[0])
         }
         return toString(words)
     }
 
-    fun toString(words : List<Word>) : String{
+    fun toString(words: List<Word>): String {
 
         var args: ArrayList<String> = arrayListOf<String>()
-        for(w in words){
-            args.add(w.wordString)
+
+        var wordIterator = words.iterator()
+        var patternIterator = wordTypes.iterator()
+
+        loop@ while (patternIterator.hasNext()) {
+            val wordType = patternIterator.next()
+            while(wordIterator.hasNext()){
+                var word = wordIterator.next()
+                if(word.type == wordType){
+                    args.add(word.wordString)
+                    break
+                }
+            }
         }
+
         return String.format(question, *args.toArray())
     }
 }

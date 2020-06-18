@@ -72,6 +72,7 @@ class PatternFormatTest {
 
         var words: MutableList<Word> = mutableListOf()
 
+        words.add(makeString("the"))
         words.add(makeNoun("bike"))
         words.add(makeVerb("is"))
         words.add(makeAdjective("red"))
@@ -79,16 +80,33 @@ class PatternFormatTest {
         val pattern = Patterns.patterns[2]
         val resultString = pattern.toString(words.toList())
         Assert.assertNotNull(resultString)
-        Assert.assertEquals("What about the red bike?", resultString)
+        Assert.assertEquals("What about this red bike?", resultString)
     }
 
-    private fun makeString(s: String): List<Word> {
-        var the = WordString()
-        the.wordString = s
-        the.type = "string"
-        var stringList = mutableListOf<WordString>()
-        stringList.add(the)
-        return stringList
+    @Test
+    fun testPattern4() {
+
+        var words: MutableList<Word> = mutableListOf()
+
+        words.add(makeString("the"))
+        words.add(makeString("this"))
+        words.add(makeNoun("bike"))
+        words.add(makeString("the"))
+        words.add(makeVerb("is"))
+        words.add(makeString("the"))
+        words.add(makeAdjective("red"))
+
+        val pattern = Patterns.patterns[2]
+        val resultString = pattern.toString(words.toList())
+        Assert.assertNotNull(resultString)
+        Assert.assertEquals("What about this red bike?", resultString)
+    }
+
+    private fun makeString(s: String): Word {
+        var string = WordString()
+        string.wordString = s
+        string.type = "string"
+        return string
     }
 
     private fun makeAdjective(s: String): Word {
@@ -96,10 +114,7 @@ class PatternFormatTest {
         adjective.type = "adjective"
         adjective.positive = s
         adjective.wordString = s
-        var adjectiveList = mutableListOf<Adjective>()
-        adjectiveList.add(adjective)
         return adjective
-
     }
 
     private fun makeVerb(s: String): Word {
@@ -107,8 +122,6 @@ class PatternFormatTest {
         verb.type = "verb"
         verb.presentTense = s
         verb.wordString = s
-        var verbList = mutableListOf<Verb>()
-        verbList.add(verb)
         return verb
     }
 
@@ -116,22 +129,6 @@ class PatternFormatTest {
         var noun = Noun()
         noun.type = "noun"
         noun.wordString = s
-        var nounList = mutableListOf<Word>()
-        nounList.add(noun)
         return noun
     }
-
-    private fun makeAdjectiveNoun(s: String): List<Word> {
-        var noun = Noun()
-        noun.type = "noun"
-        noun.wordString = s
-        var nounList = mutableListOf<Word>()
-        nounList.add(noun)
-        var adjective = Adjective()
-        adjective.type = "adjective"
-        adjective.wordString = s
-        nounList.add(adjective)
-        return nounList.toList()
-    }
-
 }

@@ -43,7 +43,14 @@ class TwitRepository @Inject constructor(application: Application?, twitManager:
         if (tweets != null)
             for (status in tweets) {
                 if (status != null) {
-                    twitDao.store(status.id, status.user.name, status.user.screenName, status.createdAt.time, status.text, status.isFavorited, status.favoriteCount)
+
+                    var processed = false
+                    val existingTweet = twitDao.getTweet(status.id)
+                    if(existingTweet !=null){
+                        processed = existingTweet.processed
+                    }
+
+                    twitDao.store(status.id, status.user.name, status.user.screenName, status.createdAt.time, status.text, status.isFavorited, status.favoriteCount, processed)
                 }
             }
     }

@@ -66,6 +66,12 @@ class MainActivity : AppCompatActivity() {
         prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         editor = prefs.edit()
 
+        var chatWindow = prefs.getLong("install_time", 0L)
+        if(chatWindow == 0L){
+            editor.putLong("install_time", System.currentTimeMillis())
+            editor.apply()
+        }
+
         if (prefs.getBoolean("authorizing", false)) {
             doActivity()
         } else {

@@ -13,7 +13,7 @@ class Patterns() {
         val patterns: List<Pattern> = mutableListOf(
                 Pattern("What about the %2\$s %3\$s?", "verb", "any", "adjective", "noun"),
                 Pattern("Tell me about the %2\$s %1\$s?", "adjective", "noun"),
-                Pattern("What about the %3\$s %1\$s?", "noun", "verb", "adjective"),
+                Pattern("What about this %3\$s %1\$s?", "noun", "verb", "adjective"),
                 Pattern("", "noun", "any", "noun"),
                 Pattern("", "noun", "any", "verb", "any", "noun"),
                 Pattern("%s flowers...", "number")

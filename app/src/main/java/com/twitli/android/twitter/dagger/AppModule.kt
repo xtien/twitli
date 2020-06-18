@@ -33,6 +33,7 @@ import dagger.Provides
 class AppModule() {
 
     lateinit var twitManager: TwitManager
+    lateinit var chatBot: ChatBot
 
     @Provides
     fun twitViewModel(application: Application, twitManager: TwitManager): TwitViewModel {
@@ -84,7 +85,10 @@ class AppModule() {
 
     @Provides
     fun chatbot(application: Application, wikBot: WiktionaryBot, twit: TwitManager, twitRepository: TwitRepository): ChatBot {
-        return ChatBotImpl(application, wikBot, twit, twitRepository)
+        if(!this::chatBot.isInitialized){
+            chatBot = ChatBotImpl(application, wikBot, twit, twitRepository)
+        }
+        return chatBot
     }
 
     @Provides

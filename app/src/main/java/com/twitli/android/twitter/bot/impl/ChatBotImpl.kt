@@ -3,7 +3,9 @@ package com.twitli.android.twitter.bot.impl
 import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.util.Log
+import com.twitli.android.twitter.R
 import com.twitli.android.twitter.bot.ChatBot
 import com.twitli.android.twitter.bot.PatternResult
 import com.twitli.android.twitter.bot.dict.Pattern
@@ -13,10 +15,14 @@ import com.twitli.android.twitter.bot.wiki.WiktionaryBot
 import com.twitli.android.twitter.tweet.Tweet
 import com.twitli.android.twitter.tweet.TwitManager
 import com.twitli.android.twitter.tweet.TwitRepository
+import java.lang.Long.max
+import java.lang.Long.min
 import java.util.concurrent.*
 
 class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, twit: TwitManager, twitRepository: TwitRepository) : ChatBot {
 
+    private var chatWindow: Long
+    private var prefs: SharedPreferences
     private val LOGTAG: String = javaClass.name
 
     private val typeString: String = "%s: %s."
@@ -31,7 +37,8 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
 
     init {
 
-        var prefs = context.getSharedPreferences("prefs", MODE_PRIVATE)
+        chatWindow = context.resources.getInteger(R.integer.chat_window).toLong() * 1000L
+        prefs = context.getSharedPreferences("prefs", MODE_PRIVATE)
         myUserId = prefs.getLong("user_id", 0L)
         myName = prefs.getString("my_name", "").toString()
 
@@ -48,22 +55,25 @@ class ChatBotImpl constructor(application: Application, wikBot: WiktionaryBot, t
     }
 
     override fun processTweet(tweet: Tweet) {
-        es.submit {
-            twitRepository.setTweetDone(tweet.tweetId)
-            Log.d(LOGTAG, "processing: " + tweet.text)
-            var tweetWords = learnWords(tweet)
-            var patternResult = learnSentence(tweetWords)
 
-            if (tweet.screenName != myName)
-                if (patternResult.pattern != null) {
-                    val pattern = patternResult.pattern
-                    if (pattern != null && pattern.hasQuestion()) {
-                        twit.tweet(pattern.toListString(tweetWords))
-                    } else {
-                        var stringList = sentenceWords(patternResult.words)
-                        twit.tweet(makeString(stringList))
+        twitRepository.setTweetDone(tweet.tweetId)
+        if (System.currentTimeMillis() < (min(tweet.time, prefs.getLong("install_time", 0L)) + chatWindow)) {
+            es.submit {
+                Log.d(LOGTAG, "processing: " + tweet.text)
+                var tweetWords = learnWords(tweet)
+                var patternResult = learnSentence(tweetWords)
+
+                if (tweet.screenName != myName)
+                    if (patternResult.pattern != null) {
+                        val pattern = patternResult.pattern
+                        if (pattern != null && pattern.hasQuestion()) {
+                            twit.tweet(pattern.toListString(tweetWords))
+                        } else {
+                            var stringList = sentenceWords(patternResult.words)
+                            twit.tweet(makeString(stringList))
+                        }
                     }
-                }
+            }
         }
     }
 

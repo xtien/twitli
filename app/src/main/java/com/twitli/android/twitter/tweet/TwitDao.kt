@@ -18,13 +18,13 @@ interface TwitDao {
     fun clear()
 
     @Query("select * from twit_table where tweet_id = :id")
-    fun getTweet(id: Long): LiveData<Tweet?>?
+    fun getTweetLiveData(id: Long): LiveData<Tweet?>?
+
+    @Query("select * from twit_table where tweet_id = :id")
+    fun getTweet(id: Long):Tweet?
 
     @Query("replace into twit_table ('tweet_id','name', 'screen_name', 'time', 'text', 'liked', 'number_of_likes', 'processed') values (:id, :name, :screenName, :time, :text, :liked, :numberOfLikes, :processed)")
     fun store(id: Long, name: String?, screenName: String?, time: Long, text: String?, liked: Boolean, numberOfLikes: Int, processed: Boolean)
-
-    @Query("replace into twit_table ('tweet_id','name', 'screen_name', 'time', 'text', 'liked', 'number_of_likes', 'processed') values (:id, :name, :screenName, :time, :text, :liked, :numberOfLikes, 0)")
-    fun store(id: Long, name: String?, screenName: String?, time: Long, text: String?, liked: Boolean, numberOfLikes: Int)
 
     @Query("delete from twit_table where time < :timestamp")
     fun cleanUp(timestamp: Long)
